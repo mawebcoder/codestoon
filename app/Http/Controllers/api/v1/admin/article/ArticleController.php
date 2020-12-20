@@ -17,16 +17,6 @@ class ArticleController extends Controller
 
     }
 
-    public function create()
-    {
-
-    }
-
-    public function edit(Article $article)
-    {
-
-    }
-
     public function store()
     {
 
@@ -39,6 +29,9 @@ class ArticleController extends Controller
 
     public function update(Article $article)
     {
+
+    }
+    public function show(Article $article){
 
     }
 

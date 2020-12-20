@@ -12,16 +12,6 @@ class ArticleCategoryController extends Controller
 
     }
 
-    public function create()
-    {
-
-    }
-
-    public function edit(ArticleCategory $category)
-    {
-
-    }
-
     public function store()
     {
 
@@ -34,6 +24,10 @@ class ArticleCategoryController extends Controller
 
     public function update(ArticleCategory $articleCategory)
     {
+
+    }
+
+    public function show(ArticleCategory $articleCategory){
 
     }
 
