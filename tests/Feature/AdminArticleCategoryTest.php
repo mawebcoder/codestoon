@@ -35,18 +35,17 @@ class AdminArticleCategoryTest extends TestCase
      */
     public function testCanDeleteArticleCategory()
     {
-        $article = factory(ArticleCategory::class, 1)->create();
-
-        $this->delete(route('categories.destroy'), ['articleCategory' => $article->id])
+        $category = factory(ArticleCategory::class, 1)->create()->first();
+        $this->delete(route('articleCategories.destroy',['articleCategory'=>$category->id]))
             ->assertStatus(200)
             ->assertJson([
                 'message' => 'success',
                 'data' => null
             ]);
-        $this->assertDeleted('article_categories', [
-            'fa_title' => $article->fa_title,
-            'en_title' => $article->en_title,
-            'description' => $article->description
+        $this->assertSoftDeleted('article_categories', [
+            'fa_title' => $category->fa_title,
+            'en_title' => $category->en_title,
+            'description' => $category->description,
         ]);
 
     }

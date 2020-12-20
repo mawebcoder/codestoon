@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\api\v1\admin\article;
 
 use App\Http\Controllers\Controller;
-use App\models\Article;
 use App\models\ArticleCategory;
 
 class ArticleCategoryController extends Controller
@@ -34,6 +33,19 @@ class ArticleCategoryController extends Controller
     public function destroy(ArticleCategory $articleCategory)
     {
 
+        $result = $articleCategory->delete();
+        if ($result) {
+            $response_content = [
+                'message' => 'success',
+                'data' => null
+            ];
+            return response()->json($response_content, 200);
+        }
+        $response_content = [
+            'message' => 'failed',
+            'data' => null
+        ];
+        return response()->json($response_content, 500);
     }
 
     public function update(ArticleCategory $articleCategory)
