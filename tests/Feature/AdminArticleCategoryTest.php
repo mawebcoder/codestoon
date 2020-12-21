@@ -21,7 +21,7 @@ class AdminArticleCategoryTest extends TestCase
             'en_title' => $en_title,
             'description' => $description
         ];
-        $this->post(route('categories.store'), $data)
+        $this->post(route('articleCategories.store'), $data)
             ->assertStatus(201)
             ->assertJson([
                 'message' => 'success',
