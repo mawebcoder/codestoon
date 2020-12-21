@@ -36,7 +36,7 @@ class AdminArticleCategoryTest extends TestCase
     public function testCanDeleteArticleCategory()
     {
         $category = factory(ArticleCategory::class, 1)->create()->first();
-        $this->delete(route('articleCategories.destroy',['articleCategory'=>$category->id]))
+        $this->delete(route('articleCategories.destroy', ['articleCategory' => $category->id]))
             ->assertStatus(200)
             ->assertJson([
                 'message' => 'success',
@@ -47,6 +47,28 @@ class AdminArticleCategoryTest extends TestCase
             'en_title' => $category->en_title,
             'description' => $category->description,
         ]);
+
+    }
+
+    /**
+     * @test
+     */
+    public function testCanUpdateArticleCategory()
+    {
+        $article_category = factory(ArticleCategory::class,1)->create();
+
+        $data = [
+            'fa_title' => 'persiantitle',
+            'en_title' => 'englishtitle',
+            'description' => 'newdescription'
+        ];
+        $this->put(route('articleCategories.update', ['articleCategory' => $article_category[0]['id']]),$data)
+            ->assertStatus(200)
+            ->assertJson([
+                'message' => 'success',
+                'data' => null
+            ]);
+        $this->assertDatabaseHas('article_categories', $data);
 
     }
 }

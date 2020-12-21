@@ -12,42 +12,6 @@ class ArticleCategoryController extends Controller
 
     }
 
-    /**
-     * @OA\Post(
-     * path="/api/articles/articlescateg{id}",
-     * summary="Sign in",
-     * description="Login by email, password",
-     * tags={"auth"},
-     * @OA\RequestBody(
-     *    required=true,
-     *    description="Pass user credentials",
-     *    @OA\JsonContent(
-     *       required={"email","password"},
-     *       @OA\Property(property="email", type="string", format="email", example="user1@mail.com"),
-     *       @OA\Property(property="password", type="string", format="password", example="PassWord12345"),
-     *       @OA\Property(property="persistent", type="boolean", example="true"),
-     *    ),
-     * ),
-     *     @OA\parameter(
-     *          name="id",
-     *           in="path",
-     *           required=true,
-     *           description="the user id",
-     *              @OA\schema(
-    type="integer",
-     *
-     * ),
-     *     ),
-     * @OA\Response(
-     *    response=422,
-     *    description="Wrong credentials response",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="users", type="object", example="{name:'mohammad',family:'amiri'}"),
-     *       @OA\Property(property="status", type="integer", example="200"),
-     *        )
-     *     ),
-     * )
-     */
     public function store()
     {
         $data = request()->only(['fa_title', 'en_title', 'description']);
@@ -86,12 +50,19 @@ class ArticleCategoryController extends Controller
 
     public function update(ArticleCategory $articleCategory)
     {
-
+        $data = request()->only(['fa_title', 'en_title', 'description']);
+        $result = $articleCategory->update($data);
+        if ($result) {
+            return response()->json([
+                'data' => null,
+                'message' => 'success'
+            ], 200);
+        }
+        return response()->json([
+            'data' => null,
+            'message' => 'failed'
+        ], 500);
     }
 
-    public function show(ArticleCategory $articleCategory)
-    {
-
-    }
 
 }
