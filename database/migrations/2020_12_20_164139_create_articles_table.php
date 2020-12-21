@@ -18,8 +18,10 @@ class CreateArticlesTable extends Migration
             $table->string('fa_title')->nullable();
             $table->longText('content');
             $table->string('en_title')->nullable();
-            $table->string('sources')->nullable();
+            $table->json('resource')->nullable();
             $table->boolean('status')->default(0);
+            $table->text('short_description');
+            $table->string('meta');
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
