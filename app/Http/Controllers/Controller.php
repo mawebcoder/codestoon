@@ -14,6 +14,9 @@ use Illuminate\Routing\Controller as BaseController;
  *      description="codestoon api documantion",
  * )
  */
+
+//php artisan l5-swagger:generate
+
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;

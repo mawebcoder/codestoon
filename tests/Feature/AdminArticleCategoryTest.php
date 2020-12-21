@@ -3,14 +3,22 @@
 namespace Tests\Feature;
 
 use App\models\ArticleCategory;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class AdminArticleCategoryTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * @test
      */
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
     public function testCanStoreNewArticleCategory()
     {
         $fa_title = Str::random(10);
@@ -21,7 +29,7 @@ class AdminArticleCategoryTest extends TestCase
             'en_title' => $en_title,
             'description' => $description
         ];
-        $this->post(route('articleCategories.store'), $data)
+        $this->post(route('article.category.store'), $data)
             ->assertStatus(201)
             ->assertJson([
                 'message' => 'success',
@@ -36,7 +44,7 @@ class AdminArticleCategoryTest extends TestCase
     public function testCanDeleteArticleCategory()
     {
         $category = factory(ArticleCategory::class, 1)->create()->first();
-        $this->delete(route('articleCategories.destroy', ['articleCategory' => $category->id]))
+        $this->delete(route('article.category.destroy', ['articleCategory' => $category->id]))
             ->assertStatus(200)
             ->assertJson([
                 'message' => 'success',
@@ -55,20 +63,20 @@ class AdminArticleCategoryTest extends TestCase
      */
     public function testCanUpdateArticleCategory()
     {
-        $article_category = factory(ArticleCategory::class,1)->create();
+        $article_category = factory(ArticleCategory::class, 1)->create();
 
         $data = [
             'fa_title' => 'persiantitle',
             'en_title' => 'englishtitle',
             'description' => 'newdescription'
         ];
-        $this->put(route('articleCategories.update', ['articleCategory' => $article_category[0]['id']]),$data)
+        $this->put(route('article.category.update', ['articleCategory' => $article_category[0]['id']]), $data)
             ->assertStatus(200)
             ->assertJson([
                 'message' => 'success',
                 'data' => null
             ]);
         $this->assertDatabaseHas('article_categories', $data);
-
     }
+
 }

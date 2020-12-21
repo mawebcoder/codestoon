@@ -6,49 +6,69 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/api/articles/articlescateg{id}": {
-            "post": {
+        "/articles/categories": {
+            "get": {
                 "tags": [
-                    "auth"
+                    "article category"
                 ],
-                "summary": "Sign in",
-                "description": "Login by email, password",
-                "operationId": "App\\Http\\Controllers\\api\\v1\\admin\\article\\ArticleCategoryController::store",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "the user id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
+                "summary": "articles categories list",
+                "description": "get list of the articles categories",
+                "operationId": "App\\Http\\Controllers\\api\\v1\\admin\\article\\ArticleCategoryController::index",
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "collection",
+                                            "example": "[{fa_title:'title',en_title:'title',description:'articlecategory description'},{fa_title:'title',en_title:'title',description:'articlecategory description'}]"
+                                        },
+                                        "message": {
+                                            "type": "strig",
+                                            "example": "success"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
                         }
                     }
+                }
+            },
+            "post": {
+                "tags": [
+                    "article category"
                 ],
+                "summary": "store new article category",
+                "description": "store new article category in databas",
+                "operationId": "App\\Http\\Controllers\\api\\v1\\admin\\article\\ArticleCategoryController::store",
                 "requestBody": {
-                    "description": "Pass user credentials",
+                    "description": "required",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "email",
-                                    "password"
+                                    "fa_title",
+                                    "en_title",
+                                    "description"
                                 ],
                                 "properties": {
-                                    "email": {
+                                    "fa_title": {
                                         "type": "string",
-                                        "format": "email",
-                                        "example": "user1@mail.com"
+                                        "format": "article title",
+                                        "example": "the article title in persian"
                                     },
-                                    "password": {
+                                    "en_title": {
                                         "type": "string",
                                         "format": "password",
-                                        "example": "PassWord12345"
+                                        "example": "the article title in english"
                                     },
-                                    "persistent": {
-                                        "type": "boolean",
-                                        "example": "true"
+                                    "description": {
+                                        "type": "string",
+                                        "example": "article category description"
                                     }
                                 },
                                 "type": "object"
@@ -57,19 +77,195 @@
                     }
                 },
                 "responses": {
-                    "422": {
-                        "description": "Wrong credentials response",
+                    "201": {
+                        "description": "success",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "users": {
-                                            "type": "object",
-                                            "example": "{name:'mohammad',family:'amiri'}"
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
                                         },
-                                        "status": {
-                                            "type": "integer",
-                                            "example": "200"
+                                        "data": {
+                                            "type": "null",
+                                            "example": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/articles/categories/{articleId}": {
+            "put": {
+                "tags": [
+                    "article category"
+                ],
+                "summary": "update  article category",
+                "description": "update  article category from databas",
+                "operationId": "App\\Http\\Controllers\\api\\v1\\admin\\article\\ArticleCategoryController::update",
+                "parameters": [
+                    {
+                        "name": "articleId",
+                        "in": "path",
+                        "description": "the articleId",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "required",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "fa_title",
+                                    "en_title",
+                                    "description"
+                                ],
+                                "properties": {
+                                    "fa_title": {
+                                        "type": "string",
+                                        "format": "article title",
+                                        "example": "the article title in persian"
+                                    },
+                                    "en_title": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "the article title in english"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "article category description"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "article category"
+                ],
+                "summary": "delete  article category",
+                "description": "delete  article category from databas",
+                "operationId": "App\\Http\\Controllers\\api\\v1\\admin\\article\\ArticleCategoryController::destroy",
+                "parameters": [
+                    {
+                        "name": "articleId",
+                        "in": "path",
+                        "description": "the articleId",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": "null"
                                         }
                                     },
                                     "type": "object"
