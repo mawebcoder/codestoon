@@ -22,6 +22,7 @@ class CreateArticlesTable extends Migration
             $table->boolean('status')->default(0);
             $table->text('short_description');
             $table->string('meta');
+            $table->string('slug');
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
