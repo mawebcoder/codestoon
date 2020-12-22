@@ -5,7 +5,6 @@ namespace App\Http\Controllers\api\v1\admin\article;
 use App\Http\Controllers\Controller;
 use App\models\Article;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
 {
@@ -36,27 +35,37 @@ class ArticleController extends Controller
                 return response()->json([
                     'message' => 'success',
                     'data' => null
-                ],201);
+                ], 201);
             }
             return response()->json([
                 'message' => 'failed',
                 'data' => null
-            ],500);
+            ], 500);
         }
         return response()->json([
             'message' => 'failed',
             'data' => null
-        ],500);
+        ], 500);
     }
 
     public function destroy(Article $article)
     {
-        //
+        $result = $article->delete();
+        if ($result) {
+            return response()->json([
+                'message' => 'success',
+                'data' => null
+            ]);
+        }
+        return response()->json([
+            'data' => null,
+            'message' => 'failed'
+        ],500);
     }
 
     public function update(Article $article)
     {
-        //
+
     }
 
 }

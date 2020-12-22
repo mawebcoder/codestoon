@@ -11,9 +11,9 @@ $factory->define(Article::class, function (Faker $faker) {
         'en_title' => $faker->title,
         'meta' => $faker->text,
         'slug' => \Illuminate\Support\Str::slug(\Illuminate\Support\Str::random(30)),
-        'resource' => null,
         'short_description' => $faker->text,
         'content' => $faker->text,
-        'status'=>0
+        'status' => 0,
+        'user_id' => factory(\App\User::class)->create()->id
     ];
 });

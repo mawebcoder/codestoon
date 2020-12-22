@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\models\Article;
 use App\models\ArticleCategory;
 use App\User;
 use Tests\TestCase;
@@ -32,7 +33,7 @@ class AdminArticleTest extends TestCase
             'en_title' => 'article_en_title',
             'meta' => 'meta description',
             'text' => 'article_content',
-            'short_description'=>'article_short_description',
+            'short_description' => 'article_short_description',
             'article_categories' => $ids
         ];
         $this->post(route('articles.store'), $data)
@@ -46,7 +47,23 @@ class AdminArticleTest extends TestCase
             'en_title' => 'article_en_title',
             'meta' => 'meta description',
             'content' => 'article_content',
-            'short_description'=>'article_short_description',
+            'short_description' => 'article_short_description',
+        ]);
+    }
+
+
+    /**
+     * @test
+     */
+    public function testCanDeleteArticle()
+    {
+        $article = factory(Article::class)->create();
+
+        $this->delete(route('articles.destroy', ['article' => $article->id]))
+            ->assertOk();
+
+        $this->assertSoftDeleted('articles', [
+            'id' => $article->id
         ]);
     }
 }
