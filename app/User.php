@@ -5,19 +5,20 @@ namespace App;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     use Notifiable;
     use SoftDeletes;
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [
-        'name', 'email', 'password',
-    ];
+    protected $guarded=['id'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -40,8 +41,8 @@ class User extends Authenticatable
     /**
      * mutations of the password in the system(encrypting the password in the database)
      */
-    public function setPasswordAttribute()
+    public function setPasswordAttribute($value)
     {
-
+        return $this->attributes['password']=Hash::make($value);
     }
 }
