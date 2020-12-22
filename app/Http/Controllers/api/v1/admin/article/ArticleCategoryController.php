@@ -8,8 +8,18 @@ use App\models\ArticleCategory;
 class ArticleCategoryController extends Controller
 {
 
+    public $empty_success_message = [
+        'message' => 'success',
+        'data' => null
+    ];
+    public $failed_message = [
+        'message' => 'success',
+        'data' => null
+    ];
+
     public function __construct()
     {
+
     }
 
 
@@ -74,20 +84,19 @@ class ArticleCategoryController extends Controller
      */
     public function store()
     {
-        $data = request()->only(['fa_title', 'en_title', 'description']);
+        $data = request()->only(
+            [
+                'fa_title',
+                'en_title',
+                'description'
+            ]
+        );
+
         $result = ArticleCategory::create($data);
-        if ($result) {
-            $response_content = [
-                'message' => 'success',
-                'data' => null
-            ];
-            return response()->json($response_content, 201);
-        }
-        $response_content = [
-            'message' => 'failed',
-            'data' => null
-        ];
-        return response()->json($response_content, 500);
+
+        return $result ?
+            response()->json($this->empty_success_message, 201) :
+            response()->json($this->failed_message, 500);
     }
 
     /**
@@ -102,7 +111,7 @@ class ArticleCategoryController extends Controller
      *           required=true,
      *           description="the articleId",
      *              @OA\schema(
-                type="integer",
+    type="integer",
      * ),
      *     ),
      * @OA\Response(
@@ -125,20 +134,9 @@ class ArticleCategoryController extends Controller
      */
     public function destroy(ArticleCategory $articleCategory)
     {
-
         $result = $articleCategory->delete();
-        if ($result) {
-            $response_content = [
-                'message' => 'success',
-                'data' => null
-            ];
-            return response()->json($response_content, 200);
-        }
-        $response_content = [
-            'message' => 'failed',
-            'data' => null
-        ];
-        return response()->json($response_content, 500);
+        return $result ? response()->json($this->empty_success_message, 200) :
+            response()->json($this->failed_message, 500);
     }
 
     /**
@@ -188,16 +186,8 @@ class ArticleCategoryController extends Controller
     {
         $data = request()->only(['fa_title', 'en_title', 'description']);
         $result = $articleCategory->update($data);
-        if ($result) {
-            return response()->json([
-                'data' => null,
-                'message' => 'success'
-            ], 200);
-        }
-        return response()->json([
-            'data' => null,
-            'message' => 'failed'
-        ], 500);
+        return $result ? response()->json($this->empty_success_message) :
+            response()->json($this->failed_message, 500);
     }
 
 }
