@@ -2,11 +2,15 @@
 
 namespace App\models;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
+
 class Article extends Model
 {
     use SoftDeletes;
+
     protected $guarded = ['id'];
 
     /**
@@ -16,6 +20,23 @@ class Article extends Model
      */
     public function articleCategories()
     {
-        return $this->belongsToMany(ArticleCategory::class,'article_category','article_id','articleCategory_id');
+        return $this->belongsToMany(ArticleCategory::class, 'article_category', 'article_id', 'articleCategory_id');
+    }
+
+    /**
+     * make slug for article
+     *
+     * @param $value
+     * @return string
+     */
+    public function setFaTitleAttribute($value)
+    {
+        $this->attributes['slug'] = Str::slug($value);
+        return $this->attributes['fa_title'] = $value;
+    }
+
+    public function User()
+    {
+        return $this->belongsTo(User::class);
     }
 }

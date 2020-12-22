@@ -14,7 +14,7 @@ class CreateArticleCategoryTabel extends Migration
     public function up()
     {
         Schema::create('article_category', function (Blueprint $table) {
-            $table->foreignId('article_id')->references('id')->on('article_categories')->onDelete('cascade');
+            $table->foreignId('article_id')->references('id')->on('articles')->onDelete('cascade');
             $table->foreignId('articleCategory_id')->references('id')->on('article_categories')->onDelete('cascade');
         });
     }

@@ -2,11 +2,13 @@
 
 namespace App;
 
+use App\models\Article;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Traits\HasRoles;
+
 class User extends Authenticatable
 {
     use Notifiable;
@@ -18,7 +20,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $guarded=['id'];
+    protected $guarded = ['id'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -43,6 +45,11 @@ class User extends Authenticatable
      */
     public function setPasswordAttribute($value)
     {
-        return $this->attributes['password']=Hash::make($value);
+        return $this->attributes['password'] = Hash::make($value);
+    }
+
+    public function articles()
+    {
+        return $this->hasMany(Article::class);
     }
 }
