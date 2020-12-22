@@ -24,15 +24,12 @@ class ArticleController extends Controller
 
     public function destroy(Article $article)
     {
-
+        //
     }
 
     public function update(Article $article)
     {
-
-    }
-    public function show(Article $article){
-
+        //
     }
 
 }

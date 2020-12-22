@@ -12,6 +12,9 @@ class AdminArticleTest extends TestCase
         parent::setUp();
     }
 
+    /**
+     * @test
+     */
     public function testCanStoreNewArticle()
     {
 

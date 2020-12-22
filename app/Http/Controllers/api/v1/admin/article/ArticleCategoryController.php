@@ -8,6 +8,11 @@ use App\models\ArticleCategory;
 class ArticleCategoryController extends Controller
 {
 
+    public function __construct()
+    {
+    }
+
+
     /**
      * @OA\Get(
      *     path="/articles/categories",
