@@ -105,10 +105,6 @@ class AdminArticleTest extends TestCase
     {
         $articles = factory(Article::class, 10)->create();
         $ids = $articles->pluck('id');
-        $asserting_data = [];
-        foreach ($ids as $id) {
-            array_push($asserting_data, ['id' => $id]);
-        }
         $this->post(route('delete.article.multiple'), [
             'ids' => $ids
         ])
@@ -118,7 +114,26 @@ class AdminArticleTest extends TestCase
                 'data' => null
             ]);
         $this->assertSoftDeleted('articles', [
-            'id' => $asserting_data[0]->id
+            'id' => $articles[0]->id
         ]);
     }
+
+    public function testCanForceDeleteArticles()
+    {
+        $articles = factory(Article::class, 10)->create();
+        $ids = $articles->pluck('id');
+        $asserting_data = [];
+        $this->post(route('article.forceDelete'), [
+            'ids' => $ids
+        ])
+            ->assertOk()
+            ->assertJson([
+                'message' => 'success',
+                'data' => null
+            ]);
+        $this->assertDeleted('articles', [
+            'id' => $articles[0]->id
+        ]);
+    }
+
 }

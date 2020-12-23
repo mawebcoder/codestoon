@@ -87,7 +87,30 @@ class ArticleController extends Controller
         return $result ?
             response()->json($this->empty_success_message) :
             response()->json($this->failed_message);
+    }
 
+    public function forceDeleteMultipleArticle()
+    {
+
+        $ids = request()->ids;
+        $result = Article::withTrashed()->whereIn('id', $ids)->forceDelete();
+        return $result ?
+            response()->json($this->empty_success_message) :
+            response()->json($this->failed_message);
+    }
+
+    public function getTrashedArticles()
+    {
+        $articles = Article::withTrashed()->select('fa_title', 'en_title', 'id')->paginate(20);
+        return $articles->isNotEmpty() ?
+            response()->json([
+                'message' => 'success',
+                'data' => $articles
+            ]) :
+            response()->json([
+                'message' => 'success',
+                'data' => null
+            ], 204);
     }
 
 }
