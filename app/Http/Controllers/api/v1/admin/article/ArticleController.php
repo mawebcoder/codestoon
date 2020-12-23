@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 class ArticleController extends Controller
 {
     use RefreshDatabase;
+
     public $empty_success_message = [
         'message' => 'success',
         'data' => null
@@ -76,6 +77,17 @@ class ArticleController extends Controller
         $article->articleCategories()->sync(request()->article_categories);
 
         return response()->json($this->empty_success_message);
+    }
+
+    public function deleteMultipleArticle()
+    {
+        $ids = request()->ids;
+        $result = Article::whereIn('id', $ids)->delete();
+
+        return $result ?
+            response()->json($this->empty_success_message) :
+            response()->json($this->failed_message);
+
     }
 
 }

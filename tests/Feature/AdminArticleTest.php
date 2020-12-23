@@ -73,7 +73,7 @@ class AdminArticleTest extends TestCase
         $article_category_one = factory(ArticleCategory::class)->create();
         $article_category_two = factory(ArticleCategory::class)->create();
         $ids = [$article_category_one->id, $article_category_two->id];
-        $article=factory(Article::class)->create();
+        $article = factory(Article::class)->create();
 //        creating the writer of the article
         $writer = factory(User::class)->create();
         $this->actingAs($writer);
@@ -85,7 +85,7 @@ class AdminArticleTest extends TestCase
             'short_description' => 'article_short_description',
             'article_categories' => $ids
         ];
-        $this->put(route('articles.update',['article'=>$article->id]), $data)
+        $this->put(route('articles.update', ['article' => $article->id]), $data)
             ->assertStatus(200)
             ->assertJson([
                 'message' => 'success',
@@ -99,5 +99,26 @@ class AdminArticleTest extends TestCase
             'short_description' => 'article_short_description',
         ]);
 
+    }
+
+    public function testCanDeleteMultipleArticles()
+    {
+        $articles = factory(Article::class, 10)->create();
+        $ids = $articles->pluck('id');
+        $asserting_data = [];
+        foreach ($ids as $id) {
+            array_push($asserting_data, ['id' => $id]);
+        }
+        $this->post(route('delete.article.multiple'), [
+            'ids' => $ids
+        ])
+            ->assertOk()
+            ->assertJson([
+                'message' => 'success',
+                'data' => null
+            ]);
+        $this->assertSoftDeleted('articles', [
+            'id' => $asserting_data[0]->id
+        ]);
     }
 }
