@@ -4,11 +4,13 @@ namespace App\Http\Controllers\api\v1\admin\article;
 
 use App\Http\Controllers\Controller;
 use App\models\Article;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
 {
+    use RefreshDatabase;
     public $empty_success_message = [
         'message' => 'success',
         'data' => null
@@ -17,6 +19,7 @@ class ArticleController extends Controller
         'message' => 'success',
         'data' => null
     ];
+
     public function __construct()
     {
 
@@ -35,10 +38,10 @@ class ArticleController extends Controller
                 'fa_title',
                 'en_title',
                 'short_description',
-                'content',
                 'meta'
             ]
         );
+        $data['content'] = $request->text;
         $data['user_id'] = Auth::id();
         $article = Article::create($data);
         if ($article) {
@@ -60,7 +63,19 @@ class ArticleController extends Controller
 
     public function update(Article $article)
     {
+        $data = request()->only([
+            'meta',
+            'fa_title',
+            'en_title',
+            'short_description',
+        ]);
+        $data['content'] = request()->text;
 
+        $article->update($data);
+
+        $article->articleCategories()->sync(request()->article_categories);
+
+        return response()->json($this->empty_success_message);
     }
 
 }

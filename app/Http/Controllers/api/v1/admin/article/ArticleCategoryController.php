@@ -91,9 +91,7 @@ class ArticleCategoryController extends Controller
                 'description'
             ]
         );
-
         $result = ArticleCategory::create($data);
-
         return $result ?
             response()->json($this->empty_success_message, 201) :
             response()->json($this->failed_message, 500);
