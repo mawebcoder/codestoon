@@ -275,6 +275,366 @@
                     }
                 }
             }
+        },
+        "/articles": {
+            "post": {
+                "tags": [
+                    "articles"
+                ],
+                "summary": "store new article",
+                "description": "store new article in the system",
+                "operationId": "App\\Http\\Controllers\\api\\v1\\admin\\article\\ArticleController::store",
+                "requestBody": {
+                    "description": "required parameters",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "fa_title",
+                                    "en_title",
+                                    "meta",
+                                    "text",
+                                    "short_description"
+                                ],
+                                "properties": {
+                                    "fa_title": {
+                                        "type": "string",
+                                        "format": "title",
+                                        "example": "article title"
+                                    },
+                                    "en_title": {
+                                        "type": "string",
+                                        "format": "title",
+                                        "example": "english article title"
+                                    },
+                                    "text": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "short_description": {
+                                        "type": "string",
+                                        "example": "short_description"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "success response of the request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "boolean",
+                                            "example": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "failed",
+                                            "example": "failed"
+                                        },
+                                        "data": {
+                                            "type": "boolean",
+                                            "example": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/articles/{article}": {
+            "put": {
+                "tags": [
+                    "articles"
+                ],
+                "summary": "update article",
+                "description": "update  article in the system",
+                "operationId": "App\\Http\\Controllers\\api\\v1\\admin\\article\\ArticleController::update",
+                "parameters": [
+                    {
+                        "name": "article",
+                        "in": "path",
+                        "description": "the article id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response of the request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "boolean",
+                                            "example": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "failed",
+                                            "example": "failed"
+                                        },
+                                        "data": {
+                                            "type": "boolean",
+                                            "example": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "articles"
+                ],
+                "summary": "delete article",
+                "description": "delete  article from the system",
+                "operationId": "App\\Http\\Controllers\\api\\v1\\admin\\article\\ArticleController::destroy",
+                "parameters": [
+                    {
+                        "name": "article",
+                        "in": "path",
+                        "description": "the article id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success response of the request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "boolean",
+                                            "example": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "failed",
+                                            "example": "failed"
+                                        },
+                                        "data": {
+                                            "type": "boolean",
+                                            "example": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/articles/delete/multi": {
+            "post": {
+                "tags": [
+                    "articles"
+                ],
+                "summary": "delete some articles from database",
+                "description": "delete   articles in the system",
+                "operationId": "App\\Http\\Controllers\\api\\v1\\admin\\article\\ArticleController::deleteMultipleArticle",
+                "requestBody": {
+                    "description": "pass articles ids",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "ids"
+                                ],
+                                "properties": {
+                                    "ids": {
+                                        "type": "object",
+                                        "format": "array",
+                                        "example": "{ids:[1,2,3,4]}"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success response of the request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "boolean",
+                                            "example": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "failed",
+                                            "example": "failed"
+                                        },
+                                        "data": {
+                                            "type": "boolean",
+                                            "example": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/articles/force-delete": {
+            "post": {
+                "tags": [
+                    "articles"
+                ],
+                "summary": "force delete some articles from database",
+                "description": "force delete   articles in the system",
+                "operationId": "App\\Http\\Controllers\\api\\v1\\admin\\article\\ArticleController::forceDeleteMultipleArticle",
+                "requestBody": {
+                    "description": "pass articles ids",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "ids"
+                                ],
+                                "properties": {
+                                    "ids": {
+                                        "type": "object",
+                                        "format": "array",
+                                        "example": "{ids:[1,2,3,4]}"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success response of the request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "boolean",
+                                            "example": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "failed",
+                                            "example": "failed"
+                                        },
+                                        "data": {
+                                            "type": "boolean",
+                                            "example": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "security": [

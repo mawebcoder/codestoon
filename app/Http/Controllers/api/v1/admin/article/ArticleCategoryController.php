@@ -41,7 +41,8 @@ class ArticleCategoryController extends Controller
      */
     public function index()
     {
-        $article_categories_list = ArticleCategory::paginate(20);
+        $article_categories_list = ArticleCategory::select('fa_title','en_title','id
+        ')->paginate(20);
         return response()->json([
             'message' => 'success',
             'data' => $article_categories_list

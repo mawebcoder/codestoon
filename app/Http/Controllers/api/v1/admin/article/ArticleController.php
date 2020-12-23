@@ -32,6 +32,41 @@ class ArticleController extends Controller
     }
 
 
+    /**
+     * @OA\Post(
+     * path="/articles",
+     * summary="store new article",
+     * description="store new article in the system",
+     * tags={"articles"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="required parameters",
+     *    @OA\JsonContent(
+     *       required={"fa_title","en_title","meta","text","short_description"},
+     *       @OA\Property(property="fa_title", type="string", format="title", example="article title"),
+     *       @OA\Property(property="en_title", type="string", format="title", example="english article title"),
+     *       @OA\Property(property="text", type="string", example="string"),
+     *       @OA\Property(property="short_description", type="string", example="short_description"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=201,
+     *    description="success response of the request",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="success"),
+     *       @OA\Property(property="data", type="boolean", example="null"),
+     *        )
+     *     ),
+     *@OA\Response(
+     *    response=500,
+     *    description="failed",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="failed", example="failed"),
+     *       @OA\Property(property="data", type="boolean", example="null"),
+     *        )
+     *     ),
+     * )
+     */
     public function store(Request $request)
     {
         $data = $request->only(
@@ -54,6 +89,40 @@ class ArticleController extends Controller
         return response()->json($this->failed_message, 500);
     }
 
+    /**
+     * @OA\delete(
+     * path="/articles/{article}",
+     * summary="delete article",
+     * description="delete  article from the system",
+     * tags={"articles"},
+     * @OA\parameter(
+     *          name="article",
+     *           in="path",
+     *           required=true,
+     *           description="the article id",
+     *           @OA\schema(
+     * type="integer",
+     *
+     * ),
+     *     ),
+     * @OA\Response(
+     *    response=200,
+     *    description="success response of the request",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="success"),
+     *       @OA\Property(property="data", type="boolean", example="null"),
+     *        )
+     *     ),
+     *@OA\Response(
+     *    response=500,
+     *    description="failed",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="failed", example="failed"),
+     *       @OA\Property(property="data", type="boolean", example="null"),
+     *        )
+     *     ),
+     * )
+     */
     public function destroy(Article $article)
     {
         $result = $article->delete();
@@ -62,6 +131,40 @@ class ArticleController extends Controller
             response()->json($this->failed_message, 500);
     }
 
+
+    /**
+     * @OA\put(
+     * path="/articles/{article}",
+     * summary="update article",
+     * description="update  article in the system",
+     * tags={"articles"},
+     * @OA\parameter(
+     *          name="article",
+     *           in="path",
+     *           required=true,
+     *           description="the article id",
+     *           @OA\schema(
+     * type="integer",
+     * ),
+     *     ),
+     * @OA\Response(
+     *    response=200,
+     *    description="success response of the request",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="success"),
+     *       @OA\Property(property="data", type="boolean", example="null"),
+     *        )
+     *     ),
+     *@OA\Response(
+     *    response=500,
+     *    description="failed",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="failed", example="failed"),
+     *       @OA\Property(property="data", type="boolean", example="null"),
+     *        )
+     *     ),
+     * )
+     */
     public function update(Article $article)
     {
         $data = request()->only([
@@ -72,28 +175,94 @@ class ArticleController extends Controller
         ]);
         $data['content'] = request()->text;
 
-        $article->update($data);
+        $update_result = $article->update($data);
 
-        $article->articleCategories()->sync(request()->article_categories);
+        $sync_result = $article->articleCategories()->sync(request()->article_categories);
 
-        return response()->json($this->empty_success_message);
+        return $update_result && $sync_result ?
+            response()->json($this->empty_success_message) :
+            response()->json($this->failed_message);
     }
 
+    /**
+     * @OA\post(
+     * path="/articles/delete/multi",
+     * summary="delete some articles from database",
+     * description="delete   articles in the system",
+     * tags={"articles"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="pass articles ids",
+     *    @OA\JsonContent(
+     *       required={"ids"},
+     *       @OA\Property(property="ids", type="object", format="array", example="{ids:[1,2,3,4]}"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="success response of the request",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="success"),
+     *       @OA\Property(property="data", type="boolean", example="null"),
+     *        )
+     *     ),
+     *@OA\Response(
+     *    response=500,
+     *    description="failed",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="failed", example="failed"),
+     *       @OA\Property(property="data", type="boolean", example="null"),
+     *        )
+     *     ),
+     * )
+     */
     public function deleteMultipleArticle()
     {
         $ids = request()->ids;
-        $result = Article::whereIn('id', $ids)->delete();
+        $result = Article::find($ids)->delete();
 
         return $result ?
             response()->json($this->empty_success_message) :
             response()->json($this->failed_message);
     }
 
+    /**
+     * @OA\post(
+     * path="/articles/force-delete",
+     * summary="force delete some articles from database",
+     * description="force delete   articles in the system",
+     * tags={"articles"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="pass articles ids",
+     *    @OA\JsonContent(
+     *       required={"ids"},
+     *       @OA\Property(property="ids", type="object", format="array", example="{ids:[1,2,3,4]}"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="success response of the request",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="success"),
+     *       @OA\Property(property="data", type="boolean", example="null"),
+     *        )
+     *     ),
+     *@OA\Response(
+     *    response=500,
+     *    description="failed",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="failed", example="failed"),
+     *       @OA\Property(property="data", type="boolean", example="null"),
+     *        )
+     *     ),
+     * )
+     */
     public function forceDeleteMultipleArticle()
     {
 
         $ids = request()->ids;
-        $result = Article::withTrashed()->whereIn('id', $ids)->forceDelete();
+        $result = Article::withTrashed()->find($ids)->forceDelete();
         return $result ?
             response()->json($this->empty_success_message) :
             response()->json($this->failed_message);
