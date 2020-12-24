@@ -15,7 +15,17 @@ class ArticleTagController extends Controller
         $data = request()->only(['fa_title']);
         $result = ArticleTag::create($data);
         return $result ?
-            response($this->empty_success_message,201) :
+            response($this->empty_success_message, 201) :
             response($this->error_message, 500);
     }
+
+    public function update(ArticleTag $articleTag)
+    {
+        $data = request()->only(['fa_title']);
+        $result = $articleTag->update($data);
+        return $result ?
+            response($this->empty_success_message) :
+            response($this->error_message);
+    }
+
 }

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\models\ArticleTag;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -23,4 +24,22 @@ class ArticleTagTest extends TestCase
             ]);
         $this->assertDatabaseHas('article_tags', $data);
     }
+
+    public function testCanUpdateArticleTag()
+    {
+        $old_article_tag = factory(ArticleTag::class)->create();
+        $fa_title = Str::random(10);
+        $data = [
+            'fa_title' => $fa_title
+        ];
+        $this->put(route('articles.tag.update', ['articleTag' => $old_article_tag->id]), $data)
+            ->assertOk()
+            ->assertJson([
+                'message' => 'success',
+                'data' => null
+            ]);
+        $this->assertDatabaseHas('article_tags', $data);
+
+    }
+
 }
