@@ -52,7 +52,11 @@ class SetRolesPermissions extends Command
             'create_article_category',
             'update_article_category',
             'delete_article_category',
-            'see_article_category'
+            'see_article_category',
+            'create_course',
+            'see_course',
+            'delete_article',
+            'update_course',
         ];
         $permissions_ids = [];
         foreach ($permissions as $permission) {
@@ -88,6 +92,6 @@ class SetRolesPermissions extends Command
         if (!$result3) {
             $this->error('can not sync the super admin to the all permissions');
         }
-      $this->info('successfully done!');
+        $this->info('successfully done!');
     }
 }
