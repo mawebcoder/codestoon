@@ -82,6 +82,7 @@ class AdminArticleTest extends TestCase
         $article_category_one = factory(ArticleCategory::class)->create();
         $article_category_two = factory(ArticleCategory::class)->create();
         $ids = [$article_category_one->id, $article_category_two->id];
+        $article_tags_ids = factory(ArticleTag::class, 5)->create()->pluck('id');
         $article = factory(Article::class)->create();
 //        creating the writer of the article
         $writer = factory(User::class)->create();
@@ -92,7 +93,8 @@ class AdminArticleTest extends TestCase
             'meta' => 'meta description',
             'text' => 'article_content',
             'short_description' => 'article_short_description',
-            'article_categories' => $ids
+            'article_categories' => $ids,
+            'article_tags' => $article_tags_ids
         ];
         $this->put(route('articles.update', ['article' => $article->id]), $data)
             ->assertStatus(200)
@@ -106,6 +108,12 @@ class AdminArticleTest extends TestCase
             'meta' => 'meta description',
             'content' => 'article_content',
             'short_description' => 'article_short_description',
+        ]);
+        $this->assertDatabaseHas('article_category', [
+            'articleCategory_id' => $ids[0],
+        ]);
+        $this->assertDatabaseHas('article_tag', [
+            'articleTag_id' => $article_tags_ids[0]
         ]);
 
     }
