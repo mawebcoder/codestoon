@@ -28,4 +28,11 @@ class ArticleTagController extends Controller
             response($this->error_message);
     }
 
+    public function destroy(ArticleTag $articleTag)
+    {
+        $result = $articleTag->delete();
+        return $result ?
+            response($this->empty_success_message) :
+            response($this->error_message);
+    }
 }

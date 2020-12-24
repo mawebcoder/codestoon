@@ -39,7 +39,21 @@ class ArticleTagTest extends TestCase
                 'data' => null
             ]);
         $this->assertDatabaseHas('article_tags', $data);
+    }
 
+    public function testCanDestroyArticleTag()
+    {
+        $article = factory(ArticleTag::class)->create();
+
+        $this->delete(route('article.tag.destroy', ['articleTag' => $article->id]))
+            ->assertOk()
+            ->assertJson([
+                'message' => 'success',
+                'data' => null
+            ]);
+        $this->assertSoftDeleted('article_tags', [
+            'fa_title' => $article->fa_title
+        ]);
     }
 
 }

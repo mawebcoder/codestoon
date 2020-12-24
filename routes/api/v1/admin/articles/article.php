@@ -8,8 +8,10 @@ Route::post('/articles/categories', 'ArticleCategoryController@store')->name('ar
 Route::put('/articles/categories/{articleCategory}', 'ArticleCategoryController@update')->name('article.category.update');
 Route::delete('/articles/categories/{articleCategory}', 'ArticleCategoryController@destroy')->name('article.category.destroy');
 Route::post('/articles/delete/multi','ArticleController@deleteMultipleArticle')->name('delete.article.multiple');
+//Article tags methods
 Route::post('/articles/tags','ArticleTagController@store')->name('article.tag.store');
 Route::put('/articles/tags/{articleTag}','ArticleTagController@update')->name('articles.tag.update');
+Route::delete('/articles/tags/{articleTag}','ArticleTagController@destroy')->name('article.tag.destroy');
 Route::post('/articles/force-delete','ArticleController@forceDeleteMultipleArticle')->name('article.forceDelete');
 Route::resource('articles', 'ArticleController')->except(['create', 'edit','show']);
 
