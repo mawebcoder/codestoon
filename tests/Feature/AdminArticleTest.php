@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\models\Article;
 use App\models\ArticleCategory;
+use App\models\ArticleTag;
 use App\User;
 use Tests\TestCase;
 
@@ -25,7 +26,8 @@ class AdminArticleTest extends TestCase
         $article_category_one = factory(ArticleCategory::class)->create();
         $article_category_two = factory(ArticleCategory::class)->create();
         $ids = [$article_category_one->id, $article_category_two->id];
-
+        $article_tags = factory(ArticleTag::class, 4)->create();
+        $article_tags_ids = $article_tags->pluck('id');
 //        creating the writer of the article
         $writer = factory(User::class)->create();
         $this->actingAs($writer);
@@ -35,7 +37,8 @@ class AdminArticleTest extends TestCase
             'meta' => 'meta description',
             'text' => 'article_content',
             'short_description' => 'article_short_description',
-            'article_categories' => $ids
+            'article_categories' => $ids,
+            'article_tags' => $article_tags_ids
         ];
         $this->post(route('articles.store'), $data)
             ->assertStatus(201)
@@ -49,6 +52,12 @@ class AdminArticleTest extends TestCase
             'meta' => 'meta description',
             'content' => 'article_content',
             'short_description' => 'article_short_description',
+        ]);
+        $this->assertDatabaseHas('article_category', [
+            'articleCategory_id' => $ids[0],
+        ]);
+        $this->assertDatabaseHas('article_tag', [
+            'articleTag_id' => $article_tags_ids[0],
         ]);
     }
 

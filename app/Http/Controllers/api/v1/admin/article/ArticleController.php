@@ -82,6 +82,9 @@ class ArticleController extends Controller
         $article = Article::create($data);
         if ($article) {
             $result = $article->articleCategories()->sync($request->article_categories);
+           if ($request->article_tags->count()){
+               $article->tags()->sync($request->article_tags);
+           }
             return $result ?
                 response()->json($this->empty_success_message, 201) :
                 response()->json($this->failed_message, 500);
