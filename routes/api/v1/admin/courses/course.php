@@ -2,4 +2,4 @@
 use Illuminate\Support\Facades\Route;
 
 
-Route::resource('courses','CourseController');
+Route::get('/courses/categories','CourseCategoryController@index');
