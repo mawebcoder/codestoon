@@ -22,6 +22,8 @@ class CreateVideosTable extends Migration
             $table->text('description');
             $table->text('short_description')->nullable();
             $table->string('meta');
+            $table->bigInteger('hint')->default(0);
+            $table->string('likes')->nullable();
             $table->string('video_url_name');
             $table->timestamps();
         });

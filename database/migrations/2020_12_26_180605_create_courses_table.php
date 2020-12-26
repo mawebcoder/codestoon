@@ -26,6 +26,7 @@ class CreateCoursesTable extends Migration
             $table->boolean('is_special_subscription')->default(0);
             $table->string('course_image_cover')->nullable();
             $table->text('likes')->nullable();
+            $table->bigInteger('hint')->default(0);
             $table->text('description');
             $table->text('short_description')->nullable();
             $table->boolean('is_completed_course')->default(0);
