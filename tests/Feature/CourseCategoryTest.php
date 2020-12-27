@@ -59,11 +59,26 @@ class CourseCategoryTest extends TestCase
                 'message' => 'success',
                 'data' => null
             ]);
-        $this->assertDatabaseHas('course_categories',[
-            'fa_title'=>'fa_title',
-            'course_image_cover_name'=>$file->getClientOriginalName(),
-            'en_title'=>'en_title'
+        $this->assertDatabaseHas('course_categories', [
+            'fa_title' => 'fa_title',
+            'course_image_cover_name' => $file->getClientOriginalName(),
+            'en_title' => 'en_title'
         ]);
         $this->assertFileExists(storage_path('app/public/images/courses/categories/cover/1/image2.jpg'));
+    }
+
+    public function testCanDeleteCourseCategory()
+    {
+        $course_category = factory(CourseCategory::class)->create();
+        $this->delete(route('courses.category.delete', ['courseCategory' => $course_category->id]))
+            ->assertOk()
+            ->assertJson([
+                'message' => 'success',
+                'data' => null
+            ]);
+        $this->assertSoftDeleted('course_categories', [
+            'meta' => $course_category->meta,
+            'fa_title' => $course_category->fa_title
+        ]);
     }
 }

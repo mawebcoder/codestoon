@@ -129,6 +129,9 @@ class CourseCategoryController extends Controller
      */
     public function destroy(CourseCategory $courseCategory)
     {
-        //
+        $result = $courseCategory->delete();
+        return $result ?
+            response($this->empty_success_message) :
+            response($this->failed_message);
     }
 }
