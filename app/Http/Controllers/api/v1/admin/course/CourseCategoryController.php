@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\v1\admin\course;
 use App\Http\Controllers\Controller;
 use App\models\CourseCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class CourseCategoryController extends Controller
 {
@@ -138,10 +139,25 @@ class CourseCategoryController extends Controller
     public function forceDelete()
     {
         $ids = request()->ids;
-
         $result = CourseCategory::onlyTrashed()->whereIn('id', $ids)->forceDelete();
+        foreach ($ids as $id) {
+            $path = storage_path('app/public/images/courses/categories/cover/' . $id);
+            if (is_dir($path)) {
+                File::deleteDirectory($path);
+            }
+        }
         return $result ?
             response($this->empty_success_message) :
             response($this->failed_message);
+    }
+
+    public function getTrashed()
+    {
+        $all_trashed = CourseCategory::onlyTrashed()->select('fa_title', 'en_title', 'meta', 'id')
+            ->get();
+        return response([
+            'message' => 'success',
+            'data' => $all_trashed
+        ]);
     }
 }

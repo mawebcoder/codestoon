@@ -202,7 +202,7 @@ class ArticleController extends Controller
      *    description="pass articles ids",
      *    @OA\JsonContent(
      *       required={"ids"},
-     *       @OA\Property(property="ids", type="object", format="array", example="{ids:[1,2,3,4]}"),
+     *       @OA\Property(property="ids", type="object", format="array", example="{ids:[6,2,3,4]}"),
      *    ),
      * ),
      * @OA\Response(
@@ -244,7 +244,7 @@ class ArticleController extends Controller
      *    description="pass articles ids",
      *    @OA\JsonContent(
      *       required={"ids"},
-     *       @OA\Property(property="ids", type="object", format="array", example="{ids:[1,2,3,4]}"),
+     *       @OA\Property(property="ids", type="object", format="array", example="{ids:[6,2,3,4]}"),
      *    ),
      * ),
      * @OA\Response(

@@ -37,7 +37,7 @@ class CourseCategoryTest extends TestCase
             'fa_title' => 'fa_title',
             'en_title' => 'en_title'
         ]);
-        $this->assertFileExists(storage_path('app/public/images/courses/categories/cover/1/image.jpg'));
+        $this->assertFileExists(storage_path('app/public/images/courses/categories/cover/6/image.jpg'));
     }
 
     public function testCanUpdateCourseCategory()
@@ -64,7 +64,7 @@ class CourseCategoryTest extends TestCase
             'course_image_cover_name' => $file->getClientOriginalName(),
             'en_title' => 'en_title'
         ]);
-        $this->assertFileExists(storage_path('app/public/images/courses/categories/cover/1/image2.jpg'));
+        $this->assertFileExists(storage_path('app/public/images/courses/categories/cover/6/image2.jpg'));
     }
 
     public function testCanDeleteCourseCategory()
