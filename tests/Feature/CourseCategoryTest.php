@@ -81,18 +81,4 @@ class CourseCategoryTest extends TestCase
             'fa_title' => $course_category->fa_title
         ]);
     }
-
-    public function testCanForceDeleteCoursesCategories()
-    {
-        $courses_ids = factory(CourseCategory::class, 2)->create()->pluck('id')->toArray();
-        $data = [
-            'ids' => $courses_ids
-        ];
-        $this->post(route('course.category.force.delete'), $data)
-            ->assertOk()
-            ->assertJson([
-                'message' => 'success',
-                'data' => null
-            ]);
-    }
 }

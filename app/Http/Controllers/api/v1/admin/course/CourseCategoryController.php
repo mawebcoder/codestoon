@@ -139,7 +139,7 @@ class CourseCategoryController extends Controller
     {
         $ids = request()->ids;
 
-        $result = CourseCategory::whereIn('id', $ids)->delete();
+        $result = CourseCategory::onlyTrashed()->whereIn('id', $ids)->forceDelete();
         return $result ?
             response($this->empty_success_message) :
             response($this->failed_message);
