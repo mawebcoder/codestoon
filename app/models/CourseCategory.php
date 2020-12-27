@@ -3,8 +3,11 @@
 namespace App\models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CourseCategory extends Model
 {
-    protected $guarded=['id'];
+    use SoftDeletes;
+
+    protected $guarded = ['id'];
 }

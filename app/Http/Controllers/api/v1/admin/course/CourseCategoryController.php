@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\api\v1\admin\course;
 
 use App\Http\Controllers\Controller;
-use App\models\ArticleCategory;
 use App\models\CourseCategory;
 use Illuminate\Http\Request;
 
@@ -50,19 +49,19 @@ class CourseCategoryController extends Controller
         );
         $data['parent'] = $request->parent ?? 0;
         $data['short_description'] = $request->description ?? null;
-        $data['en_title']=$request->en_title ?? null;
+        $data['en_title'] = $request->en_title ?? null;
 
         $article_category = CourseCategory::create($data);
         if ($request->hasFile('file')) {
             $path = 'images/courses/categories/cover/' . $article_category->id;
             $image_name = $request->file('file')->getClientOriginalName();
-            $request->file('file')->storeAs($path, $image_name,'public');
+            $request->file('file')->storeAs($path, $image_name, 'public');
             $article_category->update([
                 'course_image_cover_name' => $image_name
             ]);
         }
         return $article_category ?
-            response($this->empty_success_message,201) :
+            response($this->empty_success_message, 201) :
             response($this->failed_message);
     }
 
@@ -97,7 +96,29 @@ class CourseCategoryController extends Controller
      */
     public function update(Request $request, CourseCategory $courseCategory)
     {
-        //
+        $data = $request->only(
+            [
+                'fa_title',
+                'meta',
+                'description',
+                'short_description',
+            ]
+        );
+        $data['parent'] = $request->parent ?? 0;
+        $data['short_description'] = $request->description ?? null;
+        $data['en_title'] = $request->en_title ?? null;
+        $result = $courseCategory->update($data);
+        if ($request->hasFile('file')) {
+            $path = 'images/courses/categories/cover/' . $courseCategory->id;
+            $image_name = $request->file('file')->getClientOriginalName();
+            $request->file('file')->storeAs($path, $image_name, 'public');
+            $courseCategory->update([
+                'course_image_cover_name' => $image_name
+            ]);
+        }
+        return $result ?
+            response($this->empty_success_message) :
+            response($this->failed_message);
     }
 
     /**

@@ -20,6 +20,7 @@ class CreateCourseCategoriesTable extends Migration
             $table->string('meta')->nullable();
             $table->longText('description');
             $table->text('short_description')->nullable();
+            $table->softDeletes();
             $table->unsignedBigInteger('parent')->default(0);
             $table->string('course_image_cover_name')->nullable();
             $table->timestamps();

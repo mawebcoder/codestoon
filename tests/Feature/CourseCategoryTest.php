@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\models\CourseCategory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
@@ -37,5 +38,32 @@ class CourseCategoryTest extends TestCase
             'en_title' => 'en_title'
         ]);
         $this->assertFileExists(storage_path('app/public/images/courses/categories/cover/1/image.jpg'));
+    }
+
+    public function testCanUpdateCourseCategory()
+    {
+        UploadedFile::fake();
+        $file = UploadedFile::fake()->image('image2.jpg');
+        $old_course_category = factory(CourseCategory::class)->create();
+        $new_data = [
+            'meta' => 'meta',
+            'en_title' => 'en_title',
+            'fa_title' => 'fa_title',
+            'description' => 'description',
+            'short_description' => 'short_description',
+            'file' => $file
+        ];
+        $this->put(route('courses.category.update', ['courseCategory' => $old_course_category->id]), $new_data)
+            ->assertOk()
+            ->assertJson([
+                'message' => 'success',
+                'data' => null
+            ]);
+        $this->assertDatabaseHas('course_categories',[
+            'fa_title'=>'fa_title',
+            'course_image_cover_name'=>$file->getClientOriginalName(),
+            'en_title'=>'en_title'
+        ]);
+        $this->assertFileExists(storage_path('app/public/images/courses/categories/cover/1/image2.jpg'));
     }
 }
