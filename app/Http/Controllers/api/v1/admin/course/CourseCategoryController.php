@@ -134,4 +134,14 @@ class CourseCategoryController extends Controller
             response($this->empty_success_message) :
             response($this->failed_message);
     }
+
+    public function forceDelete()
+    {
+        $ids = request()->ids;
+
+        $result = CourseCategory::whereIn('id', $ids)->delete();
+        return $result ?
+            response($this->empty_success_message) :
+            response($this->failed_message);
+    }
 }
