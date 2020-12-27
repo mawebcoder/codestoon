@@ -42,25 +42,27 @@ class CourseCategoryController extends Controller
     {
         $data = $request->only(
             [
-                'en_title',
                 'fa_title',
                 'meta',
                 'description',
                 'short_description',
-                'parent'
             ]
         );
-        $article_category = ArticleCategory::create($data);
+        $data['parent'] = $request->parent ?? 0;
+        $data['short_description'] = $request->description ?? null;
+        $data['en_title']=$request->en_title ?? null;
+
+        $article_category = CourseCategory::create($data);
         if ($request->hasFile('file')) {
             $path = 'images/courses/categories/cover/' . $article_category->id;
             $image_name = $request->file('file')->getClientOriginalName();
-            $request->file('file')->storeAs($path, $image_name);
+            $request->file('file')->storeAs($path, $image_name,'public');
             $article_category->update([
                 'course_image_cover_name' => $image_name
             ]);
         }
         return $article_category ?
-            response($this->empty_success_message) :
+            response($this->empty_success_message,201) :
             response($this->failed_message);
     }
 

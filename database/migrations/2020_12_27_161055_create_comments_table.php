@@ -18,7 +18,7 @@ class CreateCommentsTable extends Migration
             $table->string('commentable_type');
             $table->unsignedBigInteger('commentable_id');
             $table->text('text');
-            $table->foreignId('user_id')->references('id')->onDelete('cascade');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('parent')->default(0);
             $table->timestamps();
         });
