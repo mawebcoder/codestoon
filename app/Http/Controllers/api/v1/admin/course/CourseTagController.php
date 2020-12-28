@@ -18,18 +18,14 @@ class CourseTagController extends Controller
      */
     public function index()
     {
-        //
+        $courses = CourseTag::select('fa_title', 'en_title', 'id')
+            ->get();
+        return response([
+            'message' => 'success',
+            'data' => $courses
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
