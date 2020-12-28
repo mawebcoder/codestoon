@@ -36,4 +36,18 @@ class CourseTagTest extends TestCase
             ->assertJson($this->empty_success_message);
         $this->assertDatabaseHas('course_tags', $data);
     }
+
+    public function testCanDeleteCourseTag()
+    {
+        $course_tag = factory(CourseTag::class)->create();
+
+        $this->delete(route('course.tag.destroy', ['courseTag' => $course_tag->id]))
+            ->assertOk()
+            ->assertJson($this->empty_success_message);
+        $this->assertDatabaseMissing('course_tags', [
+            'fa_title' => $course_tag->fa_title,
+            'en_title' => $course_tag->en_title
+        ]);
+
+    }
 }

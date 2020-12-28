@@ -98,6 +98,10 @@ class CourseTagController extends Controller
      */
     public function destroy(CourseTag $courseTag)
     {
-        //
+        $result = $courseTag->delete();
+
+        return $result ?
+            response($this->empty_success_message) :
+            response($this->failed_message);
     }
 }
