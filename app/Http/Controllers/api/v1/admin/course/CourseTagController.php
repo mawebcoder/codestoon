@@ -80,7 +80,14 @@ class CourseTagController extends Controller
      */
     public function update(Request $request, CourseTag $courseTag)
     {
-        //
+        $data = [
+            'fa_title' => $request->fa_title,
+            'en_title' => $request->en_title ?? null
+        ];
+        $result = $courseTag->update($data);
+        return $request ?
+            response($this->empty_success_message) :
+            response($this->failed_message);
     }
 
     /**

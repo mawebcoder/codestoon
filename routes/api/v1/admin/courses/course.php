@@ -12,3 +12,4 @@ Route::get('/courses/categories/trashed','CourseCategoryController@getTrashed')-
 
 //course tags
 Route::post('/courses/tags','CourseTagController@store')->name('course.tag.store');
+Route::put('/course/tags/{courseTag}','CourseTagController@update')->name('course.tag.update');
