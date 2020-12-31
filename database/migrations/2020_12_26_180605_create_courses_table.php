@@ -17,12 +17,14 @@ class CreateCoursesTable extends Migration
             $table->id();
             $table->string('fa_title');
             $table->string('en_title')->nullable();
+            $table->string('meta');
+            $table->boolean('is_active')->default(0);
             $table->string('time')->nullable();
             $table->decimal('price', 20)->default(0);
             $table->boolean('has_discount')->default(0);
             $table->float('discount_value', 10)->default(0);
             $table->enum('level', ['beginner', 'medium', 'advanced'])->default('beginner');
-            $table->unsignedBigInteger('course_teacher');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete(null);
             $table->boolean('is_special_subscription')->default(0);
             $table->string('course_image_cover')->nullable();
             $table->text('likes')->nullable();
