@@ -14,4 +14,8 @@ Route::get('/courses/categories/trashed', 'CourseCategoryController@getTrashed')
 Route::post('/courses/tags', 'CourseTagController@store')->name('course.tag.store');
 Route::put('/courses/tags/{courseTag}', 'CourseTagController@update')->name('course.tag.update');
 Route::delete('/courses/tags/{courseTag}', 'CourseTagController@destroy')->name('course.tag.destroy');
-Route::get('/courses/tags','CourseTagController@index')->name('course.tag.index');
+Route::get('/courses/tags', 'CourseTagController@index')->name('course.tag.index');
+
+//Courses
+
+Route::resource('courses', 'CourseController');
