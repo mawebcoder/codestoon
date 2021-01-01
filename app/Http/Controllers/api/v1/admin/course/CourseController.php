@@ -139,6 +139,14 @@ class CourseController extends Controller
      */
     public function destroy(Course $course)
     {
-        //
+        $result = $course->delete();
+        if ($result) {
+            if (file_exists(storage_path('app/public/images/courses/covers/' . $course->id . '/' . $course->course_image_cover))) {
+                unlink(storage_path('app/public/images/courses/covers/' . $course->id . '/' . $course->course_image_cover));
+            };
+            return response($this->empty_success);
+        }
+        return response($this->failed, 500);
+
     }
 }
