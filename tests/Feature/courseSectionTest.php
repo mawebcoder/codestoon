@@ -39,4 +39,22 @@ class courseSectionTest extends TestCase
             'fa_title' => $course_section->fa_title
         ]);
     }
+
+    public function testCanUpdateCourseSection()
+    {
+        $course_section = factory(CourseSection::class)->create();
+        $course = factory(Course::class)->create();
+        $data = [
+            'course_id' => $course->id,
+            'fa_title' => 'fa_title',
+            'en_title' => 'en_title'
+        ];
+        $this->put(route('course.section.update', ['courseSection' => $course_section->id]), $data)
+            ->assertOk()
+            ->assertJson([
+                'message' => 'success',
+                'data' => null
+            ]);
+        $this->assertDatabaseHas('course_sections', $data);
+    }
 }

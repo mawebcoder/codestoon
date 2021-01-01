@@ -83,7 +83,15 @@ class CourseSectionController extends Controller
      */
     public function update(Request $request, CourseSection $courseSection)
     {
-
+        $data = $request->only([
+            'fa_title',
+            'en_title',
+            'course_id'
+        ]);
+        $result = $courseSection->update($data);
+        return $request ?
+            response($this->empty_success) :
+            response($this->failed);
     }
 
     /**
