@@ -83,7 +83,7 @@ class CourseSectionController extends Controller
      */
     public function update(Request $request, CourseSection $courseSection)
     {
-        //
+
     }
 
     /**
@@ -94,6 +94,9 @@ class CourseSectionController extends Controller
      */
     public function destroy(CourseSection $courseSection)
     {
-        //
+        $result = $courseSection->delete();
+        return $result ?
+            response($this->empty_success) :
+            response($this->failed, 50);
     }
 }

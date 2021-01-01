@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\models\Course;
+use App\models\CourseSection;
 use Tests\TestCase;
 
 class courseSectionTest extends TestCase
@@ -22,5 +23,20 @@ class courseSectionTest extends TestCase
                 'data' => null
             ]);
         $this->assertDatabaseHas('course_sections', $data);
+    }
+
+    public function testCanDeleteCourseSection()
+    {
+        $course_section = factory(CourseSection::class)->create();
+        $this->delete(route('course.section.destroy', ['courseSection' => $course_section->id]))
+            ->assertOk()
+            ->assertJson([
+                'message' => 'success',
+                'data' => null
+            ]);
+        $this->assertSoftDeleted('course_sections', [
+            'id' => $course_section->id,
+            'fa_title' => $course_section->fa_title
+        ]);
     }
 }
