@@ -32,6 +32,7 @@ class CreateCoursesTable extends Migration
             $table->text('description');
             $table->text('short_description')->nullable();
             $table->boolean('is_completed_course')->default(0);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

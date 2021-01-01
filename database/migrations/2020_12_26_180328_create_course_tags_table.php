@@ -16,6 +16,7 @@ class CreateCourseTagsTable extends Migration
         Schema::create('course_tags', function (Blueprint $table) {
             $table->id();
             $table->string('fa_title');
+            $table->boolean('status')->default(0);
             $table->string('en_title')->nullable();
             $table->timestamps();
         });

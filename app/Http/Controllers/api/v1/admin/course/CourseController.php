@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\v1\admin\course;
 use App\Http\Controllers\Controller;
 use App\models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class CourseController extends Controller
 {
@@ -21,15 +22,6 @@ class CourseController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -59,6 +51,9 @@ class CourseController extends Controller
             $path = 'images/courses/covers/' . $course->id;
             $file_name = $request->file('file')->getClientOriginalName();
             $request->file('file')->storeAs($path, $file_name, 'public');
+            $course->update([
+                'course_image_cover' => $file_name
+            ]);
         }
 
         return $course ?
@@ -98,7 +93,42 @@ class CourseController extends Controller
      */
     public function update(Request $request, Course $course)
     {
-        //
+        $data = $request->only([
+            'fa_title',
+            'en_title',
+            'description',
+            'short_description',
+            'meta',
+            'price',
+            'discount_value',
+            'has_discount',
+            'is_active',
+            'level',
+            'user_id',
+            'is_special_subscription',
+            'is_completed_course'
+        ]);
+        $result = $course->update($data);
+        if ($result) {
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+                $path = 'images/courses/covers/' . $course->id;
+                $file_name = $file->getClientOriginalName();
+                if (File::exists(storage_path('app/public/images/courses/covers/' . $course->id . '/' . $course->course_image_cover))) {
+                    unlink(storage_path('app/public/images/courses/covers/' . $course->id . '/' . $course->course_image_cover));
+                }
+                $file->storeAs($path, $file_name, 'public');
+
+
+                $course->update(
+                    [
+                        'course_image_cover' => $file_name
+                    ]
+                );
+            }
+            return response($this->empty_success, 200);
+        }
+        return response($this->failed, 500);
     }
 
     /**

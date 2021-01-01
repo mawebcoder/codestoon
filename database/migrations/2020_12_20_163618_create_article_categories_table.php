@@ -16,6 +16,7 @@ class CreateArticleCategoriesTable extends Migration
         Schema::create('article_categories', function (Blueprint $table) {
             $table->id();
             $table->string('fa_title')->nullable();
+            $table->boolean('status')->default(0);
             $table->string('en_title')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();

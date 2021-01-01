@@ -17,6 +17,7 @@ class CreateArticleTagsTable extends Migration
             $table->id();
             $table->string('fa_title');
             $table->softDeletes();
+            $table->boolean('status')->default(0);
             $table->timestamps();
         });
     }

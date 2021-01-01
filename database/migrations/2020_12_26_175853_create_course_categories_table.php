@@ -19,10 +19,11 @@ class CreateCourseCategoriesTable extends Migration
             $table->string('en_title')->nullable();
             $table->string('meta')->nullable();
             $table->longText('description');
+            $table->boolean('status')->default(0);
             $table->text('short_description')->nullable();
-            $table->softDeletes();
             $table->unsignedBigInteger('parent')->default(0);
             $table->string('course_image_cover_name')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
