@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\models\Course;
+use App\models\CourseCategory;
+use App\models\CourseTag;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -20,6 +22,9 @@ class CourseTest extends TestCase
     {
         $file = UploadedFile::fake()->image('image.jpg');
         $user = factory(User::class)->create();
+        $course_tags_ids = factory(CourseTag::class, 4)->create()->pluck('id')
+            ->toArray();
+        $course_category_id = factory(CourseCategory::class)->create()->id;
         $data = [
             'fa_title' => 'fa_title',
             'en_title' => 'en_title',
@@ -32,7 +37,9 @@ class CourseTest extends TestCase
             'is_special_subscription' => 0,
             'description' => 'description',
             'meta' => 'meta',
-            'short_description' => 'short_description'
+            'tag_ids' => $course_tags_ids,
+            'courseCategory_id' => $course_category_id,
+            'short_description' => 'short_description',
         ];
         $this->post(route('courses.store'), $data)
             ->assertStatus(201)
@@ -44,9 +51,18 @@ class CourseTest extends TestCase
             'fa_title' => 'fa_title',
             'meta' => 'meta',
             'description' => 'description',
-            'course_image_cover' => $file->getClientOriginalName()
-
+            'course_image_cover' => $file->getClientOriginalName(),
+            'courseCategory_id' => $course_category_id
         ]);
+        $this->assertDatabaseHas('category_course', [
+            'course_id' => 1,
+            'courseCategory_id' => $course_category_id
+        ]);
+        $this->assertDatabaseHas('course_tag', [
+            'courseTag_id' => $course_tags_ids[0],
+            'course_id' => 1
+        ]);
+
         $this->assertFileExists(storage_path('app/public/images/courses/covers/1/image.jpg'));
     }
 
@@ -56,6 +72,9 @@ class CourseTest extends TestCase
     public function testCanUpdateCourse()
     {
         $file = UploadedFile::fake()->image('new_image.jpg');
+        $course_tags_ids = factory(CourseTag::class, 4)->create()->pluck('id')
+            ->toArray();
+        $course_category_id = factory(CourseCategory::class)->create()->id;
         $course = factory(Course::class)->create();
         $user = factory(User::class)->create();
         $data = [
@@ -69,7 +88,9 @@ class CourseTest extends TestCase
             'is_active' => 1,
             'discount_value' => 20,
             'level' => 'advanced',
+            'courseCategory_id'=>$course_category_id,
             'user_id' => $user->id,
+            'tag_ids'=>$course_tags_ids,
             'is_special_subscription' => 1,
             'short_description' => 'new_short_description',
             'is_completed_course' => 1
@@ -96,6 +117,14 @@ class CourseTest extends TestCase
             'short_description' => 'new_short_description',
             'is_completed_course' => 1
         ]);
+        $this->assertDatabaseHas('category_course', [
+            'course_id' => 1,
+            'courseCategory_id' => $course_category_id
+        ]);
+        $this->assertDatabaseHas('course_tag', [
+            'courseTag_id' => $course_tags_ids[0],
+            'course_id' => 1
+        ]);
         $this->assertFileExists(storage_path('app/public/images/courses/covers/' . $course->id . '/new_image.jpg'));
     }
 
@@ -113,7 +142,7 @@ class CourseTest extends TestCase
             'id' => $course->id,
             'fa_title' => $course->fa_title
         ]);
-        $this->assertFileDoesNotExist(storage_path('app/public/images/courses/covers/'.$course->id.'/'.$course->course_image_cover));
+        $this->assertFileDoesNotExist(storage_path('app/public/images/courses/covers/' . $course->id . '/' . $course->course_image_cover));
     }
 
 

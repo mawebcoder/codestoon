@@ -10,12 +10,22 @@ Route::delete('/courses/categories/{courseCategory}', 'CourseCategoryController@
 Route::post('/courses/categories/force-delete', 'CourseCategoryController@forceDelete')->name('course.category.force.delete');
 Route::get('/courses/categories/trashed', 'CourseCategoryController@getTrashed')->name('course.category.trashed');
 
+
 //course tags
 Route::post('/courses/tags', 'CourseTagController@store')->name('course.tag.store');
 Route::put('/courses/tags/{courseTag}', 'CourseTagController@update')->name('course.tag.update');
 Route::delete('/courses/tags/{courseTag}', 'CourseTagController@destroy')->name('course.tag.destroy');
 Route::get('/courses/tags', 'CourseTagController@index')->name('course.tag.index');
 
-//Courses
 
+
+//Course sections
+Route::post('/courses/sections','CourseSectionController@store')->name('course.section.store');
+Route::put('/courses/sections/{courseSection}','CourseSectionController@update')->name('course.section.update');
+Route::delete('/courses/sections/{courseSection}','CourseSectionController@destroy')->name('course.section.destroy');
+Route::get('/courses/sections','CourseSectionController@index')->name('course.section.index');
+
+
+
+//Courses
 Route::resource('courses', 'CourseController');

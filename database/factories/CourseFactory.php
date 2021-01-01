@@ -19,6 +19,7 @@ $factory->define(Course::class, function (Faker $faker) {
         'user_id'=>factory(\App\User::class)->create()->id,
         'description'=>$faker->text,
         'is_completed_course'=>0,
+        'courseCategory_id'=>factory(\App\models\CourseCategory::class)->create()->id,
         'course_image_cover'=>'image.txt',
         'is_active'=>0
     ];

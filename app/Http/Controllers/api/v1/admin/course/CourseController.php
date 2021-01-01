@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\v1\admin\course;
 
 use App\Http\Controllers\Controller;
 use App\models\Course;
+use App\models\CourseCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
@@ -43,10 +44,13 @@ class CourseController extends Controller
             'is_special_subscription',
             'description',
             'short_description',
-            'meta'
+            'meta',
+            'courseCategory_id'
         ]);
         $course = Course::create($data);
-
+        $get_all_categories_parent = CourseCategory::getAllParents($request->courseCategory_id);
+        $course->courseCategories()->sync($get_all_categories_parent);
+        $course->tags()->sync($request->tag_ids);
         if ($request->hasFile('file')) {
             $path = 'images/courses/covers/' . $course->id;
             $file_name = $request->file('file')->getClientOriginalName();
@@ -105,30 +109,34 @@ class CourseController extends Controller
             'is_active',
             'level',
             'user_id',
+            'courseCategory_id',
             'is_special_subscription',
-            'is_completed_course'
+            'is_completed_course',
+            'courseCategory_id'
         ]);
         $result = $course->update($data);
-        if ($result) {
-            if ($request->hasFile('file')) {
-                $file = $request->file('file');
-                $path = 'images/courses/covers/' . $course->id;
-                $file_name = $file->getClientOriginalName();
-                if (File::exists(storage_path('app/public/images/courses/covers/' . $course->id . '/' . $course->course_image_cover))) {
-                    unlink(storage_path('app/public/images/courses/covers/' . $course->id . '/' . $course->course_image_cover));
-                }
-                $file->storeAs($path, $file_name, 'public');
-
-
-                $course->update(
-                    [
-                        'course_image_cover' => $file_name
-                    ]
-                );
+        $get_all_categories_parent = CourseCategory::getAllParents($request->courseCategory_id);
+        $course->courseCategories()->sync($get_all_categories_parent);
+        $course->tags()->sync($request->tag_ids);
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $path = 'images/courses/covers/' . $course->id;
+            $file_name = $file->getClientOriginalName();
+            if (File::exists(storage_path('app/public/images/courses/covers/' . $course->id . '/' . $course->course_image_cover))) {
+                unlink(storage_path('app/public/images/courses/covers/' . $course->id . '/' . $course->course_image_cover));
             }
-            return response($this->empty_success, 200);
+            $file->storeAs($path, $file_name, 'public');
+
+
+            $course->update(
+                [
+                    'course_image_cover' => $file_name
+                ]
+            );
         }
-        return response($this->failed, 500);
+        return $result ?
+            response($this->empty_success, 200) :
+            response($this->failed, 500);
     }
 
     /**
