@@ -1,0 +1,100 @@
+<?php
+
+namespace App\Http\Controllers\api\v1\admin\video;
+
+use App\Http\Controllers\Controller;
+use App\models\VideoTag;
+use Illuminate\Http\Request;
+
+class VideoTagController extends Controller
+{
+    public $empty_success_message = ['message' => 'success', 'data' => null];
+    public $failed = ['message' => 'failed', 'data' => null];
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $data = $request->only(
+            [
+                'en_title',
+                'fa_title',
+                'status'
+            ]
+        );
+        $video_tag = VideoTag::create($data);
+
+        return $video_tag ?
+            response($this->empty_success_message,201) :
+            response($this->failed);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param \App\models\VideoTag $videoTag
+     * @return \Illuminate\Http\Response
+     */
+    public function show(VideoTag $videoTag)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param \App\models\VideoTag $videoTag
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(VideoTag $videoTag)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \App\models\VideoTag $videoTag
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, VideoTag $videoTag)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param \App\models\VideoTag $videoTag
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(VideoTag $videoTag)
+    {
+        //
+    }
+}

@@ -16,8 +16,9 @@ class CreateVideoTagsTable extends Migration
         Schema::create('video_tags', function (Blueprint $table) {
             $table->id();
             $table->string('fa_title');
-            $table->boolean('status');
+            $table->boolean('status')->default(0);
             $table->string('en_title');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
