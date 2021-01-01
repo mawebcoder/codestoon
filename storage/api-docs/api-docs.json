@@ -3,7 +3,7 @@
     "info": {
         "title": "codestoon",
         "description": "codestoon api documantion",
-        "version": "1.0.0"
+        "version": "6.0.0"
     },
     "paths": {
         "/articles/categories": {
@@ -511,7 +511,7 @@
                                     "ids": {
                                         "type": "object",
                                         "format": "array",
-                                        "example": "{ids:[1,2,3,4]}"
+                                        "example": "{ids:[6,2,3,4]}"
                                     }
                                 },
                                 "type": "object"
@@ -584,7 +584,7 @@
                                     "ids": {
                                         "type": "object",
                                         "format": "array",
-                                        "example": "{ids:[1,2,3,4]}"
+                                        "example": "{ids:[6,2,3,4]}"
                                     }
                                 },
                                 "type": "object"

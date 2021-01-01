@@ -18,13 +18,21 @@ class Course extends Model
 
     public function courseCategory()
     {
-        return $this->belongsTo(CourseCategory::class,'courseCategory_id');
+        return $this->belongsTo(CourseCategory::class, 'courseCategory_id');
     }
 
-    public function sections(){
+    public function sections()
+    {
         return $this->hasMany(CourseSection::class);
     }
-    public function tags(){
-        return $this->belongsToMany(CourseTag::class,'course_tag','course_id','courseTag_id');
+
+    public function tags()
+    {
+        return $this->belongsToMany(CourseTag::class, 'course_tag', 'course_id', 'courseTag_id');
+    }
+
+    public function videos()
+    {
+        return $this->hasMany(Video::class);
     }
 }
