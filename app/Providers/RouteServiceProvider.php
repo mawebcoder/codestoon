@@ -44,6 +44,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->mapAdminArticleApiRoutes();
         $this->mapAdminCourseApiRoutes();
+        $this->mapAdminVideoApiRoutes();
         $this->mapWebRoutes();
 
         //
@@ -91,5 +92,20 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace . '\api\v1\admin\course')
             ->group(base_path('routes/api/v1/admin/courses/course.php'));
+    }
+
+    /**
+     * Define the "api" routes for the application.
+     *
+     * These routes are typically stateless.
+     *
+     * @return void
+     */
+    protected function mapAdminVideoApiRoutes()
+    {
+        Route::prefix('api/v1')
+            ->middleware('api')
+            ->namespace($this->namespace . '\api\v1\admin\video')
+            ->group(base_path('routes/api/v1/admin/videos/video.php'));
     }
 }

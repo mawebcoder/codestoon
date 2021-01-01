@@ -57,4 +57,5 @@ class courseSectionTest extends TestCase
             ]);
         $this->assertDatabaseHas('course_sections', $data);
     }
+
 }
