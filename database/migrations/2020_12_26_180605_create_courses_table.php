@@ -23,6 +23,7 @@ class CreateCoursesTable extends Migration
             $table->decimal('price', 20)->default(0);
             $table->boolean('has_discount')->default(0);
             $table->float('discount_value', 10)->default(0);
+            $table->foreignId('courseCategory_id')->references('id')->on('course_categories')->onDelete(null);
             $table->enum('level', ['beginner', 'medium', 'advanced'])->default('beginner');
             $table->foreignId('user_id')->references('id')->on('users')->onDelete(null);
             $table->boolean('is_special_subscription')->default(0);
