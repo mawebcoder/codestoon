@@ -24,4 +24,7 @@ class Course extends Model
     public function sections(){
         return $this->hasMany(CourseSection::class);
     }
+    public function tags(){
+        return $this->belongsToMany(CourseTag::class,'course_tag','course_id','courseTag_id');
+    }
 }
