@@ -95,6 +95,9 @@ class VideoTagController extends Controller
      */
     public function destroy(VideoTag $videoTag)
     {
-        //
+        $result=$videoTag->delete();
+        return  $result ?
+            response($this->empty_success_message):
+            response($this->failed);
     }
 }
