@@ -3,9 +3,12 @@
 namespace App\models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CourseSection extends Model
 {
+    use SoftDeletes;
+
     protected $guarded = ['id'];
 
 
