@@ -3,9 +3,10 @@
 namespace App\models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 class Video extends Model
 {
+    use SoftDeletes;
     protected $guarded = ['id'];
 
     public function course()
@@ -22,4 +23,5 @@ class Video extends Model
     {
         return $this->belongsToMany(VideoTag::class,'video_tag','video_id','videoTag_id');
     }
+
 }

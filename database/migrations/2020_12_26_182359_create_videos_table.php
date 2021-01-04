@@ -20,15 +20,19 @@ class CreateVideosTable extends Migration
             $table->string('time');
             $table->boolean('is_free')->default(0);
             $table->text('description');
-            $table->foreignId('courseSection_id')->references('id')
+            $table->boolean('is_single_video')->default(0);
+            $table->boolean('is_special_subscription');
+            $table->unsignedBigInteger('courseSection_id')->nullable();
+            $table->foreign('courseSection_id')->references('id')
                 ->on('course_sections')->onDelete(null);
-            $table->foreignId('course_id')->references('id')
+            $table->unsignedBigInteger('course_id')->nullable();
+            $table->foreign('course_id')->references('id')
                 ->on('courses')->onDelete(null);
             $table->text('short_description')->nullable();
             $table->string('meta');
             $table->bigInteger('hint')->default(0);
             $table->string('likes')->nullable();
-            $table->string('video_url_name');
+            $table->string('video_url_name')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

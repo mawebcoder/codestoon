@@ -49,7 +49,7 @@ class VideoTagController extends Controller
         $video_tag = VideoTag::create($data);
 
         return $video_tag ?
-            response($this->empty_success_message,201) :
+            response($this->empty_success_message, 201) :
             response($this->failed);
     }
 
@@ -84,7 +84,17 @@ class VideoTagController extends Controller
      */
     public function update(Request $request, VideoTag $videoTag)
     {
-        //
+        $data = $request->only([
+            'en_title',
+            'fa_title',
+            'status'
+        ]);
+
+        $result = $videoTag->update($data);
+
+        return $request ?
+            response($this->empty_success_message) :
+            response($this->failed);
     }
 
     /**
@@ -95,9 +105,9 @@ class VideoTagController extends Controller
      */
     public function destroy(VideoTag $videoTag)
     {
-        $result=$videoTag->delete();
-        return  $result ?
-            response($this->empty_success_message):
+        $result = $videoTag->delete();
+        return $result ?
+            response($this->empty_success_message) :
             response($this->failed);
     }
 }

@@ -3,10 +3,13 @@
 namespace Tests\Feature;
 
 use App\models\VideoTag;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class VideoTagTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function testCanStoreVideoTag()
     {
         $data = [
@@ -40,5 +43,22 @@ class VideoTagTest extends TestCase
             'status' => $video_tag->status
         ]);
 
+    }
+
+    public function testCanUpdateVideoTag()
+    {
+        $video_tag = factory(VideoTag::class)->create();
+        $data = [
+            'fa_title' => 'fa_title',
+            'en_title' => 'en_title',
+            'status' => 0
+        ];
+        $this->put(route('video.tags.update', ['videoTag' => $video_tag->id]), $data)
+            ->assertOk()
+            ->assertJson([
+                'message' => 'success',
+                'data' => null
+            ]);
+        $this->assertDatabaseHas('video_tags', $data);
     }
 }

@@ -9,4 +9,5 @@ Route::put('/videos/tags/{videoTag}','VideoTagController@update')->name('video.t
 Route::get('/videos/tags','VideoTagController@index')->name('video.tags.index');
 
 //videos
+Route::post('/videos/upload/{video}','VideoController@upload')->name('videos.upload');
 Route::resource('videos','VideoController');
