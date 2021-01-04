@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateVideoTagTable extends Migration
+class CreateTagVideoTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateVideoTagTable extends Migration
      */
     public function up()
     {
-        Schema::create('video_tag', function (Blueprint $table) {
+        Schema::create('table', function (Blueprint $table) {
             $table->id();
             $table->foreignId('video_id')->references('id')
                 ->on('videos')->onDelete('cascade');
@@ -30,6 +30,6 @@ class CreateVideoTagTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('video_tag');
+        Schema::dropIfExists('table');
     }
 }
