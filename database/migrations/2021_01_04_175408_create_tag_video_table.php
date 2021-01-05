@@ -13,7 +13,7 @@ class CreateTagVideoTable extends Migration
      */
     public function up()
     {
-        Schema::create('table', function (Blueprint $table) {
+        Schema::create('tag_video', function (Blueprint $table) {
             $table->id();
             $table->foreignId('video_id')->references('id')
                 ->on('videos')->onDelete('cascade');
@@ -30,6 +30,6 @@ class CreateTagVideoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table');
+        Schema::dropIfExists('tag_video');
     }
 }
