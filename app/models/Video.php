@@ -16,6 +16,11 @@ class Video extends Model
         return $this->belongsTo(Course::class);
     }
 
+    public function comments(){
+
+        return $this->morphMany(Comment::class,'commentable','commentable_type','commentable_id');
+    }
+
     public function section()
     {
         return $this->belongsTo(CourseSection::class);

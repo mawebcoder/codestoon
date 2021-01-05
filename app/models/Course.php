@@ -26,6 +26,11 @@ class Course extends Model
         return $this->hasMany(CourseSection::class);
     }
 
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable', 'commentable_type', 'commentable_id');
+    }
+
     public function tags()
     {
         return $this->belongsToMany(CourseTag::class, 'course_tag', 'course_id', 'courseTag_id');

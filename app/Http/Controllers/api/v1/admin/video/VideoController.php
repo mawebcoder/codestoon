@@ -182,7 +182,6 @@ class VideoController extends Controller
                 unlink(storage_path('videos/unique_videos/' . $video->id . '/' . $video->video_url_name));
             }
         } else {
-
             $course_id = $video->course->id;
             if (file_exists(storage_path('videos/courses/' . $course_id . '/' . $video->id . '/' . $video->video_url_name))) {
                 unlink(file_exists(storage_path('videos/courses/' . $course_id . '/' . $video->id . '/' . $video->video_url_name)));
