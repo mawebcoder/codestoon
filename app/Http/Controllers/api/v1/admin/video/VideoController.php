@@ -162,7 +162,7 @@ class VideoController extends Controller
             'video_tags'
         ]);
         $data['time'] = $data['hour'] . ':' . $data['min'] . ':' . $data['sec'];
-        $video->update(Arr::except($data, ['hour', 'min', 'sec','video_tags']));
+        $video->update(Arr::except($data, ['hour', 'min', 'sec', 'video_tags']));
         $video->tags()->sync($data['video_tags']);
         return response()->json($this->empty_success_message);
     }
@@ -175,6 +175,19 @@ class VideoController extends Controller
      */
     public function destroy(Video $video)
     {
-        //
+
+        $video->delete();
+        if ($video->is_single_video) {
+            if (file_exists(storage_path('videos/unique_videos/' . $video->id . '/' . $video->video_url_name))) {
+                unlink(storage_path('videos/unique_videos/' . $video->id . '/' . $video->video_url_name));
+            }
+        } else {
+
+            $course_id = $video->course->id;
+            if (file_exists(storage_path('videos/courses/' . $course_id . '/' . $video->id . '/' . $video->video_url_name))) {
+                unlink(file_exists(storage_path('videos/courses/' . $course_id . '/' . $video->id . '/' . $video->video_url_name)));
+            }
+        }
+        return response($this->empty_success_message);
     }
 }

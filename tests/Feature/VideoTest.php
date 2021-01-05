@@ -99,7 +99,7 @@ class VideoTest extends TestCase
             'meta' => 'meta title',
         ];
 
-        $this->put(route('videos.update',['video'=>$video->id]), $data)
+        $this->put(route('videos.update', ['video' => $video->id]), $data)
             ->assertOk()
             ->assertJson([
                 'message' => 'success',
@@ -119,6 +119,22 @@ class VideoTest extends TestCase
         $this->assertDatabaseHas('tag_video', [
             'video_id' => $video->id,
             'videoTag_id' => $video_tags_id[0]
+        ]);
+    }
+
+    public function testCanDeleteVideo()
+    {
+        $course=factory(Course::class)->create();
+        $video = factory(Video::class)->create(['course_id'=>$course->id]);
+
+        $this->delete(route('videos.destroy',['video' => $video->id]))
+            ->assertOk()
+            ->assertJson([
+                'message' => 'success',
+                'data' => null
+            ]);
+        $this->assertSoftDeleted('videos', [
+            'id' => $video->id
         ]);
     }
 }
