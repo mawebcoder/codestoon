@@ -61,4 +61,14 @@ class VideoTagTest extends TestCase
             ]);
         $this->assertDatabaseHas('video_tags', $data);
     }
+
+    public function testCanForceDeleteVideoTag()
+    {
+        //TODO TEST CAN FORCE DELETE VIDEO TAG
+    }
+
+    public function testCanRestoreVideoTag()
+    {
+        //TODO TEST CAN RESTORE VIDEO TAG
+    }
 }

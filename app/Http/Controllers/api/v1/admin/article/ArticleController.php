@@ -67,6 +67,8 @@ class ArticleController extends Controller
      *     ),
      * )
      */
+
+    //TODO STORE ARTICLE VALIDATION
     public function store(Request $request)
     {
         $data = $request->only(
@@ -168,6 +170,8 @@ class ArticleController extends Controller
      *     ),
      * )
      */
+
+    //TODO UPDATE ARTICLE VALIDATION
     public function update(Article $article)
     {
         $data = request()->only([
@@ -223,6 +227,9 @@ class ArticleController extends Controller
      *     ),
      * )
      */
+
+
+    //TODO DELETE MULTIPLE ARTICLE VALIDATION
     public function deleteMultipleArticle()
     {
         $ids = request()->ids;
@@ -265,6 +272,8 @@ class ArticleController extends Controller
      *     ),
      * )
      */
+
+    //TODO ARTICLE FORCE DELETE MULTIPLE VALIDATION
     public function forceDeleteMultipleArticle()
     {
 
@@ -274,6 +283,7 @@ class ArticleController extends Controller
             response()->json($this->empty_success_message) :
             response()->json($this->failed_message);
     }
+
 
     public function getTrashedArticles()
     {

@@ -79,4 +79,14 @@ class AdminArticleCategoryTest extends TestCase
         $this->assertDatabaseHas('article_categories', $data);
     }
 
+    public function testCanSoftDeleteArticleCategory()
+    {
+        //TODO TEST CAN SOFT DELETE ARTICLE CATEGORY
+    }
+
+    public function testCanRestoreArticleCategory()
+    {
+        //TODO TEST CAN RESTORE ARTICLE CATEGORY
+    }
+
 }

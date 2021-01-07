@@ -88,9 +88,9 @@ class CourseTest extends TestCase
             'is_active' => 1,
             'discount_value' => 20,
             'level' => 'advanced',
-            'courseCategory_id'=>$course_category_id,
+            'courseCategory_id' => $course_category_id,
             'user_id' => $user->id,
-            'tag_ids'=>$course_tags_ids,
+            'tag_ids' => $course_tags_ids,
             'is_special_subscription' => 1,
             'short_description' => 'new_short_description',
             'is_completed_course' => 1
@@ -143,6 +143,16 @@ class CourseTest extends TestCase
             'fa_title' => $course->fa_title
         ]);
         $this->assertFileDoesNotExist(storage_path('app/public/images/courses/covers/' . $course->id . '/' . $course->course_image_cover));
+    }
+
+    public function testCanForceDeleteCourse()
+    {
+        //TODO TEST CAN FORCE DELETE COURSE
+    }
+
+    public function testCanRestoreCourse()
+    {
+        //TODO TEST CAN RESTORE DELETE COURSE
     }
 
 

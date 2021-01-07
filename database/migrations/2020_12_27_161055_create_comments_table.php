@@ -18,6 +18,8 @@ class CreateCommentsTable extends Migration
             $table->string('commentable_type');
             $table->unsignedBigInteger('commentable_id');
             $table->text('text');
+            $table->boolean('active')->default(0);
+            $table->json('likes')->nullable();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('parent')->default(0);
             $table->softDeletes();

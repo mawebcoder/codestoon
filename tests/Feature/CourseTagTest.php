@@ -9,6 +9,7 @@ use Tests\TestCase;
 class CourseTagTest extends TestCase
 {
     use RefreshDatabase;
+
     public $empty_success_message = ['message' => 'success', 'data' => null];
 
     public function testCanStoreCourseTag()
@@ -50,5 +51,15 @@ class CourseTagTest extends TestCase
             'fa_title' => $course_tag->fa_title,
             'en_title' => $course_tag->en_title
         ]);
+    }
+
+    public function testCanForceDeleteCourseTag()
+    {
+        //TODO TEST CAN FORCE DELETE COURSE TAG
+    }
+
+    public function testCanRestoreCourseTag()
+    {
+        //TODO TEST CAN RESTORE COURSE TAG
     }
 }

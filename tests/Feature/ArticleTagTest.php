@@ -56,4 +56,15 @@ class ArticleTagTest extends TestCase
         ]);
     }
 
+    public function testCanForceDeletedArticleTag()
+    {
+
+        //TODO TEST CAN FORCE DELETE A ARTICLE TAG
+    }
+
+    public function testCanRestoreArticleTag()
+    {
+        //TODO TEST CAN RESTORE ARTICLE TAG
+    }
+
 }

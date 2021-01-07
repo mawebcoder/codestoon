@@ -83,6 +83,8 @@ class ArticleCategoryController extends Controller
      *     ),
      * )
      */
+
+    //TODO STORE ARTICLE CATEGORY VALIDATION
     public function store()
     {
         $data = request()->only(
@@ -181,6 +183,8 @@ class ArticleCategoryController extends Controller
      *     ),
      * )
      */
+
+    //TODO UPDATE ARTICLE VALIDATION
     public function update(ArticleCategory $articleCategory)
     {
         $data = request()->only(['fa_title', 'en_title', 'description']);
@@ -188,5 +192,13 @@ class ArticleCategoryController extends Controller
         return $result ? response()->json($this->empty_success_message) :
             response()->json($this->failed_message, 500);
     }
+
+
+    public function deleteMultipleArticleCategory(){
+
+        //TODO DELETE MULTIPLE ARTICLE CATEGORY  AND VALIDATION OF THIS
+    }
+
+
 
 }

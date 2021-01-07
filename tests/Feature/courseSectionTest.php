@@ -58,4 +58,15 @@ class courseSectionTest extends TestCase
         $this->assertDatabaseHas('course_sections', $data);
     }
 
+
+    public function testCanForceDeleteCourseSection()
+    {
+        //TODO TEST CAN FORCE DELETE COURSE SECTION
+    }
+
+    public function testCanRestoreCourseSection()
+    {
+        //TODO TEST CAN RESTORE COURSE SECTION
+    }
+
 }

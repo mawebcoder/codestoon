@@ -124,10 +124,10 @@ class VideoTest extends TestCase
 
     public function testCanDeleteVideo()
     {
-        $course=factory(Course::class)->create();
-        $video = factory(Video::class)->create(['course_id'=>$course->id]);
+        $course = factory(Course::class)->create();
+        $video = factory(Video::class)->create(['course_id' => $course->id]);
 
-        $this->delete(route('videos.destroy',['video' => $video->id]))
+        $this->delete(route('videos.destroy', ['video' => $video->id]))
             ->assertOk()
             ->assertJson([
                 'message' => 'success',
@@ -137,4 +137,15 @@ class VideoTest extends TestCase
             'id' => $video->id
         ]);
     }
+
+    public function testCanForceDeleteVideo()
+    {
+        //TODO TEST CAN FORCE DELETE VIDEO
+    }
+
+    public function testCanRestoreVideo()
+    {
+        //TODO TEST CAN RESTORE VIDEO
+    }
+
 }

@@ -135,6 +135,12 @@ class AdminArticleTest extends TestCase
         ]);
     }
 
+
+    public function testCanRestoreArticle()
+    {
+        //TODO TEST CAN RESTORE  ARTICLE
+    }
+
     public function testCanForceDeleteArticles()
     {
         $articles = factory(Article::class, 10)->create();

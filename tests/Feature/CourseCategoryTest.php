@@ -81,4 +81,15 @@ class CourseCategoryTest extends TestCase
             'fa_title' => $course_category->fa_title
         ]);
     }
+
+
+    public function testCanForceDeleteCourseCategory()
+    {
+        //TODO TEST CAN FORCE DELETE COURSE CATEGORY
+    }
+
+    public function testCanRestoreCourseCategory()
+    {
+        //TODO TEST CAN RESTORE COURSE CATEGORY
+    }
 }
