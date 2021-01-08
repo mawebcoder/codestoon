@@ -19,7 +19,7 @@ class CourseCategoryController extends Controller
      */
     public function index()
     {
-        //
+        //TODO SHOW ALL COURSECATEGORIES IN PAGINATION
     }
 
     /**
@@ -29,7 +29,7 @@ class CourseCategoryController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -38,6 +38,8 @@ class CourseCategoryController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
+
+    //TODO VALIDATION STORING THE COURSE CATEGORY IN THE SYSTEM
     public function store(Request $request)
     {
         $data = $request->only(
@@ -95,6 +97,7 @@ class CourseCategoryController extends Controller
      * @param \App\models\CourseCategory $courseCategory
      * @return \Illuminate\Http\Response
      */
+    //TODO VALIDATION OF THE UPDATE COURSE CATEGORY
     public function update(Request $request, CourseCategory $courseCategory)
     {
         $data = $request->only(
@@ -136,6 +139,7 @@ class CourseCategoryController extends Controller
             response($this->failed_message);
     }
 
+    //TODO VALIDATION OF THE FORCE DELETE OF THE COURSE CATETORY
     public function forceDelete()
     {
         $ids = request()->ids;
@@ -159,5 +163,17 @@ class CourseCategoryController extends Controller
             'message' => 'success',
             'data' => $all_trashed
         ]);
+    }
+
+    //TODO VALIDATION OF THE COURSE CATEGORY RESTORING
+    public function restoreCourseCategory()
+    {
+        //TODO RESTORE COURSE CATEGORY RESTORE
+    }
+
+    //TODO VALIDATION OF THE DELETE MULTIPLE COURSE CATEGORY
+    public function deleteMultiple()
+    {
+        //TODO DELETE MULTIPLE COURSE CATEGORY
     }
 }

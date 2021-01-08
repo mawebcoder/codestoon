@@ -20,7 +20,7 @@ class VideoController extends Controller
      */
     public function index()
     {
-
+        //TODO SHOW ALL VIDEOS IN PAGINATION MODE
     }
 
     /**
@@ -39,6 +39,7 @@ class VideoController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
+    //TODO VALIDATION OF THE STORE VIDEO
     public function store(Request $request)
     {
         $data = $request->only([
@@ -80,6 +81,7 @@ class VideoController extends Controller
 
     }
 
+    //TODO VALIDATION OF THE UPLOAD VIDEO
     public function upload(Request $request, Video $video)
     {
         ini_set('max_execution_time', 0);
@@ -140,6 +142,7 @@ class VideoController extends Controller
      * @param \App\models\Video $video
      * @return \Illuminate\Http\JsonResponse
      */
+    //TODO VALIDATION OF THE UPDATE VIDEO
     public function update(Request $request, Video $video)
     {
         $data = $request->only([
@@ -188,5 +191,28 @@ class VideoController extends Controller
             }
         }
         return response($this->empty_success_message);
+    }
+
+    //TODO VALIDATION OF  THE RESTORE VIDEO IN THE SYSTEM
+    public function restore()
+    {
+        //TODO RESTORE VIDEO
+    }
+
+    //TODO VALIDATION OF VIDEO FORCE DELETE
+    public function forceDelete()
+    {
+        //TODO FORCE DELETE VIDEO
+    }
+
+    public function getTrashed()
+    {
+        //TODO GET ALL VIDEO TRASHED
+    }
+
+    //TODO VALIDATION OF THE DELETE MULTIPLE VIDEO
+    public function deleteMultiple()
+    {
+        //TODO  DELETE MULTIPLE COURSE VIDEO
     }
 }

@@ -20,7 +20,7 @@ class CourseController extends Controller
      */
     public function index()
     {
-        //
+        //TODO SHOW ALL COURSES IN PAGINATION MODE
     }
 
 
@@ -30,6 +30,7 @@ class CourseController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
+    //TODO VALIDATION OF THE STORE COURSE IN THE SYSTEM
     public function store(Request $request)
     {
         $data = $request->only([
@@ -95,6 +96,8 @@ class CourseController extends Controller
      * @param \App\models\Course $course
      * @return \Illuminate\Http\Response
      */
+
+    //TODO VALIDATION OF THE UPDATE COURSE
     public function update(Request $request, Course $course)
     {
         $data = $request->only([
@@ -156,5 +159,28 @@ class CourseController extends Controller
         }
         return response($this->failed, 500);
 
+    }
+
+    //TODO VALIDATION OF THE FORCE IN COURSE CONTROLLER
+    public function forceDelete()
+    {
+        //TODO FORCE DELETE OF THE COURSE
+    }
+
+    //TODO VALIDATION OF THE RESTORE COURSES
+    public function restore()
+    {
+        //TODO RESTORING THE COURSES IN COURSE CONTROLLER
+    }
+
+    public function getTrashed()
+    {
+        //TODO GET TRASHED COURSES
+    }
+
+    //TODO VALIDATION OF THE DELETE MULTIPLE COURSE
+    public function deleteMultiple()
+    {
+        //TODO DELETE MULTIPLE COURSE
     }
 }

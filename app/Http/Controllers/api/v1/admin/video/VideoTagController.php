@@ -18,7 +18,7 @@ class VideoTagController extends Controller
      */
     public function index()
     {
-
+        //TODO SHOW ALL VIDEO TAG IN PAGINATION MODE
     }
 
     /**
@@ -37,6 +37,7 @@ class VideoTagController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
+    //TODO VALIDATION OF THE STORING VIDEO TAG
     public function store(Request $request)
     {
         $data = $request->only(
@@ -82,6 +83,8 @@ class VideoTagController extends Controller
      * @param \App\models\VideoTag $videoTag
      * @return \Illuminate\Http\Response
      */
+
+    //TODO VALIDATION OF THE UPDATE VIDEO TAG
     public function update(Request $request, VideoTag $videoTag)
     {
         $data = $request->only([
@@ -109,5 +112,29 @@ class VideoTagController extends Controller
         return $result ?
             response($this->empty_success_message) :
             response($this->failed);
+    }
+
+
+    //TODO VALIDATION OF VIDEO TAG RESTORING
+    public function restore()
+    {
+        //TODO RESTORE VIDEO TAG
+    }
+
+    //TODO VALIDATION OF VIDEO TAG FORCE DELETE
+    public function forceDelete()
+    {
+        //TODO FORCE DELETE OF THE VIDEO TAG
+    }
+
+    public function getTrashed()
+    {
+        //TODO GET ALL VIDEO TAG TRASHED
+    }
+
+    //TODO VALIDATION OF THE DELETE MULTIPLE VIDEO TAG
+    public function deleteMultiple()
+    {
+        //TODO  DELETE MULTIPLE VIDEO TAG
     }
 }

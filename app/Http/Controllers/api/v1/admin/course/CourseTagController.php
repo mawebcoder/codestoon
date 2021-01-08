@@ -33,6 +33,7 @@ class CourseTagController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
+    //TODO VALIDATION OF THE STORING COURSE TAG
     public function store(Request $request)
     {
         $data = [
@@ -74,6 +75,7 @@ class CourseTagController extends Controller
      * @param \App\models\CourseTag $courseTag
      * @return \Illuminate\Http\Response
      */
+    //TODO VALIDATION OF THE UPDATE COURSE TAG IN THE SYSTEM
     public function update(Request $request, CourseTag $courseTag)
     {
         $data = [
@@ -100,4 +102,29 @@ class CourseTagController extends Controller
             response($this->empty_success_message) :
             response($this->failed_message);
     }
+
+
+    public function getTrashed()
+    {
+        //TODO GET ALL TRASHED COURSE TAG
+    }
+
+    //TODO VALIDATION OF THE RESTORING COURSE TAG
+    public function restore()
+    {
+        //TODO RESTORING THE COURSE SECTION
+    }
+
+    //TODO VALIDATION OF THE FORCE DELETE OF THE COURSE TAG
+    public function forceDelete()
+    {
+        //TODO FORCE DELETE OF THE COURSE TAG
+    }
+
+    //TODO VALIDATION OF THE DELETE MULTIPLE COURSE TAG
+    public function deleteMultiple()
+    {
+        //TODO  DELETE MULTIPLE COURSE TAG
+    }
+
 }

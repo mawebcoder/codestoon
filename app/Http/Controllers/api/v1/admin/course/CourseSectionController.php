@@ -18,7 +18,7 @@ class CourseSectionController extends Controller
      */
     public function index()
     {
-        //
+        //TODO GET ALL COURSE SECTION IN PAGINATION MODE
     }
 
     /**
@@ -37,6 +37,7 @@ class CourseSectionController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
+    //TODO VALIDATION OF THE STORE COURSE SECTION
     public function store(Request $request)
     {
         $data = $request->only(
@@ -81,6 +82,8 @@ class CourseSectionController extends Controller
      * @param \App\models\CourseSection $courseSection
      * @return \Illuminate\Http\Response
      */
+
+    //TODO VALIDATION OF THE UPDATE COURSE SECTION
     public function update(Request $request, CourseSection $courseSection)
     {
         $data = $request->only([
@@ -106,5 +109,28 @@ class CourseSectionController extends Controller
         return $result ?
             response($this->empty_success) :
             response($this->failed, 50);
+    }
+
+    public function getTrashed()
+    {
+        //TODO GET ALL TRASHED COURSE SECTIONS
+    }
+
+    //TODO VALIDATION OF THE RESTORING COURSE SECTION
+    public function restore()
+    {
+        //TODO RESTORING COURSE SECTION
+    }
+
+    //TODO VALIDATION OF THE COURSE SECTION FORCE DELETE
+    public function forceDelete()
+    {
+        //TODO FORCE DELETE OF THE COURSE SECTION
+    }
+
+    //TODO VALIDATION OF THE DELETE MULTIPLE COURSE SECTION
+    public function deleteMultiple()
+    {
+        //TODO  DELETE MULTIPLE COURSE SECTION
     }
 }

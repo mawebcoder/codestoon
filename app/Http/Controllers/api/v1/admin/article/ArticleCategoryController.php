@@ -194,9 +194,21 @@ class ArticleCategoryController extends Controller
     }
 
 
+    //TODO VALIDATION OF THE DELETE MULTIPLE ARTICLE CATEGORY
     public function deleteMultipleArticleCategory(){
 
         //TODO DELETE MULTIPLE ARTICLE CATEGORY  AND VALIDATION OF THIS
+    }
+
+    //TODO VALIDATION CAN RESTORE ARTICLE CATEGORIES
+    public function restoreArticleCategory()
+    {
+        //TODO RESTORE MULTIPLE ARTICLE CATEGORY
+    }
+
+    public function getTrashedArticleCategory()
+    {
+        //TODO GET TRASHED ARTICLE CATEGORIES
     }
 
 

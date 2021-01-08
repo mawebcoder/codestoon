@@ -23,12 +23,13 @@ class ArticleController extends Controller
 
     public function __construct()
     {
-
+        //TODO SET PERMISSIONS IN THE SYSTEM HERE WITH MIDDLEWARES
     }
+
 
     public function index()
     {
-
+        //TODO SHOW ALL ARTICLES LIST HERE WITH PAGINATION
     }
 
 
@@ -284,6 +285,11 @@ class ArticleController extends Controller
             response()->json($this->failed_message);
     }
 
+    //TODO  VALIDATION OF THE RESTORE MULTIPLE ARTICLES
+    public function restoreMultipleArticles()
+    {
+        //TODO RESTORE MULTIPLE ARTICLES
+    }
 
     public function getTrashedArticles()
     {
