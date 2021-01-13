@@ -22,7 +22,7 @@ class AdminArticleCategoryTest extends TestCase
 
     public function testCanStoreNewArticleCategory()
     {
-        $file = UploadedFile::fake()->image('image.jpeg',1000,100);
+        $file = UploadedFile::fake()->image('image.jpeg', 1000, 100);
         $article_category = factory(ArticleCategory::class)->create();
         $fa_title = Str::random(10);
         $en_title = Str::random(10);
@@ -32,6 +32,7 @@ class AdminArticleCategoryTest extends TestCase
             'en_title' => $en_title,
             'description' => $description,
             'parent' => $article_category->id,
+            'status' => 1,
             'file' => $file
         ];
         $this->post(route('article.category.store'), $data)
@@ -45,9 +46,10 @@ class AdminArticleCategoryTest extends TestCase
             'en_title' => $en_title,
             'description' => $description,
             'parent' => $article_category->id,
-            'file' => $file->getClientOriginalName()
+            'status' => 1
         ]);
-        $this->assertFileExists(storage_path('app/public/images/articles/categories/1' . $file->getClientOriginalName()));
+
+        $this->assertFileExists(storage_path('app/public/images/articles/categories/2/' . $file->getClientOriginalName()));
     }
 
     /**

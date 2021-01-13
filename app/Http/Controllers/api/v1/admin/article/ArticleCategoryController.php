@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\api\v1\admin\article;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\articles\StoreArticle;
 use App\models\ArticleCategory;
-use Illuminate\Http\Request;
 
 class ArticleCategoryController extends Controller
 {
@@ -83,33 +83,41 @@ class ArticleCategoryController extends Controller
      *        )
      *     ),
      * )
+     * @param StoreArticle $storeArticle
+     * @return \Illuminate\Http\JsonResponse
      */
-
-    //TODO STORE ARTICLE CATEGORY VALIDATION
-    public function store(Request $request)
+    public function store(StoreArticle $storeArticle)
     {
-        $data = request()->only(
+
+        $data = $storeArticle->only(
             [
                 'fa_title',
                 'en_title',
                 'description',
             ]
         );
-        $data['parent'] = $request->parent ?? 0;
+        $data['parent'] = $storeArticle->parent ?? 0;
+        $data['status'] = $storeArticle->status ?? 0;
 
-        //store new article category in the system
         $articleCategory = ArticleCategory::create($data);
-        //upload the article category cover if uploaded
-        if (request()->file('file')) {
-            $this->upload($articleCategory, request()->file('file'));
-        }
 
+        //article category cover upload
+        if ($storeArticle->file('file')) {
+            $this->upload($articleCategory, $storeArticle->file('file'));
+        }
 
         return $articleCategory ?
             response()->json($this->empty_success_message, 201) :
             response()->json($this->failed_message, 500);
     }
 
+    /**
+     * upload article category cover
+     *
+     * @param $articleCategory
+     * @param $file
+     * @return mixed
+     */
     public function upload($articleCategory, $file)
     {
         $path = 'images/articles/categories/' . $articleCategory->id;
