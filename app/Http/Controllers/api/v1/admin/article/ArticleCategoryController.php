@@ -4,6 +4,8 @@ namespace App\Http\Controllers\api\v1\admin\article;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\articles\StoreArticle;
+use App\Http\Requests\articles\UpdateArticle;
+use App\Http\Requests\articles\UpdateArticleValidation;
 use App\models\ArticleCategory;
 
 class ArticleCategoryController extends Controller
@@ -97,12 +99,12 @@ class ArticleCategoryController extends Controller
             ]
         );
         $data['parent'] = $storeArticle->parent ?? 0;
-        $data['status'] = $storeArticle->status ?? 0;
+        $data['status'] = $storeArticle->status ? 1 : 0;
 
         $articleCategory = ArticleCategory::create($data);
 
         //article category cover upload
-        if ($storeArticle->file('file')) {
+        if ($storeArticle->hasFile('file')) {
             $this->upload($articleCategory, $storeArticle->file('file'));
         }
 
@@ -122,6 +124,11 @@ class ArticleCategoryController extends Controller
     {
         $path = 'images/articles/categories/' . $articleCategory->id;
         $file_name = $file->getClientOriginalName();
+        $full_path = $path . '/' . $file_name;
+
+        if (is_dir($full_path)) {
+            unlink($full_path);
+        }
 
         $file->storeAs($path, $file_name, 'public');
 
@@ -213,13 +220,23 @@ class ArticleCategoryController extends Controller
      *        )
      *     ),
      * )
+     * @param ArticleCategory $articleCategory
+     * @param UpdateArticleValidation $updateArticleValidation
+     * @return \Illuminate\Http\JsonResponse
      */
-
-    //TODO UPDATE ARTICLE VALIDATION
-    public function update(ArticleCategory $articleCategory)
+    public function update(ArticleCategory $articleCategory, UpdateArticleValidation $updateArticleValidation)
     {
-        $data = request()->only(['fa_title', 'en_title', 'description']);
+        $data = $updateArticleValidation->only(['fa_title', 'en_title', 'description']);
+
+        $data['status'] = $updateArticleValidation->status ? 1 : 0;
+        $data['parent'] = $updateArticleValidation->parent ?? 0;
+
         $result = $articleCategory->update($data);
+
+        if ($updateArticleValidation->hasFile('file')) {
+            $this->upload($articleCategory, $updateArticleValidation->file('file'));
+        }
+
         return $result ? response()->json($this->empty_success_message) :
             response()->json($this->failed_message, 500);
     }
@@ -230,6 +247,7 @@ class ArticleCategoryController extends Controller
     {
 
         //TODO DELETE MULTIPLE ARTICLE CATEGORY  AND VALIDATION OF THIS
+
     }
 
     //TODO VALIDATION CAN RESTORE ARTICLE CATEGORIES

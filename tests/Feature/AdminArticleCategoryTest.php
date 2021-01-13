@@ -77,20 +77,35 @@ class AdminArticleCategoryTest extends TestCase
      */
     public function testCanUpdateArticleCategory()
     {
-        $article_category = factory(ArticleCategory::class, 1)->create();
-
+        $file = UploadedFile::fake()->image('image.jpeg');
+        $new_parent = factory(ArticleCategory::class)->create();
+        $article_category = factory(ArticleCategory::class)->create();
+        $old_cover_file=CreateFakeFile(storage_path('app/public/images/articles/categories/2/' . $file->getClientOriginalName()));
         $data = [
             'fa_title' => 'persiantitle',
             'en_title' => 'englishtitle',
-            'description' => 'newdescription'
+            'description' => 'newdescription',
+            'parent' => $new_parent->id,
+            'status' => 1,
+            'file' => $file
         ];
-        $this->put(route('article.category.update', ['articleCategory' => $article_category[0]['id']]), $data)
+        $this->put(route('article.category.update', ['articleCategory' => $article_category->id]), $data)
             ->assertStatus(200)
             ->assertJson([
                 'message' => 'success',
                 'data' => null
             ]);
-        $this->assertDatabaseHas('article_categories', $data);
+
+        $this->assertDatabaseHas('article_categories', [
+            'fa_title' => 'persiantitle',
+            'en_title' => 'englishtitle',
+            'description' => 'newdescription',
+            'parent' => $new_parent->id,
+            'status' => 1,
+            'cover_file_name' => $file->getClientOriginalName()
+        ]);
+
+        $this->assertFileExists(storage_path('app/public/images/articles/categories/2/' . $file->getClientOriginalName()));
     }
 
     public function testCanSoftDeleteArticleCategory()
