@@ -15,9 +15,11 @@ class CreateArticleCategoriesTable extends Migration
     {
         Schema::create('article_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('fa_title')->nullable();
+            $table->string('fa_title');
             $table->boolean('status')->default(0);
             $table->string('en_title')->nullable();
+            $table->string('cover_file_name')->nullable();
+            $table->unsignedBigInteger('parent')->default(0);
             $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();

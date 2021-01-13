@@ -8,8 +8,10 @@ use Faker\Generator as Faker;
 $factory->define(ArticleCategory::class, function (Faker $faker) {
 
     return [
-        'fa_title'=>$faker->title,
-        'en_title'=>$faker->title,
-        'description'=>$faker->text
+        'fa_title' => $faker->title,
+        'en_title' => $faker->title,
+        'description' => $faker->text,
+        'cover_file_name' => $faker->title,
+        'parent' => 0
     ];
 });

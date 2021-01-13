@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\models\ArticleCategory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -21,13 +22,17 @@ class AdminArticleCategoryTest extends TestCase
 
     public function testCanStoreNewArticleCategory()
     {
+        $file = UploadedFile::fake()->image('image.jpeg',1000,100);
+        $article_category = factory(ArticleCategory::class)->create();
         $fa_title = Str::random(10);
         $en_title = Str::random(10);
         $description = Str::random(100);
         $data = [
             'fa_title' => $fa_title,
             'en_title' => $en_title,
-            'description' => $description
+            'description' => $description,
+            'parent' => $article_category->id,
+            'file' => $file
         ];
         $this->post(route('article.category.store'), $data)
             ->assertStatus(201)
@@ -35,7 +40,14 @@ class AdminArticleCategoryTest extends TestCase
                 'message' => 'success',
                 'data' => null
             ]);
-        $this->assertDatabaseHas('article_categories', $data);
+        $this->assertDatabaseHas('article_categories', [
+            'fa_title' => $fa_title,
+            'en_title' => $en_title,
+            'description' => $description,
+            'parent' => $article_category->id,
+            'file' => $file->getClientOriginalName()
+        ]);
+        $this->assertFileExists(storage_path('app/public/images/articles/categories/1' . $file->getClientOriginalName()));
     }
 
     /**

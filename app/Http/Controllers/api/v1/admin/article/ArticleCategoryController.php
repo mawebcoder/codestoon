@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\v1\admin\article;
 
 use App\Http\Controllers\Controller;
 use App\models\ArticleCategory;
+use Illuminate\Http\Request;
 
 class ArticleCategoryController extends Controller
 {
@@ -41,7 +42,7 @@ class ArticleCategoryController extends Controller
      */
     public function index()
     {
-        $article_categories_list = ArticleCategory::select('fa_title','en_title','id
+        $article_categories_list = ArticleCategory::select('fa_title', 'en_title', 'id
         ')->paginate(20);
         return response()->json([
             'message' => 'success',
@@ -85,19 +86,40 @@ class ArticleCategoryController extends Controller
      */
 
     //TODO STORE ARTICLE CATEGORY VALIDATION
-    public function store()
+    public function store(Request $request)
     {
         $data = request()->only(
             [
                 'fa_title',
                 'en_title',
-                'description'
+                'description',
             ]
         );
-        $result = ArticleCategory::create($data);
-        return $result ?
+        $data['parent'] = $request->parent ?? 0;
+
+        //store new article category in the system
+        $articleCategory = ArticleCategory::create($data);
+        //upload the article category cover if uploaded
+        if (request()->file('file')) {
+            $this->upload($articleCategory, request()->file('file'));
+        }
+
+
+        return $articleCategory ?
             response()->json($this->empty_success_message, 201) :
             response()->json($this->failed_message, 500);
+    }
+
+    public function upload($articleCategory, $file)
+    {
+        $path = 'images/articles/categories/' . $articleCategory->id;
+        $file_name = $file->getClientOriginalName();
+
+        $file->storeAs($path, $file_name, 'public');
+
+        return $articleCategory->update([
+            'cover_file_name' => $file_name
+        ]);
     }
 
     /**
@@ -133,6 +155,7 @@ class ArticleCategoryController extends Controller
      *     ),
      * )
      */
+
     public function destroy(ArticleCategory $articleCategory)
     {
         $result = $articleCategory->delete();
@@ -195,7 +218,8 @@ class ArticleCategoryController extends Controller
 
 
     //TODO VALIDATION OF THE DELETE MULTIPLE ARTICLE CATEGORY
-    public function deleteMultipleArticleCategory(){
+    public function deleteMultipleArticleCategory()
+    {
 
         //TODO DELETE MULTIPLE ARTICLE CATEGORY  AND VALIDATION OF THIS
     }
@@ -210,7 +234,6 @@ class ArticleCategoryController extends Controller
     {
         //TODO GET TRASHED ARTICLE CATEGORIES
     }
-
 
 
 }
