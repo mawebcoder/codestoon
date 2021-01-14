@@ -16,7 +16,7 @@ Route::post('/articles/categories/restore','ArticleCategoryController@restore')-
 Route::post('/articles/tags', 'ArticleTagController@store')->name('article.tag.store');
 Route::put('/articles/tags/{articleTag}', 'ArticleTagController@update')->name('articles.tag.update');
 Route::delete('/articles/tags/{articleTag}', 'ArticleTagController@destroy')->name('article.tag.destroy');
-
+Route::post('/articles/tags/deleteMultipleArticleTags','ArticleTagController@deleteMultipleArticleTag')->name('article.tags.delete.multiple');
 
 
 //articles

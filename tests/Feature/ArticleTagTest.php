@@ -10,6 +10,7 @@ use Tests\TestCase;
 class ArticleTagTest extends TestCase
 {
     use RefreshDatabase;
+
     /**
      * @test
      */
@@ -17,8 +18,8 @@ class ArticleTagTest extends TestCase
     {
         $data = [
             'fa_title' => Str::random(20),
-            'en_title'=>Str::random(20),
-            'status'=>1,
+            'en_title' => Str::random(20),
+            'status' => 1,
         ];
         $this->post(route('article.tag.store'), $data)
             ->assertStatus(201)
@@ -36,8 +37,8 @@ class ArticleTagTest extends TestCase
         $en_title = Str::random(10);
         $data = [
             'fa_title' => $fa_title,
-            'en_title'=>$en_title,
-            'status'=>1
+            'en_title' => $en_title,
+            'status' => 1
         ];
         $this->put(route('articles.tag.update', ['articleTag' => $old_article_tag->id]), $data)
             ->assertOk()
@@ -60,6 +61,21 @@ class ArticleTagTest extends TestCase
             ]);
         $this->assertSoftDeleted('article_tags', [
             'fa_title' => $article->fa_title
+        ]);
+    }
+
+    public function testCanDeleteMultipleArticleTag()
+    {
+        $data = factory(ArticleTag::class, 4)->create()->pluck('id')
+            ->toArray();
+        $this->post(route('article.tags.delete.multiple'), ['ids' => $data])
+            ->assertStatus(200)
+            ->assertJson([
+                'message' => 'success',
+                'data' => null
+            ]);
+        $this->assertSoftDeleted('article_tags', [
+            'id' => $data[0]
         ]);
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1\admin\article;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\articles\tag\DeleteMultipleValidation;
 use App\Http\Requests\articles\tag\StoreValidation;
 use App\Http\Requests\articles\tag\UpdateValidation;
 use App\models\ArticleTag;
@@ -16,7 +17,6 @@ class ArticleTagController extends Controller
     {
         //TODO SHOW ALL ARTICLE TAGS IN PAGINATION HERE
     }
-
 
     public function store(StoreValidation $storeValidation)
     {
@@ -52,11 +52,13 @@ class ArticleTagController extends Controller
             response($this->error_message);
     }
 
-    //TODO VALIDATION OF THE DELETE MULTIPLE ARTICLE TAG
-    public function deleteMultipleArticleTag()
+    public function deleteMultipleArticleTag(DeleteMultipleValidation $deleteMultipleValidation)
     {
-        //TODO DELETE ARTICLE MULTIPLE TAG
+        ArticleTag::whereIn('id', $deleteMultipleValidation->ids)->delete();
+        return response($this->empty_success_message);
     }
+
+
 
     //TODO VALIDATION OF THE FORCE DELETE OF THE MULTIPLE ARTICLE TAG HERE
     public function ForceDeleteMultipleArticleTags()
@@ -64,11 +66,14 @@ class ArticleTagController extends Controller
         //TODO FORCE DELETE OF THE ARTICLE TAGS HRER
     }
 
+
+
     //TODO VALIDATION OF THE RESTORE ARTICLE TAGS HERE
     public function restoreArticleTag()
     {
         //TODO TEST CAN RESTORE MULTIPLE ARTICLE TAG
     }
+
 
 
     public function getTrashedArticleTag()
