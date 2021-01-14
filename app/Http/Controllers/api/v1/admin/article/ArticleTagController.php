@@ -59,25 +59,22 @@ class ArticleTagController extends Controller
     }
 
 
-
-    //TODO VALIDATION OF THE FORCE DELETE OF THE MULTIPLE ARTICLE TAG HERE
-    public function ForceDeleteMultipleArticleTags()
+    public function forceDelete(DeleteMultipleValidation $deleteMultipleValidation)
     {
-        //TODO FORCE DELETE OF THE ARTICLE TAGS HRER
+        $result = ArticleTag::withTrashed()->whereIn('id', $deleteMultipleValidation->ids)
+            ->forceDelete();
+        return response($this->empty_success_message);
     }
 
 
-
-    //TODO VALIDATION OF THE RESTORE ARTICLE TAGS HERE
-    public function restoreArticleTag()
+    public function restoreArticleTag(DeleteMultipleValidation $deleteMultipleValidation)
     {
         //TODO TEST CAN RESTORE MULTIPLE ARTICLE TAG
     }
 
 
-
     public function getTrashedArticleTag()
     {
-        //TODO GET TRASHED ARTICLE TAG
+
     }
 }

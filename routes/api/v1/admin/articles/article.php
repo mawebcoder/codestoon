@@ -17,7 +17,7 @@ Route::post('/articles/tags', 'ArticleTagController@store')->name('article.tag.s
 Route::put('/articles/tags/{articleTag}', 'ArticleTagController@update')->name('articles.tag.update');
 Route::delete('/articles/tags/{articleTag}', 'ArticleTagController@destroy')->name('article.tag.destroy');
 Route::post('/articles/tags/deleteMultipleArticleTags','ArticleTagController@deleteMultipleArticleTag')->name('article.tags.delete.multiple');
-
+Route::post('/articles/tags/force-delete','ArticleTagController@forceDelete')->name('articles.tags.force.delete');
 
 //articles
 Route::post('/articles/delete/multi', 'ArticleController@deleteMultipleArticle')->name('delete.article.multiple');

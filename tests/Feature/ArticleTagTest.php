@@ -49,7 +49,7 @@ class ArticleTagTest extends TestCase
         $this->assertDatabaseHas('article_tags', $data);
     }
 
-    public function testCanDestroyArticleTag()
+    public function testCanSoftDeleteArticleTag()
     {
         $article = factory(ArticleTag::class)->create();
 
@@ -64,7 +64,7 @@ class ArticleTagTest extends TestCase
         ]);
     }
 
-    public function testCanDeleteMultipleArticleTag()
+    public function testCanSoftDeleteMultipleArticleTag()
     {
         $data = factory(ArticleTag::class, 4)->create()->pluck('id')
             ->toArray();
@@ -81,8 +81,20 @@ class ArticleTagTest extends TestCase
 
     public function testCanForceDeletedArticleTag()
     {
+        $articles_tags_id = factory(ArticleTag::class, 10)->create()
+            ->pluck('id')->toArray();
 
-        //TODO TEST CAN FORCE DELETE A ARTICLE TAG
+        $this->post(route('articles.tags.force.delete'), ['ids' => $articles_tags_id])
+            ->assertStatus(200)
+            ->assertJson([
+                'message' => 'success',
+                'data' => null
+            ]);
+        foreach ($articles_tags_id as $item) {
+            $this->assertDatabaseMissing('article_tags', [
+                'id' => $item
+            ]);
+        }
     }
 
     public function testCanRestoreArticleTag()

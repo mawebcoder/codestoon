@@ -12,9 +12,7 @@ class AdminArticleCategoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -52,9 +50,6 @@ class AdminArticleCategoryTest extends TestCase
         $this->assertFileExists(storage_path('app/public/images/articles/categories/2/' . $file->getClientOriginalName()));
     }
 
-    /**
-     * @test
-     */
     public function testCanDeleteArticleCategory()
     {
         $category = factory(ArticleCategory::class, 1)->create()->first();
@@ -72,9 +67,6 @@ class AdminArticleCategoryTest extends TestCase
 
     }
 
-    /**
-     * @test
-     */
     public function testCanUpdateArticleCategory()
     {
         $file = UploadedFile::fake()->image('image.jpeg');
@@ -108,7 +100,7 @@ class AdminArticleCategoryTest extends TestCase
         $this->assertFileExists(storage_path('app/public/images/articles/categories/2/' . $file->getClientOriginalName()));
     }
 
-    public function testCanDeleteMultipleArticleCategory()
+    public function testCanSoftDeleteMultipleArticleCategory()
     {
         $articles_categories_ids = factory(ArticleCategory::class, 4)->create()->pluck('id')
             ->toArray();
@@ -120,10 +112,21 @@ class AdminArticleCategoryTest extends TestCase
             ]);
 
 
+        //TODO SET THIS IN THE LOOP TO TEST ALL ARTICLE CATEGORIES SOFT DELETED
         $this->assertSoftDeleted('article_categories', [
             'id' => $articles_categories_ids[0]
         ]);
     }
 
+    public function testCanForceDeleteMultipleArticleCategory()
+    {
+        //TODO TEST CAN FORCE DELETE MULTIPLE ARTICLE CATEGORY FROM DATA BASE
+        //TODO CREATE FAKE FILES FOR ALL THEM TO TESTING DELETING THE FILES FROM HOST
+    }
+
+    public function testCanRestoreMultipleArticleCategories()
+    {
+        //TODO TEST CAN RESTORE MULTIPLE ARTICLE CATEGORY
+    }
 
 }
