@@ -108,16 +108,11 @@ class AdminArticleCategoryTest extends TestCase
         $this->assertFileExists(storage_path('app/public/images/articles/categories/2/' . $file->getClientOriginalName()));
     }
 
-    public function testCanSoftDeleteArticleCategory()
-    {
-        //TODO TEST CAN SOFT DELETE ARTICLE CATEGORY
-    }
-
     public function testCanDeleteMultipleArticleCategory()
     {
         $articles_categories_ids = factory(ArticleCategory::class, 4)->create()->pluck('id')
             ->toArray();
-      $response=  $this->post(route('delete.multiple.article.category'), ['ids'=>$articles_categories_ids])
+        $response = $this->post(route('delete.multiple.article.category'), ['ids' => $articles_categories_ids])
             ->assertStatus(200)
             ->assertJson([
                 'message' => 'success',
@@ -129,6 +124,8 @@ class AdminArticleCategoryTest extends TestCase
             'id' => $articles_categories_ids[0]
         ]);
     }
+
+
 
     public function testCanRestoreArticleCategory()
     {

@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\api\v1\admin\article;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\articles\DeleteMultiple;
-use App\Http\Requests\articles\StoreArticle;
-use App\Http\Requests\articles\UpdateArticle;
-use App\Http\Requests\articles\UpdateArticleValidation;
+use App\Http\Requests\articles\category\DeleteMultiple;
+use App\Http\Requests\articles\category\StoreArticle;
+use App\Http\Requests\articles\category\UpdateArticleValidation;
 use App\models\ArticleCategory;
 
 class ArticleCategoryController extends Controller
@@ -20,12 +19,6 @@ class ArticleCategoryController extends Controller
         'message' => 'success',
         'data' => null
     ];
-
-    public function __construct()
-    {
-
-    }
-
 
     /**
      * @OA\Get(
@@ -170,6 +163,9 @@ class ArticleCategoryController extends Controller
      *        )
      *     ),
      * )
+     * @param ArticleCategory $articleCategory
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
 
     public function destroy(ArticleCategory $articleCategory)
@@ -255,21 +251,65 @@ class ArticleCategoryController extends Controller
 
     }
 
-    //TODO VALIDATION OF THE ARTICLE CATEGORIES
-    public function ForceDelete()
+
+    public function ForceDelete(DeleteMultiple $deleteMultiple)
     {
-        //TODO FORCE DELETE ARTICLE CATEGORIES
+        $article_ids = $deleteMultiple->ids;
+
+        $target = ArticleCategory::withTrashed()
+            ->select('id', 'cover_file_name')
+            ->whereIn('id', $article_ids);
+
+//        get all covers of the these categories files
+        $cover_file_names = $this->getAllFilesNames($target);
+
+        $result = $target->forceDelete();
+
+        //delete all covers from host
+        $this->deleteFiles($cover_file_names);
+
+        return response($this->empty_success_message, 200);
     }
 
-    //TODO VALIDATION CAN RESTORE ARTICLE CATEGORIES
-    public function restoreArticleCategory()
+    public function getAllFilesNames($target)
     {
-        //TODO RESTORE MULTIPLE ARTICLE CATEGORY
+        $cover_file_names = [];
+        foreach ($target->get() as $item) {
+            array_push($cover_file_names, ['cover_file_name' => $item->cover_file_name, 'id' => $item->id]);
+        }
+
+        return $cover_file_names;
+    }
+
+    public function deleteFiles($cover_file_names)
+    {
+        foreach ($cover_file_names as $item) {
+            $file_path = storage_path('app/public/images/articles/categories/' . $item['id'] . '/' . $item['cover_file_name']);
+            if (file_exists($file_path)) {
+                unlink($file_path);
+                rmdir(storage_path('app/public/images/articles/categories/' . $item['id']));
+            }
+
+        }
+    }
+
+
+    public function restore(DeleteMultiple $deleteMultiple)
+    {
+        $ids = $deleteMultiple->ids;
+        $result = ArticleCategory::withTrashed()
+            ->select('id')->whereIn('id', $ids)->restore();
+        return response($this->empty_success_message);
     }
 
     public function getTrashedArticleCategory()
     {
-        //TODO GET TRASHED ARTICLE CATEGORIES
+        $trashed = ArticleCategory::onlyTrashed()->select('id', 'fa_title', 'en_title')->paginate(3);
+        return response()->json([
+            'message' => 'success',
+            'data' => $trashed
+        ]);
+
     }
 
 
