@@ -3,18 +3,22 @@
 namespace Tests\Feature;
 
 use App\models\ArticleTag;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class ArticleTagTest extends TestCase
 {
+    use RefreshDatabase;
     /**
      * @test
      */
     public function testCanStoreArticleTag()
     {
         $data = [
-            'fa_title' => Str::random(20)
+            'fa_title' => Str::random(20),
+            'en_title'=>Str::random(20),
+            'status'=>1,
         ];
         $this->post(route('article.tag.store'), $data)
             ->assertStatus(201)

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1\admin\article;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\articles\tag\StoreValidation;
 use App\models\ArticleTag;
 
 class ArticleTagController extends Controller
@@ -15,11 +16,14 @@ class ArticleTagController extends Controller
         //TODO SHOW ALL ARTICLE TAGS IN PAGINATION HERE
     }
 
-    //TODO STORE VALIDATION OF THE  ARTICLE TAG
-    public function store()
+
+    public function store(StoreValidation $storeValidation)
     {
-        $data = request()->only(['fa_title']);
+        $data = $storeValidation->only(['fa_title', 'en_title']);
+
+        $data['status'] = $storeValidation->status ? 1 : 0;
         $result = ArticleTag::create($data);
+
         return $result ?
             response($this->empty_success_message, 201) :
             response($this->error_message, 500);

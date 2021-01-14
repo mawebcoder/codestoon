@@ -16,8 +16,9 @@ class CreateArticleTagsTable extends Migration
         Schema::create('article_tags', function (Blueprint $table) {
             $table->id();
             $table->string('fa_title');
-            $table->softDeletes();
+            $table->string('en_title');
             $table->boolean('status')->default(0);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
