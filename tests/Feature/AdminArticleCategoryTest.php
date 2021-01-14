@@ -80,7 +80,7 @@ class AdminArticleCategoryTest extends TestCase
         $file = UploadedFile::fake()->image('image.jpeg');
         $new_parent = factory(ArticleCategory::class)->create();
         $article_category = factory(ArticleCategory::class)->create();
-        $old_cover_file=CreateFakeFile(storage_path('app/public/images/articles/categories/2/' . $file->getClientOriginalName()));
+        $old_cover_file = CreateFakeFile(storage_path('app/public/images/articles/categories/2/' . $file->getClientOriginalName()));
         $data = [
             'fa_title' => 'persiantitle',
             'en_title' => 'englishtitle',
@@ -111,6 +111,23 @@ class AdminArticleCategoryTest extends TestCase
     public function testCanSoftDeleteArticleCategory()
     {
         //TODO TEST CAN SOFT DELETE ARTICLE CATEGORY
+    }
+
+    public function testCanDeleteMultipleArticleCategory()
+    {
+        $articles_categories_ids = factory(ArticleCategory::class, 4)->create()->pluck('id')
+            ->toArray();
+      $response=  $this->post(route('delete.multiple.article.category'), ['ids'=>$articles_categories_ids])
+            ->assertStatus(200)
+            ->assertJson([
+                'message' => 'success',
+                'data' => null
+            ]);
+
+
+        $this->assertSoftDeleted('article_categories', [
+            'id' => $articles_categories_ids[0]
+        ]);
     }
 
     public function testCanRestoreArticleCategory()

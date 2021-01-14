@@ -245,8 +245,13 @@ class ArticleCategoryController extends Controller
     //TODO VALIDATION OF THE DELETE MULTIPLE ARTICLE CATEGORY
     public function deleteMultipleArticleCategory()
     {
+        $article_ids = request()->ids;
 
-        //TODO DELETE MULTIPLE ARTICLE CATEGORY  AND VALIDATION OF THIS
+
+        ArticleCategory::whereIn('id', $article_ids)->delete();
+
+        return response($this->empty_success_message,200);
+
 
     }
 
