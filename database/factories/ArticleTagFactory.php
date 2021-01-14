@@ -7,6 +7,8 @@ use Faker\Generator as Faker;
 
 $factory->define(ArticleTag::class, function (Faker $faker) {
     return [
-        'fa_title' => $faker->title
+        'fa_title' => $faker->title,
+        'en_title' => $faker->title,
+        'status' => 1
     ];
 });

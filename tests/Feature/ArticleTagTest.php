@@ -33,8 +33,11 @@ class ArticleTagTest extends TestCase
     {
         $old_article_tag = factory(ArticleTag::class)->create();
         $fa_title = Str::random(10);
+        $en_title = Str::random(10);
         $data = [
-            'fa_title' => $fa_title
+            'fa_title' => $fa_title,
+            'en_title'=>$en_title,
+            'status'=>1
         ];
         $this->put(route('articles.tag.update', ['articleTag' => $old_article_tag->id]), $data)
             ->assertOk()

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\v1\admin\article;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\articles\tag\StoreValidation;
+use App\Http\Requests\articles\tag\UpdateValidation;
 use App\models\ArticleTag;
 
 class ArticleTagController extends Controller
@@ -22,6 +23,7 @@ class ArticleTagController extends Controller
         $data = $storeValidation->only(['fa_title', 'en_title']);
 
         $data['status'] = $storeValidation->status ? 1 : 0;
+
         $result = ArticleTag::create($data);
 
         return $result ?
@@ -29,11 +31,14 @@ class ArticleTagController extends Controller
             response($this->error_message, 500);
     }
 
-    //TODO UPDATE VALIDATION OF THE UPDATE ARTICLE TAG
-    public function update(ArticleTag $articleTag)
+    public function update(ArticleTag $articleTag, UpdateValidation $updateValidation)
     {
-        $data = request()->only(['fa_title']);
+        $data = $updateValidation->only(['fa_title', 'en_title']);
+
+        $data['status'] = $updateValidation->status ? 1 : 0;
+
         $result = $articleTag->update($data);
+
         return $result ?
             response($this->empty_success_message) :
             response($this->error_message);
