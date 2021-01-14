@@ -20,68 +20,11 @@ class ArticleCategoryController extends Controller
         'data' => null
     ];
 
-    /**
-     * @OA\Get(
-     *     path="/articles/categories",
-     *     summary="articles categories list",
-     *     description="get list of the articles categories",
-     *     tags={"article category"},
-     * @OA\Response(
-     *    response=200,
-     *    description="success",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="data", type="collection", example="[{fa_title:'title',en_title:'title',description:'articlecategory description'},{fa_title:'title',en_title:'title',description:'articlecategory description'}]"),
-     *       @OA\Property(property="message", type="strig", example="success"),
-     *        )
-     *     ),
-     * )
-     */
     public function index()
     {
-        $article_categories_list = ArticleCategory::select('fa_title', 'en_title', 'id
-        ')->paginate(20);
-        return response()->json([
-            'message' => 'success',
-            'data' => $article_categories_list
-        ]);
+        //TODO SHOW ALL ARTICLE CATEGORIES LIST
     }
 
-    /**
-     * @OA\Post(
-     * path="/articles/categories",
-     * summary="store new article category",
-     * description="store new article category in databas",
-     * tags={"article category"},
-     * @OA\RequestBody(
-     *    required=true,
-     *    description="required",
-     *    @OA\JsonContent(
-     *       required={"fa_title","en_title","description"},
-     *       @OA\Property(property="fa_title", type="string", format="article title", example="the article title in persian"),
-     *       @OA\Property(property="en_title", type="string", format="password", example="the article title in english"),
-     *       @OA\Property(property="description", type="string", example="article category description"),
-     *    ),
-     * ),
-     * @OA\Response(
-     *    response=201,
-     *    description="success",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="success"),
-     *       @OA\Property(property="data", type="null", example="null"),
-     *        )
-     *     ),
-     *@OA\Response(
-     *    response=500,
-     *    description="failed",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="failed"),
-     *       @OA\Property(property="data", type="null", example="null"),
-     *        )
-     *     ),
-     * )
-     * @param StoreArticle $storeArticle
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function store(StoreArticle $storeArticle)
     {
 
@@ -107,13 +50,6 @@ class ArticleCategoryController extends Controller
             response()->json($this->failed_message, 500);
     }
 
-    /**
-     * upload article category cover
-     *
-     * @param $articleCategory
-     * @param $file
-     * @return mixed
-     */
     public function upload($articleCategory, $file)
     {
         $path = 'images/articles/categories/' . $articleCategory->id;
@@ -131,43 +67,6 @@ class ArticleCategoryController extends Controller
         ]);
     }
 
-    /**
-     * @OA\delete(
-     * path="/articles/categories/{articleId}",
-     * summary="delete  article category",
-     * description="delete  article category from databas",
-     * tags={"article category"},
-     * @OA\parameter(
-     *          name="articleId",
-     *           in="path",
-     *           required=true,
-     *           description="the articleId",
-     *              @OA\schema(
-    type="integer",
-     * ),
-     *     ),
-     * @OA\Response(
-     *    response=200,
-     *    description="success",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="success"),
-     *       @OA\Property(property="data", type="null", example="null"),
-     *        )
-     *     ),
-     *@OA\Response(
-     *    response=500,
-     *    description="failed",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="failed"),
-     *       @OA\Property(property="data", type="null", example="null"),
-     *        )
-     *     ),
-     * )
-     * @param ArticleCategory $articleCategory
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception
-     */
-
     public function destroy(ArticleCategory $articleCategory)
     {
         $result = $articleCategory->delete();
@@ -175,52 +74,6 @@ class ArticleCategoryController extends Controller
             response()->json($this->failed_message, 500);
     }
 
-    /**
-     * @OA\put(
-     * path="/articles/categories/{articleId}",
-     * summary="update  article category",
-     * description="update  article category from databas",
-     * tags={"article category"},
-     *@OA\RequestBody(
-     *    required=true,
-     *    description="required",
-     *    @OA\JsonContent(
-     *       required={"fa_title","en_title","description"},
-     *       @OA\Property(property="fa_title", type="string", format="article title", example="the article title in persian"),
-     *       @OA\Property(property="en_title", type="string", format="password", example="the article title in english"),
-     *       @OA\Property(property="description", type="string", example="article category description"),
-     *    ),
-     * ),
-     * @OA\parameter(
-     *          name="articleId",
-     *           in="path",
-     *           required=true,
-     *           description="the articleId",
-     *              @OA\schema(
-    type="integer",
-     * ),
-     *     ),
-     * @OA\Response(
-     *    response=200,
-     *    description="success",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="success"),
-     *       @OA\Property(property="data", type="null", example="null"),
-     *        )
-     *     ),
-     *@OA\Response(
-     *    response=500,
-     *    description="failed",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="failed"),
-     *       @OA\Property(property="data", type="null", example="null"),
-     *        )
-     *     ),
-     * )
-     * @param ArticleCategory $articleCategory
-     * @param UpdateArticleValidation $updateArticleValidation
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function update(ArticleCategory $articleCategory, UpdateArticleValidation $updateArticleValidation)
     {
         $data = $updateArticleValidation->only(['fa_title', 'en_title', 'description']);
@@ -238,7 +91,6 @@ class ArticleCategoryController extends Controller
             response()->json($this->failed_message, 500);
     }
 
-
     public function deleteMultipleArticleCategory(DeleteMultiple $deleteMultiple)
     {
         $article_ids = $deleteMultiple->ids;
@@ -250,7 +102,6 @@ class ArticleCategoryController extends Controller
 
 
     }
-
 
     public function ForceDelete(DeleteMultiple $deleteMultiple)
     {
@@ -292,7 +143,6 @@ class ArticleCategoryController extends Controller
 
         }
     }
-
 
     public function restore(DeleteMultiple $deleteMultiple)
     {

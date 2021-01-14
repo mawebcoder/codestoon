@@ -126,10 +126,4 @@ class AdminArticleCategoryTest extends TestCase
     }
 
 
-
-    public function testCanRestoreArticleCategory()
-    {
-        //TODO TEST CAN RESTORE ARTICLE CATEGORY
-    }
-
 }
