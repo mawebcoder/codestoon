@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1\admin\article;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\articles\DeleteMultiple;
 use App\Http\Requests\articles\StoreArticle;
 use App\Http\Requests\articles\UpdateArticle;
 use App\Http\Requests\articles\UpdateArticleValidation;
@@ -242,17 +243,22 @@ class ArticleCategoryController extends Controller
     }
 
 
-    //TODO VALIDATION OF THE DELETE MULTIPLE ARTICLE CATEGORY
-    public function deleteMultipleArticleCategory()
+    public function deleteMultipleArticleCategory(DeleteMultiple $deleteMultiple)
     {
-        $article_ids = request()->ids;
+        $article_ids = $deleteMultiple->ids;
 
 
         ArticleCategory::whereIn('id', $article_ids)->delete();
 
-        return response($this->empty_success_message,200);
+        return response($this->empty_success_message, 200);
 
 
+    }
+
+    //TODO VALIDATION OF THE ARTICLE CATEGORIES
+    public function ForceDelete()
+    {
+        //TODO FORCE DELETE ARTICLE CATEGORIES
     }
 
     //TODO VALIDATION CAN RESTORE ARTICLE CATEGORIES
