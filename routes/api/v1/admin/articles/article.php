@@ -18,6 +18,7 @@ Route::put('/articles/tags/{articleTag}', 'ArticleTagController@update')->name('
 Route::delete('/articles/tags/{articleTag}', 'ArticleTagController@destroy')->name('article.tag.destroy');
 Route::post('/articles/tags/deleteMultipleArticleTags','ArticleTagController@deleteMultipleArticleTag')->name('article.tags.delete.multiple');
 Route::post('/articles/tags/force-delete','ArticleTagController@forceDelete')->name('articles.tags.force.delete');
+Route::get('/articles/tags/get-Trashed','ArticleTagController@getTrashed')->name('articles.tags.trashed');
 
 //articles
 Route::post('/articles/delete/multi', 'ArticleController@deleteMultipleArticle')->name('delete.article.multiple');

@@ -73,8 +73,17 @@ class ArticleTagController extends Controller
     }
 
 
-    public function getTrashedArticleTag()
+    public function getTrashed()
     {
+        $all_trashed_article_tags = ArticleTag::onlyTrashed()
 
+            ->select('fa_title', 'en_title', 'id')
+
+            ->paginate(30);
+
+        $data=['message'=>'success','data'=>$all_trashed_article_tags];
+
+        return response($data);
     }
+
 }
