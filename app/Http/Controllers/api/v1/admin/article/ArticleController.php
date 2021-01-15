@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\api\v1\admin\article;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\articles\DeleteArticleValidation;
 use App\Http\Requests\articles\StoreValidation;
+use App\Http\Requests\articles\tag\DeleteMultipleValidation;
 use App\Http\Requests\articles\UpdateArticleValidation;
 use App\models\Article;
 use App\models\ArticleCategory;
@@ -86,10 +88,10 @@ class ArticleController extends Controller
             $path = 'images/articles/covers/' . $article->id;
             $file_name = $request->file('file')->getClientOriginalName();
 
-            if ($article->cover_file_name){
+            if ($article->cover_file_name) {
 
-                if (file_exists(storage_path('app/public/'.$path.'/'.$article->cover_file_name))) {
-                    unlink(storage_path('app/public/'.$path.'/'.$article->cover_file_name));
+                if (file_exists(storage_path('app/public/' . $path . '/' . $article->cover_file_name))) {
+                    unlink(storage_path('app/public/' . $path . '/' . $article->cover_file_name));
                 }
             }
 
@@ -110,7 +112,6 @@ class ArticleController extends Controller
     }
 
 
-    //TODO UPDATE ARTICLE VALIDATION
     public function update(Article $article, UpdateArticleValidation $request)
     {
         $data = $request->only([
@@ -141,15 +142,14 @@ class ArticleController extends Controller
     }
 
 
-    //TODO DELETE MULTIPLE ARTICLE VALIDATION
-    public function deleteMultipleArticle()
+
+    public function deleteMultipleArticle(DeleteArticleValidation $deleteArticleValidation)
     {
         $ids = request()->ids;
-        $result = Article::find($ids)->delete();
 
-        return $result ?
-            response()->json($this->empty_success_message) :
-            response()->json($this->failed_message);
+        $result = Article::whereIn('id', $ids)->delete();
+
+        return response($this->empty_success_message);
     }
 
 

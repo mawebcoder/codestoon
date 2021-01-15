@@ -187,7 +187,7 @@ class AdminArticleTest extends TestCase
     public function testCanSoftDeleteMultipleArticles()
     {
         $articles = factory(Article::class, 10)->create();
-        $ids = $articles->pluck('id');
+        $ids = $articles->pluck('id')->toArray();
         $this->post(route('delete.article.multiple'), [
             'ids' => $ids
         ])
@@ -196,9 +196,12 @@ class AdminArticleTest extends TestCase
                 'message' => 'success',
                 'data' => null
             ]);
-        $this->assertSoftDeleted('articles', [
-            'id' => $articles[0]->id
-        ]);
+        foreach ($ids as $id) {
+            $this->assertSoftDeleted('articles', [
+                'id' => $id
+            ]);
+        }
+
     }
 
 

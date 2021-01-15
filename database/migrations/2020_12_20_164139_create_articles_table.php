@@ -21,15 +21,17 @@ class CreateArticlesTable extends Migration
             $table->boolean('status')->default(0);
             $table->text('short_description');
             $table->string('meta');
-            $table->unsignedBigInteger('articleCategory_id');
+            $table->unsignedBigInteger('articleCategory_id')->nullable();
             $table->foreign('articleCategory_id')->references('id')->on('article_categories')->onDelete(null);
             $table->string('cover_file_name')->nullable();
             $table->text('likes')->nullable();
             $table->string('slug')->nullable();
             $table->softDeletes();
-            $table->bigInteger('hint')->default(0);
-            $table->foreignId('writer')->references('id')->on('users')->onDelete(null);
-            $table->foreignId('Registrar')->references('id')->on('users')->onDelete(null);
+            $table->longText('hint')->nullable(null);
+            $table->unsignedBigInteger('writer')->nullable();
+            $table->foreign('writer')->references('id')->on('users')->onDelete(null);
+            $table->unsignedBigInteger('Registrar')->nullable();
+            $table->foreign('Registrar')->references('id')->on('users')->onDelete(null);
             $table->timestamps();
         });
     }
