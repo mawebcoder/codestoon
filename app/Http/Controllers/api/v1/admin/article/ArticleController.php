@@ -153,9 +153,42 @@ class ArticleController extends Controller
 
     public function forceDelete(DeleteArticleValidation $deleteArticleValidation)
     {
-        //TODO FORCE DELETE ARTICLES
+        $ids = $deleteArticleValidation->ids;
+
+        $target = Article::withTrashed()->select('id', 'cover_file_name')->whereIn('id', $ids);
+
+
+        $cover_file_names = $this->getAllFilesNames($target);
+        $target->forceDelete();
+
+
+        //delete all covers from host
+        $this->deleteFiles($cover_file_names);
+
+        return response($this->empty_success_message, 200);
+
     }
 
+    public function getAllFilesNames($target)
+    {
+        $cover_file_names = [];
+        foreach ($target->get() as $item) {
+            array_push($cover_file_names, ['cover_file_name' => $item->cover_file_name, 'id' => $item->id]);
+        }
+
+        return $cover_file_names;
+    }
+
+    public function deleteFiles($cover_file_names)
+    {
+        foreach ($cover_file_names as $item) {
+            $file_path = storage_path('app/public/images/articles/covers/' . $item['id'] . '/' . $item['cover_file_name']);
+            if (file_exists($file_path)) {
+                unlink($file_path);
+                rmdir(storage_path('app/public/images/articles/covers/' . $item['id']));
+            }
+        }
+    }
 
     public function restore(DeleteArticleValidation $DeleteArticleValidation)
     {
@@ -165,7 +198,6 @@ class ArticleController extends Controller
 
         return response($this->empty_success_message);
     }
-
 
     public function getTrashed()
     {

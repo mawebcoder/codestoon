@@ -27,7 +27,7 @@ class CreateArticlesTable extends Migration
             $table->text('likes')->nullable();
             $table->string('slug')->nullable();
             $table->softDeletes();
-            $table->longText('hint')->nullable(null);
+            $table->longText('hint')->nullable();
             $table->unsignedBigInteger('writer')->nullable();
             $table->foreign('writer')->references('id')->on('users')->onDelete(null);
             $table->unsignedBigInteger('Registrar')->nullable();

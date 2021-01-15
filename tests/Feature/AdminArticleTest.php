@@ -213,8 +213,7 @@ class AdminArticleTest extends TestCase
     public function testCanForceDeleteArticles()
     {
         $articles = factory(Article::class, 10)->create();
-        $ids = $articles->pluck('id');
-        $asserting_data = [];
+        $ids = $articles->pluck('id')->toArray();
         $this->post(route('article.forceDelete'), [
             'ids' => $ids
         ])
@@ -223,9 +222,12 @@ class AdminArticleTest extends TestCase
                 'message' => 'success',
                 'data' => null
             ]);
-        $this->assertDeleted('articles', [
-            'id' => $articles[0]->id
-        ]);
+        foreach ($ids as $id) {
+            $this->assertDatabaseMissing('articles', [
+                'id' => $id
+            ]);
+        }
+
     }
 
 }
