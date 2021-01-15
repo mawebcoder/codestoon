@@ -44,18 +44,41 @@ class ArticleCategoryController extends Controller
 
     public function getActiveCategories()
     {
-        //TODO GET ACTIVE CATEGORIES
+        $article_categories = ArticleCategory::select(
+            'id',
+            'fa_title',
+            'status',
+            'created_at',
+            'updated_at')->whereStatus(1)->paginate(30);
+
+        return $article_categories->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $article_categories]) :
+            response($this->empty_success_message, 204);
     }
 
     public function getDeActiveCategories()
     {
-        //TODO GET DE ACTIVE CATEGORIES
+        $article_categories = ArticleCategory::select(
+            'id',
+            'fa_title',
+            'status',
+            'created_at',
+            'updated_at')->whereStatus(0)->paginate(30);
+
+        return $article_categories->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $article_categories]) :
+            response($this->empty_success_message, 204);
     }
 
 
-    public function show()
+    public function show(ArticleCategory $articleCategory)
     {
-        //TODO SHOW THE INFORMATION OF THE SPECIFIC ARTICLE
+        return response([
+            'message' => 'success',
+            'data' => [
+                'article_category' => $articleCategory,
+            ]
+        ]);
     }
 
     public function store(StoreArticle $storeArticle)
@@ -175,7 +198,7 @@ class ArticleCategoryController extends Controller
 
             $file_path = storage_path('app/public/images/articles/categories/' . $item['id']);
             if (is_dir($file_path)) {
-              Storage::disk('public')->deleteDirectory('images/articles/categories/' . $item['id']);
+                Storage::disk('public')->deleteDirectory('images/articles/categories/' . $item['id']);
             }
 
         }

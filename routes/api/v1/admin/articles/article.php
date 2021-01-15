@@ -11,7 +11,9 @@ Route::post('/articles/categories/deleteMultipleArticleCategory', 'ArticleCatego
 Route::get('/articles/categories/trashed','ArticleCategoryController@getTrashedArticleCategory')->name('articles.categories.trashed');
 Route::post('/articles/categories/force-delete','ArticleCategoryController@ForceDelete')->name('articles.categories.force.delete');
 Route::post('/articles/categories/restore','ArticleCategoryController@restore')->name('articles.categories.restore');
-
+Route::get('/articles/categories/actives','ArticleCategoryController@getActiveCategories')->name('articles.categories.actives');
+Route::get('/articles/categories/de-actives','ArticleCategoryController@getDeActiveCategories')->name('articles.categories.deActives');
+Route::get('/articles/categories/{articleCategory}','ArticleCategoryController@show')->name('articles.categories.show');
 //articles tags
 Route::post('/articles/tags', 'ArticleTagController@store')->name('article.tag.store');
 Route::get('/articles/tags', 'ArticleTagController@index')->name('article.tag.index');
@@ -23,7 +25,6 @@ Route::get('/articles/tags/get-Trashed','ArticleTagController@getTrashed')->name
 Route::post('/articles/tags/restore','ArticleTagController@restore')->name('articles.tag.restore');
 Route::get('/articles/tags/de-actives','ArticleTagController@getDeActiveTags')->name('articles.tags.deActives');
 Route::get('/articles/tags/actives','ArticleTagController@getActiveTags')->name('articles.tags.actives');
-
 //articles
 Route::post('/articles/delete/multi', 'ArticleController@deleteMultipleArticle')->name('delete.article.multiple');
 Route::get('/articles/trashed','ArticleController@getTrashed')->name('articles.trashed');
