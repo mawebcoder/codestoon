@@ -21,6 +21,8 @@ Route::post('/articles/tags/deleteMultipleArticleTags','ArticleTagController@del
 Route::post('/articles/tags/force-delete','ArticleTagController@forceDelete')->name('articles.tags.force.delete');
 Route::get('/articles/tags/get-Trashed','ArticleTagController@getTrashed')->name('articles.tags.trashed');
 Route::post('/articles/tags/restore','ArticleTagController@restore')->name('articles.tag.restore');
+Route::get('/articles/tags/de-actives','ArticleTagController@getDeActiveTags')->name('articles.tags.deActives');
+Route::get('/articles/tags/actives','ArticleTagController@getActiveTags')->name('articles.tags.actives');
 
 //articles
 Route::post('/articles/delete/multi', 'ArticleController@deleteMultipleArticle')->name('delete.article.multiple');

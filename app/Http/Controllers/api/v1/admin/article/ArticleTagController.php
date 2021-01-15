@@ -20,12 +20,20 @@ class ArticleTagController extends Controller
 
     public function getActiveTags()
     {
-        //TODO GET ACTIVE ARTICLE TAGS
+        $article_tags = ArticleTag::select('id', 'fa_title', 'updated_at', 'created_at')
+            ->where('status', 1)->paginate(30);
+        return $article_tags->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $article_tags]) :
+            response($this->empty_success_message, 204);
     }
 
     public function getDeActiveTags()
     {
-        //TODO GET DE ACTIVE ARTICLE TAGS
+        $article_tags = ArticleTag::select('id', 'fa_title', 'updated_at', 'created_at')
+            ->where('status', 0)->paginate(30);
+        return $article_tags->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $article_tags]) :
+            response($this->empty_success_message, 204);
     }
 
     public function index()

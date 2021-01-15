@@ -110,12 +110,12 @@ class AdminArticleCategoryTest extends TestCase
                 'message' => 'success',
                 'data' => null
             ]);
+        foreach ($articles_categories_ids as $id){
+            $this->assertSoftDeleted('article_categories', [
+                'id' => $id
+            ]);
+        }
 
-
-        //TODO SET THIS IN THE LOOP TO TEST ALL ARTICLE CATEGORIES SOFT DELETED
-        $this->assertSoftDeleted('article_categories', [
-            'id' => $articles_categories_ids[0]
-        ]);
     }
 
     public function testCanForceDeleteMultipleArticleCategory()
