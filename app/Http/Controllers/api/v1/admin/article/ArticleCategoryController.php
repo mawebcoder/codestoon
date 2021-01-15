@@ -20,6 +20,12 @@ class ArticleCategoryController extends Controller
         'data' => null
     ];
 
+    public function __construct()
+    {
+        //TODO SET PERMISSIONS IN THE SYSTEM HERE WITH MIDDLEWARES
+    }
+
+
     public function index()
     {
         //TODO SHOW ALL ARTICLE CATEGORIES LIST

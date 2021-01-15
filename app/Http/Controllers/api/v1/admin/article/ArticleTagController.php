@@ -13,6 +13,12 @@ class ArticleTagController extends Controller
     public $empty_success_message = ['message' => 'success', 'data' => null];
     public $error_message = ['message' => 'failed', 'data' => null];
 
+    public function __construct()
+    {
+        //TODO SET PERMISSIONS IN THE SYSTEM HERE WITH MIDDLEWARES
+    }
+
+
     public function index()
     {
         //TODO SHOW ALL ARTICLE TAGS IN PAGINATION HERE

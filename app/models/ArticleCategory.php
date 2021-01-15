@@ -21,6 +21,22 @@ class ArticleCategory extends Model
         return $this->belongsToMany(Article::class, 'article_category', 'articleCategory_id', 'article_id');
     }
 
+    public function ScopeGetAllParentsIds($q, $childId)
+    {
+        $all_parents_ids = [$childId];
 
+        //check is there any parent for this record?
+        $parent_id = ArticleCategory::find($childId)->parent;
+
+        while ($parent_id) {
+
+            $parent = ArticleCategory::find($parent_id);
+
+            $all_parents_ids = array_merge($all_parents_ids, [$parent->id]);
+
+            $parent_id = $parent->parent;
+        }
+        return $all_parents_ids;
+    }
 
 }

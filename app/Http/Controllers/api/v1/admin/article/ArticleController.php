@@ -4,14 +4,12 @@ namespace App\Http\Controllers\api\v1\admin\article;
 
 use App\Http\Controllers\Controller;
 use App\models\Article;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\models\ArticleCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
 {
-    use RefreshDatabase;
-
     public $empty_success_message = [
         'message' => 'success',
         'data' => null
@@ -33,102 +31,64 @@ class ArticleController extends Controller
     }
 
 
-    /**
-     * @OA\Post(
-     * path="/articles",
-     * summary="store new article",
-     * description="store new article in the system",
-     * tags={"articles"},
-     * @OA\RequestBody(
-     *    required=true,
-     *    description="required parameters",
-     *    @OA\JsonContent(
-     *       required={"fa_title","en_title","meta","text","short_description"},
-     *       @OA\Property(property="fa_title", type="string", format="title", example="article title"),
-     *       @OA\Property(property="en_title", type="string", format="title", example="english article title"),
-     *       @OA\Property(property="text", type="string", example="string"),
-     *       @OA\Property(property="short_description", type="string", example="short_description"),
-     *    ),
-     * ),
-     * @OA\Response(
-     *    response=201,
-     *    description="success response of the request",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="success"),
-     *       @OA\Property(property="data", type="boolean", example="null"),
-     *        )
-     *     ),
-     *@OA\Response(
-     *    response=500,
-     *    description="failed",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="failed", example="failed"),
-     *       @OA\Property(property="data", type="boolean", example="null"),
-     *        )
-     *     ),
-     * )
-     */
-
     //TODO STORE ARTICLE VALIDATION
     public function store(Request $request)
     {
-        $data = $request->only(
-            [
-                'fa_title',
-                'en_title',
-                'short_description',
-                'meta'
-            ]
-        );
+        $data = $request->only([
+            'fa_title',
+            'en_title',
+            'short_description',
+            'articleCategory_id',
+            'meta',
+        ]);
         $data['content'] = $request->text;
         $data['user_id'] = Auth::id();
+        $data['status'] = $request->status ? 1 : 0;
+
         $article = Article::create($data);
-        if ($article) {
-            $result = $article->articleCategories()->sync($request->article_categories);
-            if ($request->article_tags->count()) {
-                $article->tags()->sync($request->article_tags);
-            }
-            return $result ?
-                response()->json($this->empty_success_message, 201) :
-                response()->json($this->failed_message, 500);
-        }
-        return response()->json($this->failed_message, 500);
+
+        $this->uploadCover($article, $request);
+
+        $this->syncCategories($data, $article);
+
+        $this->syncTags($article, $request);
+
+        return response($this->empty_success_message, 201);
+
     }
 
-    /**
-     * @OA\delete(
-     * path="/articles/{article}",
-     * summary="delete article",
-     * description="delete  article from the system",
-     * tags={"articles"},
-     * @OA\parameter(
-     *          name="article",
-     *           in="path",
-     *           required=true,
-     *           description="the article id",
-     *           @OA\schema(
-     * type="integer",
-     *
-     * ),
-     *     ),
-     * @OA\Response(
-     *    response=200,
-     *    description="success response of the request",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="success"),
-     *       @OA\Property(property="data", type="boolean", example="null"),
-     *        )
-     *     ),
-     *@OA\Response(
-     *    response=500,
-     *    description="failed",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="failed", example="failed"),
-     *       @OA\Property(property="data", type="boolean", example="null"),
-     *        )
-     *     ),
-     * )
-     */
+
+    public function syncCategories($data, $article)
+    {
+        $all_parents_ids_of_category_and_itself_id = ArticleCategory::getAllParentsIds($data['articleCategory_id']);
+
+        $article->articleCategories()->sync($all_parents_ids_of_category_and_itself_id);
+
+        return true;
+    }
+
+    public function syncTags($article, $request)
+    {
+        if ($request->has('article_tags')) {
+            $article->tags()->sync($request->article_tags);
+        }
+        return true;
+    }
+
+    public function uploadCover($article, $request)
+    {
+        if ($request->hasFile('file')) {
+            $path = 'images/articles/covers/' . $article->id;
+
+            $file_name = $request->file('file')->getClientOriginalName();
+
+            $request->file('file')->storeAs($path, $file_name, 'public');
+
+            $article->update(['cover_file_name' => $file_name]);
+        }
+        return true;
+    }
+
     public function destroy(Article $article)
     {
         $result = $article->delete();
@@ -137,40 +97,6 @@ class ArticleController extends Controller
             response()->json($this->failed_message, 500);
     }
 
-
-    /**
-     * @OA\put(
-     * path="/articles/{article}",
-     * summary="update article",
-     * description="update  article in the system",
-     * tags={"articles"},
-     * @OA\parameter(
-     *          name="article",
-     *           in="path",
-     *           required=true,
-     *           description="the article id",
-     *           @OA\schema(
-     * type="integer",
-     * ),
-     *     ),
-     * @OA\Response(
-     *    response=200,
-     *    description="success response of the request",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="success"),
-     *       @OA\Property(property="data", type="boolean", example="null"),
-     *        )
-     *     ),
-     *@OA\Response(
-     *    response=500,
-     *    description="failed",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="failed", example="failed"),
-     *       @OA\Property(property="data", type="boolean", example="null"),
-     *        )
-     *     ),
-     * )
-     */
 
     //TODO UPDATE ARTICLE VALIDATION
     public function update(Article $article)
@@ -196,39 +122,6 @@ class ArticleController extends Controller
             response()->json($this->failed_message);
     }
 
-    /**
-     * @OA\post(
-     * path="/articles/delete/multi",
-     * summary="delete some articles from database",
-     * description="delete   articles in the system",
-     * tags={"articles"},
-     * @OA\RequestBody(
-     *    required=true,
-     *    description="pass articles ids",
-     *    @OA\JsonContent(
-     *       required={"ids"},
-     *       @OA\Property(property="ids", type="object", format="array", example="{ids:[6,2,3,4]}"),
-     *    ),
-     * ),
-     * @OA\Response(
-     *    response=200,
-     *    description="success response of the request",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="success"),
-     *       @OA\Property(property="data", type="boolean", example="null"),
-     *        )
-     *     ),
-     *@OA\Response(
-     *    response=500,
-     *    description="failed",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="failed", example="failed"),
-     *       @OA\Property(property="data", type="boolean", example="null"),
-     *        )
-     *     ),
-     * )
-     */
-
 
     //TODO DELETE MULTIPLE ARTICLE VALIDATION
     public function deleteMultipleArticle()
@@ -241,38 +134,6 @@ class ArticleController extends Controller
             response()->json($this->failed_message);
     }
 
-    /**
-     * @OA\post(
-     * path="/articles/force-delete",
-     * summary="force delete some articles from database",
-     * description="force delete   articles in the system",
-     * tags={"articles"},
-     * @OA\RequestBody(
-     *    required=true,
-     *    description="pass articles ids",
-     *    @OA\JsonContent(
-     *       required={"ids"},
-     *       @OA\Property(property="ids", type="object", format="array", example="{ids:[6,2,3,4]}"),
-     *    ),
-     * ),
-     * @OA\Response(
-     *    response=200,
-     *    description="success response of the request",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="success"),
-     *       @OA\Property(property="data", type="boolean", example="null"),
-     *        )
-     *     ),
-     *@OA\Response(
-     *    response=500,
-     *    description="failed",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="failed", example="failed"),
-     *       @OA\Property(property="data", type="boolean", example="null"),
-     *        )
-     *     ),
-     * )
-     */
 
     //TODO ARTICLE FORCE DELETE MULTIPLE VALIDATION
     public function forceDeleteMultipleArticle()
@@ -293,16 +154,14 @@ class ArticleController extends Controller
 
     public function getTrashedArticles()
     {
-        $articles = Article::withTrashed()->select('fa_title', 'en_title', 'id')->paginate(20);
+        $articles = Article::onlyTrashed()->select('fa_title', 'en_title', 'id')
+            ->paginate(20);
+
+        $data = ['message' => 'success', 'data' => $articles];
+
         return $articles->isNotEmpty() ?
-            response()->json([
-                'message' => 'success',
-                'data' => $articles
-            ]) :
-            response()->json([
-                'message' => 'success',
-                'data' => null
-            ], 204);
+            response($data) :
+            response($this->failed_message, 204);
     }
 
 }

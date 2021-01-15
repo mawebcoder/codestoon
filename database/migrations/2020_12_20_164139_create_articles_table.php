@@ -21,6 +21,9 @@ class CreateArticlesTable extends Migration
             $table->boolean('status')->default(0);
             $table->text('short_description');
             $table->string('meta');
+            $table->unsignedBigInteger('articleCategory_id');
+            $table->foreign('articleCategory_id')->references('id')->on('article_categories')->onDelete(null);
+            $table->string('cover_file_name')->nullable();
             $table->text('likes')->nullable();
             $table->string('slug')->nullable();
             $table->softDeletes();
