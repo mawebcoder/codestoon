@@ -5,7 +5,6 @@ namespace App\Http\Controllers\api\v1\admin\article;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\articles\DeleteArticleValidation;
 use App\Http\Requests\articles\StoreValidation;
-use App\Http\Requests\articles\tag\DeleteMultipleValidation;
 use App\Http\Requests\articles\UpdateArticleValidation;
 use App\models\Article;
 use App\models\ArticleCategory;
@@ -142,7 +141,6 @@ class ArticleController extends Controller
     }
 
 
-
     public function deleteMultipleArticle(DeleteArticleValidation $deleteArticleValidation)
     {
         $ids = request()->ids;
@@ -153,27 +151,26 @@ class ArticleController extends Controller
     }
 
 
-    //TODO ARTICLE FORCE DELETE MULTIPLE VALIDATION
-    public function forceDeleteMultipleArticle()
+    public function forceDelete(DeleteArticleValidation $deleteArticleValidation)
     {
-
-        $ids = request()->ids;
-        $result = Article::withTrashed()->find($ids)->forceDelete();
-        return $result ?
-            response()->json($this->empty_success_message) :
-            response()->json($this->failed_message);
+        //TODO FORCE DELETE ARTICLES
     }
 
-    //TODO  VALIDATION OF THE RESTORE MULTIPLE ARTICLES
-    public function restoreMultipleArticles()
+
+    public function restore(DeleteArticleValidation $DeleteArticleValidation)
     {
-        //TODO RESTORE MULTIPLE ARTICLES
+        $ids = $DeleteArticleValidation->ids;
+
+        Article::withTrashed()->whereIn('id', $ids)->restore();
+
+        return response($this->empty_success_message);
     }
 
-    public function getTrashedArticles()
+
+    public function getTrashed()
     {
         $articles = Article::onlyTrashed()->select('fa_title', 'en_title', 'id')
-            ->paginate(20);
+            ->paginate(30);
 
         $data = ['message' => 'success', 'data' => $articles];
 

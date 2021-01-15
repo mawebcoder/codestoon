@@ -22,6 +22,8 @@ Route::get('/articles/tags/get-Trashed','ArticleTagController@getTrashed')->name
 
 //articles
 Route::post('/articles/delete/multi', 'ArticleController@deleteMultipleArticle')->name('delete.article.multiple');
-Route::post('/articles/force-delete', 'ArticleController@forceDeleteMultipleArticle')->name('article.forceDelete');
+Route::get('/articles/trashed','ArticleController@getTrashed')->name('articles.trashed');
+Route::post('/articles/force-delete', 'ArticleController@forceDelete')->name('article.forceDelete');
+Route::post('/articles/restore','ArticleController@restore')->name('articles.restore');
 Route::resource('articles', 'ArticleController')->except(['create', 'edit', 'show']);
 
