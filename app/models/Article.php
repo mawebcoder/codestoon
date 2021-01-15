@@ -35,7 +35,7 @@ class Article extends Model
      */
     public function setFaTitleAttribute($value)
     {
-        $this->attributes['slug'] = Str::slug($value);
+        $this->attributes['slug'] =join('-',explode(' ',$value));
         return $this->attributes['fa_title'] = $value;
     }
 

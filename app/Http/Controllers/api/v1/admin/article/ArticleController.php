@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1\admin\article;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\articles\StoreValidation;
 use App\models\Article;
 use App\models\ArticleCategory;
 use Illuminate\Http\Request;
@@ -31,8 +32,8 @@ class ArticleController extends Controller
     }
 
 
-    //TODO STORE ARTICLE VALIDATION
-    public function store(Request $request)
+
+    public function store(StoreValidation $request)
     {
         $data = $request->only([
             'fa_title',
