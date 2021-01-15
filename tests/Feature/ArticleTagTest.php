@@ -99,7 +99,19 @@ class ArticleTagTest extends TestCase
 
     public function testCanRestoreArticleTag()
     {
-        //TODO TEST CAN RESTORE ARTICLE TAG
+        $articles_tags = factory(ArticleTag::class, 10)->create();
+        $ids = $articles_tags->pluck('id')->toArray();
+        foreach ($articles_tags as $article) {
+            $article->delete();
+        }
+        $this->post(route('articles.tag.restore'), ['ids' => $ids])
+            ->assertOk();
+
+        foreach ($ids as $id) {
+            $this->assertDatabaseHas('article_tags', [
+                'id' => $id
+            ]);
+        }
     }
 
 }

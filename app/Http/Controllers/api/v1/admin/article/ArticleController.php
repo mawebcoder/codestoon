@@ -30,9 +30,35 @@ class ArticleController extends Controller
 
     public function index()
     {
-        //TODO SHOW ALL ARTICLES LIST HERE WITH PAGINATION
+        $articles = Article::select(
+            'fa_title',
+            'cover_file_name',
+            'id',
+            'updated_at',
+            'created_at',
+            'status',
+            'short_description',
+            'articleCategory_id'
+        )->with('category:id,fa_title')->paginate(10);
+        return $articles->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $articles]) :
+            response(['message' => 'success'], 204);
     }
 
+    public function getActiveArticles()
+    {
+        //TODO GET ACTIVE ARTICLES
+    }
+
+    public function getDeActiveArticles()
+    {
+        //TODO GET DE ACTIVE ARTICLES
+    }
+
+    public function show()
+    {
+        //TODO SHOW DETAILS OF THE SPECIFIC ARTICLE
+    }
 
     public function store(StoreValidation $request)
     {

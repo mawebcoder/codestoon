@@ -41,6 +41,23 @@ class ArticleCategoryController extends Controller
             response($this->empty_success_message, 204);
     }
 
+
+    public function getActiveCategories()
+    {
+        //TODO GET ACTIVE CATEGORIES
+    }
+
+    public function getDeActiveCategories()
+    {
+        //TODO GET DE ACTIVE CATEGORIES
+    }
+
+
+    public function show()
+    {
+        //TODO SHOW THE INFORMATION OF THE SPECIFIC ARTICLE
+    }
+
     public function store(StoreArticle $storeArticle)
     {
 

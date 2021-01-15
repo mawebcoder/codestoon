@@ -23,6 +23,11 @@ class Article extends Model
         return $this->belongsToMany(ArticleCategory::class, 'article_category', 'article_id', 'articleCategory_id');
     }
 
+    public function category(){
+
+        return $this->belongsTo(ArticleCategory::class,'articleCategory_id','id');
+    }
+
     public function comments(){
         return $this->morphMany(Comment::class,'commentable','commentable_type','commentable_id');
     }

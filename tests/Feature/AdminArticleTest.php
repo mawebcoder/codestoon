@@ -210,7 +210,7 @@ class AdminArticleTest extends TestCase
         $ids = $articles->pluck('id')->toArray();
 
         foreach ($ids as $id) {
-            Storage::disk('public')->put('images/articles/covers/'.$id.'/mo.txt','hello mohammad');
+            Storage::disk('public')->put('images/articles/covers/' . $id . '/mo.txt', 'hello mohammad');
         }
 
         $this->post(route('article.forceDelete'), [
@@ -229,14 +229,26 @@ class AdminArticleTest extends TestCase
 
         foreach ($ids as $id) {
 
-            $this->assertFileDoesNotExist(storage_path('app/public/images/articles/covers/'.$id.'/mo.txt'));
+            $this->assertFileDoesNotExist(storage_path('app/public/images/articles/covers/' . $id . '/mo.txt'));
         }
 
     }
 
     public function testCanRestoreArticle()
     {
-        //TODO TEST CAN RESTORE  ARTICLE
+        $articles = factory(Article::class, 10)->create();
+        $ids = $articles->pluck('id')->toArray();
+        foreach ($articles as $article) {
+            $article->delete();
+        }
+        $this->post(route('articles.restore'), ['ids' => $ids])
+            ->assertOk();
+
+        foreach ($ids as $id) {
+            $this->assertDatabaseHas('articles', [
+                'id' => $id
+            ]);
+        }
     }
 
 }

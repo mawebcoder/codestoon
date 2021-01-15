@@ -50,7 +50,7 @@ class AdminArticleCategoryTest extends TestCase
         $this->assertFileExists(storage_path('app/public/images/articles/categories/2/' . $file->getClientOriginalName()));
     }
 
-    public function testCanDeleteArticleCategory()
+    public function testCanSoftDeleteArticleCategory()
     {
         $category = factory(ArticleCategory::class, 1)->create()->first();
         $this->delete(route('article.category.destroy', ['articleCategory' => $category->id]))
@@ -136,7 +136,7 @@ class AdminArticleCategoryTest extends TestCase
             ]);
         }
 
-        foreach ($article_ids as $id){
+        foreach ($article_ids as $id) {
 
             $this->assertFileDoesNotExist(storage_path('app/public/images/articles/categories/' . $id . '/mo.txt'));
         }
@@ -146,9 +146,8 @@ class AdminArticleCategoryTest extends TestCase
     public function testCanRestoreMultipleArticleCategories()
     {
         $articles = factory(ArticleCategory::class, 10)->create();
-        $ids = [];
+        $ids = $articles->pluck('id')->toArray();
         foreach ($articles as $article) {
-            array_push($ids, $article->id);
             $article->delete();
         }
 

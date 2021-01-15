@@ -18,11 +18,25 @@ class ArticleTagController extends Controller
         //TODO SET PERMISSIONS IN THE SYSTEM HERE WITH MIDDLEWARES
     }
 
+    public function getActiveTags()
+    {
+        //TODO GET ACTIVE ARTICLE TAGS
+    }
+
+    public function getDeActiveTags()
+    {
+        //TODO GET DE ACTIVE ARTICLE TAGS
+    }
 
     public function index()
     {
-        //TODO SHOW ALL ARTICLE TAGS IN PAGINATION HERE
+        $article_tags = ArticleTag::select('id', 'fa_title', 'updated_at', 'created_at')
+            ->paginate(30);
+        return $article_tags->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $article_tags]) :
+            response($this->empty_success_message, 204);
     }
+
 
     public function store(StoreValidation $storeValidation)
     {
@@ -73,21 +87,21 @@ class ArticleTagController extends Controller
     }
 
 
-    public function restoreArticleTag(DeleteMultipleValidation $deleteMultipleValidation)
+    public function restore(DeleteMultipleValidation $deleteMultipleValidation)
     {
-        //TODO TEST CAN RESTORE MULTIPLE ARTICLE TAG
+        $ids = $deleteMultipleValidation->ids;
+        ArticleTag::withTrashed()->whereIn('id', $ids)->restore();
+        return response($this->empty_success_message);
     }
 
 
     public function getTrashed()
     {
         $all_trashed_article_tags = ArticleTag::onlyTrashed()
-
             ->select('fa_title', 'en_title', 'id')
-
             ->paginate(30);
 
-        $data=['message'=>'success','data'=>$all_trashed_article_tags];
+        $data = ['message' => 'success', 'data' => $all_trashed_article_tags];
 
         return response($data);
     }

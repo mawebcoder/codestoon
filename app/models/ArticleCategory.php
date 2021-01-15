@@ -39,4 +39,9 @@ class ArticleCategory extends Model
         return $all_parents_ids;
     }
 
+    public function manyArticles()
+    {
+        return $this->hasMany(Article::class,'articleCategory_id','id');
+    }
+
 }
