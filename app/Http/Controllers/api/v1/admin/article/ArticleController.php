@@ -4,9 +4,9 @@ namespace App\Http\Controllers\api\v1\admin\article;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\articles\StoreValidation;
+use App\Http\Requests\articles\UpdateArticleValidation;
 use App\models\Article;
 use App\models\ArticleCategory;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
@@ -111,7 +111,7 @@ class ArticleController extends Controller
 
 
     //TODO UPDATE ARTICLE VALIDATION
-    public function update(Article $article, Request $request)
+    public function update(Article $article, UpdateArticleValidation $request)
     {
         $data = $request->only([
             'fa_title',

@@ -3,8 +3,9 @@
 namespace App\Http\Requests\articles;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreValidation extends FormRequest
+class UpdateArticleValidation extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,15 +24,17 @@ class StoreValidation extends FormRequest
      */
     public function rules()
     {
+        $article_id = $this->route('article');
         return [
-            'fa_title' => ['required', 'unique:articles,fa_title', 'max:190'],
+            'fa_title' => ['required', Rule::unique('articles', 'fa_title')->ignore($article_id), 'max:190'],
             'en_title' => ['max:190'],
             'writer' => ['required', 'exists:users,id'],
             'cover_file_name' => ['max:2048', 'mimes:jpg,jpeg,png'],
             'meta' => ['required', 'max:190'],
-            'text' => ['required'],
-            'articleCategory_id' => ['required', 'exists:article_categories,id']
+            'articleCategory_id' => ['required', 'exists:article_categories,id'],
+            'text' => ['required']
         ];
+
     }
 
     public function messages()
@@ -49,7 +52,7 @@ class StoreValidation extends FormRequest
             'meta.max' => 'حداکثر کاراکترهای مجاز برای توضیحات متا تگ 190 میباشد',
             'writer.required' => 'نویسنده این مقاله را مشخص نکرده اید',
             'writer.exists' => 'نویسنده انتخاب شده نامعتبر است',
-            'text.required'=>'محتوای مقاله خالی است'
+            'text.required' => 'محتوای مقاله خالی است'
         ];
     }
 }
