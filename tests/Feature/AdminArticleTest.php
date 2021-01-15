@@ -8,6 +8,7 @@ use App\models\ArticleTag;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class AdminArticleTest extends TestCase
@@ -111,10 +112,8 @@ class AdminArticleTest extends TestCase
             ->pluck('id')->toArray();
 
         $article_id = factory(Article::class)->create(['cover_file_name' => 'mo.txt'])->id;
-        $source = fopen(storage_path('app/public/images/articles/covers/' . $article_id . '/mo.txt'), 'w');
-        fwrite($source, 'hello mohammad');
-        fclose($source);
 
+        Storage::disk('public')->put('images/articles/covers/' . $article_id . '/mo.txt', 'hello mohammad');
         $writer = factory(User::class)->create();
 
         $Registrar = factory(User::class)->create();
@@ -204,16 +203,16 @@ class AdminArticleTest extends TestCase
 
     }
 
-
-    public function testCanRestoreArticle()
-    {
-        //TODO TEST CAN RESTORE  ARTICLE
-    }
-
     public function testCanForceDeleteArticles()
     {
-        $articles = factory(Article::class, 10)->create();
+        $articles = factory(Article::class, 10)->create(['cover_file_name' => 'mo.txt']);
+
         $ids = $articles->pluck('id')->toArray();
+
+        foreach ($ids as $id) {
+            Storage::disk('public')->put('images/articles/covers/'.$id.'/mo.txt','hello mohammad');
+        }
+
         $this->post(route('article.forceDelete'), [
             'ids' => $ids
         ])
@@ -228,6 +227,16 @@ class AdminArticleTest extends TestCase
             ]);
         }
 
+        foreach ($ids as $id) {
+
+            $this->assertFileDoesNotExist(storage_path('app/public/images/articles/covers/'.$id.'/mo.txt'));
+        }
+
+    }
+
+    public function testCanRestoreArticle()
+    {
+        //TODO TEST CAN RESTORE  ARTICLE
     }
 
 }

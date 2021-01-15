@@ -10,7 +10,7 @@ Route::delete('/articles/categories/{articleCategory}', 'ArticleCategoryControll
 Route::post('/articles/categories/deleteMultipleArticleCategory', 'ArticleCategoryController@deleteMultipleArticleCategory')->name('delete.multiple.article.category');
 Route::get('/articles/categories/trashed','ArticleCategoryController@getTrashedArticleCategory')->name('articles.categories.trashed');
 Route::post('/articles/categories/force-delete','ArticleCategoryController@ForceDelete')->name('articles.categories.force.delete');
-Route::post('/articles/categories/restore','ArticleCategoryController@restore')->name('articles.categories.force.delete');
+Route::post('/articles/categories/restore','ArticleCategoryController@restore')->name('articles.categories.restore');
 
 //articles tags
 Route::post('/articles/tags', 'ArticleTagController@store')->name('article.tag.store');

@@ -7,6 +7,7 @@ use App\Http\Requests\articles\category\DeleteMultiple;
 use App\Http\Requests\articles\category\StoreArticle;
 use App\Http\Requests\articles\category\UpdateArticleValidation;
 use App\models\ArticleCategory;
+use Illuminate\Support\Facades\Storage;
 
 class ArticleCategoryController extends Controller
 {
@@ -22,13 +23,22 @@ class ArticleCategoryController extends Controller
 
     public function __construct()
     {
-        //TODO SET PERMISSIONS IN THE SYSTEM HERE WITH MIDDLEWARES
+        //TODO SET PERMISSIONS IN THE SYSTEM HERE WITH MIDDLE WARES
     }
 
 
     public function index()
     {
-        //TODO SHOW ALL ARTICLE CATEGORIES LIST
+        $article_categories = ArticleCategory::select(
+            'id',
+            'fa_title',
+            'status',
+            'created_at',
+            'updated_at')->paginate(30);
+
+        return $article_categories->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $article_categories]) :
+            response($this->empty_success_message, 204);
     }
 
     public function store(StoreArticle $storeArticle)
@@ -47,30 +57,34 @@ class ArticleCategoryController extends Controller
         $articleCategory = ArticleCategory::create($data);
 
         //article category cover upload
-        if ($storeArticle->hasFile('file')) {
-            $this->upload($articleCategory, $storeArticle->file('file'));
-        }
+
+        $this->upload($articleCategory, $storeArticle->file('file'), $storeArticle);
+
 
         return $articleCategory ?
             response()->json($this->empty_success_message, 201) :
             response()->json($this->failed_message, 500);
     }
 
-    public function upload($articleCategory, $file)
+    public function upload($articleCategory, $file, $request)
     {
-        $path = 'images/articles/categories/' . $articleCategory->id;
-        $file_name = $file->getClientOriginalName();
-        $full_path = $path . '/' . $file_name;
+        if ($request->hasFile('file')) {
+            $path = 'images/articles/categories/' . $articleCategory->id;
+            $file_name = $file->getClientOriginalName();
+            $full_path = $path . '/' . $file_name;
 
-        if (is_dir($full_path)) {
-            unlink($full_path);
+            if (is_dir($full_path)) {
+                unlink($full_path);
+            }
+
+            $file->storeAs($path, $file_name, 'public');
+
+            return $articleCategory->update([
+                'cover_file_name' => $file_name
+            ]);
         }
+        return true;
 
-        $file->storeAs($path, $file_name, 'public');
-
-        return $articleCategory->update([
-            'cover_file_name' => $file_name
-        ]);
     }
 
     public function destroy(ArticleCategory $articleCategory)
@@ -141,10 +155,10 @@ class ArticleCategoryController extends Controller
     public function deleteFiles($cover_file_names)
     {
         foreach ($cover_file_names as $item) {
-            $file_path = storage_path('app/public/images/articles/categories/' . $item['id'] . '/' . $item['cover_file_name']);
-            if (file_exists($file_path)) {
-                unlink($file_path);
-                rmdir(storage_path('app/public/images/articles/categories/' . $item['id']));
+
+            $file_path = storage_path('app/public/images/articles/categories/' . $item['id']);
+            if (is_dir($file_path)) {
+              Storage::disk('public')->deleteDirectory('images/articles/categories/' . $item['id']);
             }
 
         }

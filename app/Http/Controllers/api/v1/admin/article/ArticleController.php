@@ -9,6 +9,7 @@ use App\Http\Requests\articles\UpdateArticleValidation;
 use App\models\Article;
 use App\models\ArticleCategory;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ArticleController extends Controller
 {
@@ -157,11 +158,10 @@ class ArticleController extends Controller
 
         $target = Article::withTrashed()->select('id', 'cover_file_name')->whereIn('id', $ids);
 
-
+        //get all files names
         $cover_file_names = $this->getAllFilesNames($target);
+
         $target->forceDelete();
-
-
         //delete all covers from host
         $this->deleteFiles($cover_file_names);
 
@@ -182,10 +182,9 @@ class ArticleController extends Controller
     public function deleteFiles($cover_file_names)
     {
         foreach ($cover_file_names as $item) {
-            $file_path = storage_path('app/public/images/articles/covers/' . $item['id'] . '/' . $item['cover_file_name']);
-            if (file_exists($file_path)) {
-                unlink($file_path);
-                rmdir(storage_path('app/public/images/articles/covers/' . $item['id']));
+            $file_path = storage_path('app/public/images/articles/covers/' . $item['id']);
+            if (is_dir($file_path)) {
+                Storage::disk('public')->deleteDirectory('images/articles/covers/' . $item['id']);
             }
         }
     }

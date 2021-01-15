@@ -3,14 +3,14 @@
 namespace Tests\Feature;
 
 use App\models\ArticleCategory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class AdminArticleCategoryTest extends TestCase
 {
-    use RefreshDatabase;
+//    use RefreshDatabase;
 
 
     protected function setUp(): void
@@ -120,13 +120,47 @@ class AdminArticleCategoryTest extends TestCase
 
     public function testCanForceDeleteMultipleArticleCategory()
     {
-        //TODO TEST CAN FORCE DELETE MULTIPLE ARTICLE CATEGORY FROM DATA BASE
-        //TODO CREATE FAKE FILES FOR ALL THEM TO TESTING DELETING THE FILES FROM HOST
+        $article_categories = factory(ArticleCategory::class, 10)->create(['cover_file_name' => 'mo.txt']);
+        $article_ids = $article_categories->pluck('id')->toArray();
+
+        foreach ($article_ids as $id) {
+            Storage::disk('public')->put('images/articles/categories/' . $id . '/mo.txt', 'hello mohamamd');
+        }
+
+        $this->post(route('articles.categories.force.delete'), ['ids' => $article_ids])
+            ->assertOk();
+
+        foreach ($article_ids as $id) {
+            $this->assertDatabaseMissing('article_categories', [
+                'id' => $id
+            ]);
+        }
+
+        foreach ($article_ids as $id){
+
+            $this->assertFileDoesNotExist(storage_path('app/public/images/articles/categories/' . $id . '/mo.txt'));
+        }
+
     }
 
     public function testCanRestoreMultipleArticleCategories()
     {
-        //TODO TEST CAN RESTORE MULTIPLE ARTICLE CATEGORY
+        $articles = factory(ArticleCategory::class, 10)->create();
+        $ids = [];
+        foreach ($articles as $article) {
+            array_push($ids, $article->id);
+            $article->delete();
+        }
+
+        $this->post(route('articles.categories.restore'), ['ids' => $ids])
+            ->assertOk();
+
+        foreach ($ids as $id) {
+            $this->assertDatabaseHas('article_categories', [
+                'id' => $id
+            ]);
+        }
+
     }
 
 }
