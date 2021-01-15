@@ -32,7 +32,6 @@ class ArticleController extends Controller
     }
 
 
-
     public function store(StoreValidation $request)
     {
         $data = $request->only([
@@ -41,9 +40,13 @@ class ArticleController extends Controller
             'short_description',
             'articleCategory_id',
             'meta',
+            'writer'
         ]);
+
         $data['content'] = $request->text;
-        $data['user_id'] = Auth::id();
+
+        $data['Registrar'] = Auth::id();
+
         $data['status'] = $request->status ? 1 : 0;
 
         $article = Article::create($data);
@@ -79,9 +82,17 @@ class ArticleController extends Controller
     public function uploadCover($article, $request)
     {
         if ($request->hasFile('file')) {
-            $path = 'images/articles/covers/' . $article->id;
 
+            $path = 'images/articles/covers/' . $article->id;
             $file_name = $request->file('file')->getClientOriginalName();
+
+            if ($article->cover_file_name){
+
+                if (file_exists(storage_path('app/public/'.$path.'/'.$article->cover_file_name))) {
+                    unlink(storage_path('app/public/'.$path.'/'.$article->cover_file_name));
+                }
+            }
+
 
             $request->file('file')->storeAs($path, $file_name, 'public');
 
@@ -90,37 +101,43 @@ class ArticleController extends Controller
         return true;
     }
 
+
     public function destroy(Article $article)
     {
         $result = $article->delete();
-        return $result ?
-            response()->json($this->empty_success_message) :
-            response()->json($this->failed_message, 500);
+
+        return response($this->empty_success_message);
     }
 
 
     //TODO UPDATE ARTICLE VALIDATION
-    public function update(Article $article)
+    public function update(Article $article, Request $request)
     {
-        $data = request()->only([
-            'meta',
+        $data = $request->only([
             'fa_title',
             'en_title',
             'short_description',
+            'articleCategory_id',
+            'meta',
+            'writer'
         ]);
-        $data['content'] = request()->text;
 
-        $update_result = $article->update($data);
+        $data['content'] = $request->text;
 
-        $sync_result = $article->articleCategories()->sync(request()->article_categories);
+        $data['Registrar'] = Auth::id();
 
-        if (request()->article_tags->count()) {
-            $article->tags()->sync(request()->article_tags);
-        }
+        $data['status'] = $request->status ? 1 : 0;
 
-        return $update_result && $sync_result ?
-            response()->json($this->empty_success_message) :
-            response()->json($this->failed_message);
+        $article->update($data);
+
+        $this->uploadCover($article, $request);
+
+        $this->syncCategories($data, $article);
+
+        $this->syncTags($article, $request);
+
+        return response($this->empty_success_message, 200);
+
     }
 
 

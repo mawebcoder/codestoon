@@ -25,11 +25,11 @@ class AdminArticleTest extends TestCase
     {
         $file = UploadedFile::fake()->image('image.jpeg');
 
-        //first parent
+        //first parent category
         $parent_article_category = factory(ArticleCategory::class)->create();
-//        second parent
+//        second parent category
         $second_parent_article_category = factory(ArticleCategory::class)->create(['parent' => $parent_article_category->id]);
-        //last level
+        //last level category
         $article_category = factory(ArticleCategory::class)->create(['parent' => $second_parent_article_category->id]);
 
         $article_tags_ids = factory(ArticleTag::class, 4)->create()
@@ -37,7 +37,9 @@ class AdminArticleTest extends TestCase
 
         $writer = factory(User::class)->create();
 
-        $this->actingAs($writer);
+        $Registrar = factory(User::class)->create();
+
+        $this->actingAs($Registrar);
 
         $data = [
             'fa_title' => 'article_fa_title',
@@ -48,6 +50,7 @@ class AdminArticleTest extends TestCase
             'articleCategory_id' => $article_category->id,
             'article_tags' => $article_tags_ids,
             'status' => 1,
+            'writer' => $writer->id,
             'file' => $file
         ];
         $this->post(route('articles.store'), $data)
@@ -92,7 +95,84 @@ class AdminArticleTest extends TestCase
     /**
      * @test
      */
-    public function testCanDeleteArticle()
+
+    public function testCanUpdateArticle()
+    {
+        $file = UploadedFile::fake()->image('image.jpeg');
+
+        //first parent category
+        $parent_article_category = factory(ArticleCategory::class)->create();
+//        second parent category
+        $second_parent_article_category = factory(ArticleCategory::class)->create(['parent' => $parent_article_category->id]);
+        //last level category
+        $article_category = factory(ArticleCategory::class)->create(['parent' => $second_parent_article_category->id]);
+
+        $article_tags_ids = factory(ArticleTag::class, 4)->create()
+            ->pluck('id')->toArray();
+
+        $article_id = factory(Article::class)->create(['cover_file_name' => 'mo.txt'])->id;
+        $source = fopen(storage_path('app/public/images/articles/covers/' . $article_id . '/mo.txt'), 'w');
+        fwrite($source, 'hello mohammad');
+        fclose($source);
+
+        $writer = factory(User::class)->create();
+
+        $Registrar = factory(User::class)->create();
+
+        $this->actingAs($Registrar);
+
+        $data = [
+            'fa_title' => 'article_fa_title',
+            'en_title' => 'article_en_title',
+            'meta' => 'meta description',
+            'text' => 'article_content',
+            'short_description' => 'article_short_description',
+            'articleCategory_id' => $article_category->id,
+            'article_tags' => $article_tags_ids,
+            'status' => 1,
+            'writer' => $writer->id,
+            'file' => $file
+        ];
+        $this->put(route('articles.update', ['article' => $article_id]), $data)
+            ->assertStatus(200)
+            ->assertJson([
+                'message' => 'success',
+                'data' => null
+            ]);
+
+        $this->assertDatabaseHas('articles', [
+            'fa_title' => 'article_fa_title',
+            'en_title' => 'article_en_title',
+            'meta' => 'meta description',
+            'content' => 'article_content',
+            'status' => 1,
+            'cover_file_name' => $file->getClientOriginalName(),
+            'short_description' => 'article_short_description',
+        ]);
+
+        $file_path = storage_path('app/public/images/articles/covers/' . $article_id . '/image.jpeg');
+
+        $this->assertFileExists($file_path);
+
+        $article_categories_ids = [$parent_article_category->id, $second_parent_article_category->id, $article_category->id];
+
+        foreach ($article_categories_ids as $id) {
+
+            $this->assertDatabaseHas('article_category', [
+                'articleCategory_id' => $id
+            ]);
+        }
+
+        foreach ($article_tags_ids as $id) {
+
+            $this->assertDatabaseHas('article_tag', [
+                'articleTag_id' => $id,
+            ]);
+        }
+
+    }
+
+    public function testCanSoftDeleteArticle()
     {
         $article = factory(Article::class)->create();
 
@@ -102,47 +182,6 @@ class AdminArticleTest extends TestCase
         $this->assertSoftDeleted('articles', [
             'id' => $article->id
         ]);
-    }
-
-    public function testCanUpdateArticle()
-    {
-        $article_category_one = factory(ArticleCategory::class)->create();
-        $article_category_two = factory(ArticleCategory::class)->create();
-        $ids = [$article_category_one->id, $article_category_two->id];
-        $article_tags_ids = factory(ArticleTag::class, 5)->create()->pluck('id');
-        $article = factory(Article::class)->create();
-//        creating the writer of the article
-        $writer = factory(User::class)->create();
-        $this->actingAs($writer);
-        $data = [
-            'fa_title' => 'article_fa_title',
-            'en_title' => 'article_en_title',
-            'meta' => 'meta description',
-            'text' => 'article_content',
-            'short_description' => 'article_short_description',
-            'article_categories' => $ids,
-            'article_tags' => $article_tags_ids
-        ];
-        $this->put(route('articles.update', ['article' => $article->id]), $data)
-            ->assertStatus(200)
-            ->assertJson([
-                'message' => 'success',
-                'data' => null
-            ]);
-        $this->assertDatabaseHas('articles', [
-            'fa_title' => 'article_fa_title',
-            'en_title' => 'article_en_title',
-            'meta' => 'meta description',
-            'content' => 'article_content',
-            'short_description' => 'article_short_description',
-        ]);
-        $this->assertDatabaseHas('article_category', [
-            'articleCategory_id' => $ids[0],
-        ]);
-        $this->assertDatabaseHas('article_tag', [
-            'articleTag_id' => $article_tags_ids[0]
-        ]);
-
     }
 
     public function testCanSoftDeleteMultipleArticles()

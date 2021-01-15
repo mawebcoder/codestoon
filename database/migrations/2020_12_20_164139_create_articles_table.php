@@ -28,7 +28,8 @@ class CreateArticlesTable extends Migration
             $table->string('slug')->nullable();
             $table->softDeletes();
             $table->bigInteger('hint')->default(0);
-            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('writer')->references('id')->on('users')->onDelete(null);
+            $table->foreignId('Registrar')->references('id')->on('users')->onDelete(null);
             $table->timestamps();
         });
     }

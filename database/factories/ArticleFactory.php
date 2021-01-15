@@ -14,6 +14,8 @@ $factory->define(Article::class, function (Faker $faker) {
         'short_description' => $faker->text,
         'content' => $faker->text,
         'status' => 0,
-        'user_id' => factory(\App\User::class)->create()->id
+        'articleCategory_id' => factory(\App\models\ArticleCategory::class)->create()->id,
+        'writer' => factory(\App\User::class)->create()->id,
+        'Registrar' => factory(\App\User::class)->create()->id,
     ];
 });
