@@ -33,5 +33,5 @@ Route::get('/articles/trashed','ArticleController@getTrashed')->name('articles.t
 Route::post('/articles/force-delete', 'ArticleController@forceDelete')->name('article.forceDelete');
 Route::get('/articles/actives','ArticleController@getActiveArticles')->name('articles.active');
 Route::post('/articles/restore','ArticleController@restore')->name('articles.restore');
-Route::resource('articles', 'ArticleController')->except(['create', 'edit']);
+Route::resource('articles', 'ArticleController')->except(['create']);
 

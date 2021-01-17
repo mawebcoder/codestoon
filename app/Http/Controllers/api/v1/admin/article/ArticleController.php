@@ -8,6 +8,7 @@ use App\Http\Requests\articles\StoreValidation;
 use App\Http\Requests\articles\UpdateArticleValidation;
 use App\models\Article;
 use App\models\ArticleCategory;
+use App\models\ArticleTag;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -47,17 +48,31 @@ class ArticleController extends Controller
 
     public function getActiveArticles()
     {
+        $articles = Article::whereStatus(1)->select('id', 'articleCategory_id', 'fa_title', 'cover_file_name')->with('category:id,fa_title')
+            ->get();
 
+        return $articles->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $articles]) :
+            response($this->empty_success_message, 204);
     }
 
     public function getDeActiveArticles()
     {
-        //TODO GET DE ACTIVE ARTICLES
+
     }
 
-    public function edit()
+    public function edit(Article $article)
     {
-        //TODO RETURN THE ARTICLE INFORMATIN FOR EDITING
+        $tags = ArticleTag::whereStatus(1)->select('id', 'fa_title')->get();
+        $categories = ArticleCategory::whereStatus(1)->select('id', 'fa_title')->get();
+        return response([
+            'message' => 'success',
+            'data' => [
+                'tags' => $tags,
+                'categories' => $categories,
+                'article' => $article
+            ]
+        ]);
     }
 
     public function show(Article $article)
