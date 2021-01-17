@@ -9,7 +9,7 @@ Route::put('/courses/categories/{courseCategory}', 'CourseCategoryController@upd
 Route::delete('/courses/categories/{courseCategory}', 'CourseCategoryController@destroy')->name('courses.category.delete');
 Route::post('/courses/categories/force-delete', 'CourseCategoryController@forceDelete')->name('course.category.force.delete');
 Route::get('/courses/categories/trashed', 'CourseCategoryController@getTrashed')->name('course.category.trashed');
-
+Route::get('/courses/categories/edit/{courseCategory}','CourseCategoryController@edit')->name('course.categories.edit');
 
 //course tags
 Route::post('/courses/tags', 'CourseTagController@store')->name('course.tag.store');

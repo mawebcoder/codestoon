@@ -14,7 +14,7 @@ Route::post('/articles/categories/restore','ArticleCategoryController@restore')-
 Route::get('/articles/categories/actives','ArticleCategoryController@getActiveCategories')->name('articles.categories.actives');
 Route::get('/articles/categories/de-actives','ArticleCategoryController@getDeActiveCategories')->name('articles.categories.deActives');
 Route::get('/articles/categories/{articleCategory}','ArticleCategoryController@show')->name('articles.categories.show');
-Route::get('/articles/categories/{articleCategory}','ArticleCategoryController@edit')->name('articles.category.edit');
+Route::get('/articles/categories/edit/{articleCategory}','ArticleCategoryController@edit')->name('articles.category.edit');
 
 //articles tags
 Route::post('/articles/tags', 'ArticleTagController@store')->name('article.tag.store');

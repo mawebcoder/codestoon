@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1\admin\course;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\courses\category\StoreCourseCategoryValidation;
 use App\models\CourseCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -33,7 +34,6 @@ class CourseCategoryController extends Controller
     }
 
 
-
     /**
      * Store a newly created resource in storage.
      *
@@ -41,8 +41,8 @@ class CourseCategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    //TODO VALIDATION STORING THE COURSE CATEGORY IN THE SYSTEM
-    public function store(Request $request)
+
+    public function store(StoreCourseCategoryValidation $request)
     {
         $data = $request->only(
             [
@@ -59,6 +59,7 @@ class CourseCategoryController extends Controller
 
         $article_category = CourseCategory::create($data);
 
+        //TODO REFACTOR THIS FILE UPLOAD IN ANOTHER METHOD
         if ($request->hasFile('file')) {
             $path = 'images/courses/categories/cover/' . $article_category->id;
             $image_name = $request->file('file')->getClientOriginalName();
@@ -81,8 +82,14 @@ class CourseCategoryController extends Controller
      */
     public function edit(CourseCategory $courseCategory)
     {
-        //TODO SHOW EDIT INFORMATION OF THE COURSE CATEGORY
-
+        $courseCategories = CourseCategory::whereNotIn('id', [$courseCategory->id])->get();
+        return response([
+            'message' => 'success',
+            'data' => [
+                'category' => $courseCategory,
+                'categories' => $courseCategories
+            ]
+        ]);
     }
 
     /**

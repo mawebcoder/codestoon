@@ -27,8 +27,6 @@ class ArticleCategoryController extends Controller
     }
 
 
-
-
     public function index()
     {
         $article_categories = ArticleCategory::select(
@@ -61,7 +59,15 @@ class ArticleCategoryController extends Controller
 
     public function edit(ArticleCategory $articleCategory)
     {
-       return response(['message'=>'success','data'=>$articleCategory]);
+        $article_categories = ArticleCategory::whereNotIn('id', [$articleCategory->id])->get();
+        return response(
+            [
+                'message' => 'success',
+                'data'=>[
+                  'category'=>$articleCategory,
+                  'categories'=>$article_categories
+                ],
+            ]);
     }
 
     public function getDeActiveCategories()
