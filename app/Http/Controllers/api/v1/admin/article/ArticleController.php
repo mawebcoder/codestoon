@@ -58,7 +58,12 @@ class ArticleController extends Controller
 
     public function getDeActiveArticles()
     {
+        $articles = Article::whereStatus(0)->select('id', 'articleCategory_id', 'fa_title', 'cover_file_name')->with('category:id,fa_title')
+            ->get();
 
+        return $articles->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $articles]) :
+            response($this->empty_success_message, 204);
     }
 
     public function edit(Article $article)
