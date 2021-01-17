@@ -26,27 +26,24 @@ class CourseCategory extends Model
         return $this->hasMany(Course::class, 'courseCategory_id');
     }
 
-    public function scopeGetAllParents($q, $course_child_id)
+    public function ScopeGetAllParentsIds($q, $childId)
     {
-        $ids = [$course_child_id];
-        $child_row = CourseCategory::find($course_child_id);
-        $first_parent = CourseCategory::whereId($child_row->parent)->get();
-        if ($first_parent->count()) {
-            array_push($ids,$first_parent->first()->id);
-            $parent_id=$first_parent->first()->parent;
-            while (true) {
-                $next_parent = CourseCategory::whereId($parent_id)->get();
-                if ($next_parent->count()) {
-                    $parent_id = $next_parent->first()->id;
-                    array_push($ids, $parent_id);
-                    $parent_id=$next_parent->first()->parent;
-                }else{
-                    break;
-                }
-            }
+        $all_parents_ids = [$childId];
+
+        //check is there any parent for this record?
+        $parent_id = CourseCategory::find($childId)->parent;
+
+        while ($parent_id) {
+
+            $parent = CourseCategory::find($parent_id);
+
+            $all_parents_ids = array_merge($all_parents_ids, [$parent->id]);
+
+            $parent_id = $parent->parent;
         }
-        return $ids;
+        return $all_parents_ids;
     }
+
 
 
 }

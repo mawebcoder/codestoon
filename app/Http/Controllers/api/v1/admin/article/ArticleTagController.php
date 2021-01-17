@@ -18,9 +18,10 @@ class ArticleTagController extends Controller
         //TODO SET PERMISSIONS IN THE SYSTEM HERE WITH MIDDLEWARES
     }
 
-    public function edit()
+
+    public function edit(ArticleTag $articleTag)
     {
-        //TODO RETURN THE ARTICLE TAG INFORMATION FOR EDIT
+        return response(['message' => 'success', 'data' => $articleTag]);
     }
 
     public function getActiveTags()

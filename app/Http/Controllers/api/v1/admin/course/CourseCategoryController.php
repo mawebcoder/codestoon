@@ -17,20 +17,13 @@ class CourseCategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    //TODO SHOW THE LIST OF THE COURSE CATEGORIES
     public function index()
     {
-        //TODO SHOW ALL COURSECATEGORIES IN PAGINATION
+//
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
 
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -54,13 +47,15 @@ class CourseCategoryController extends Controller
         $data['short_description'] = $request->description ?? null;
         $data['en_title'] = $request->en_title ?? null;
 
+
         $article_category = CourseCategory::create($data);
+
         if ($request->hasFile('file')) {
             $path = 'images/courses/categories/cover/' . $article_category->id;
             $image_name = $request->file('file')->getClientOriginalName();
             $request->file('file')->storeAs($path, $image_name, 'public');
             $article_category->update([
-                'course_image_cover_name' => $image_name
+                'cover_file_name' => $image_name
             ]);
         }
         return $article_category ?
@@ -68,16 +63,6 @@ class CourseCategoryController extends Controller
             response($this->failed_message);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param \App\models\CourseCategory $courseCategory
-     * @return \Illuminate\Http\Response
-     */
-    public function show(CourseCategory $courseCategory)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -87,7 +72,8 @@ class CourseCategoryController extends Controller
      */
     public function edit(CourseCategory $courseCategory)
     {
-        //
+        //TODO SHOW EDIT INFORMATION OF THE COURSE CATEGORY
+
     }
 
     /**
@@ -98,6 +84,7 @@ class CourseCategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     //TODO VALIDATION OF THE UPDATE COURSE CATEGORY
+    //TODO REFACTOR THIS METHOD FOR UPLOADING AND REMOVING OLD FILE
     public function update(Request $request, CourseCategory $courseCategory)
     {
         $data = $request->only(
@@ -117,7 +104,7 @@ class CourseCategoryController extends Controller
             $image_name = $request->file('file')->getClientOriginalName();
             $request->file('file')->storeAs($path, $image_name, 'public');
             $courseCategory->update([
-                'course_image_cover_name' => $image_name
+                'cover_file_name' => $image_name
             ]);
         }
         return $result ?
@@ -131,15 +118,18 @@ class CourseCategoryController extends Controller
      * @param \App\models\CourseCategory $courseCategory
      * @return \Illuminate\Http\Response
      */
+
+    //TODO REMOVE OLD FILE OF THE THIS COURSE CATEGORY
     public function destroy(CourseCategory $courseCategory)
     {
+        //REMOVE THE COVER_FILE_NAME OF THE COURSE CATEGORY
         $result = $courseCategory->delete();
         return $result ?
             response($this->empty_success_message) :
             response($this->failed_message);
     }
 
-    //TODO VALIDATION OF THE FORCE DELETE OF THE COURSE CATETORY
+    //TODO VALIDATION OF THE FORCE DELETE OF THE COURSE CATEGORY
     public function forceDelete()
     {
         $ids = request()->ids;
@@ -153,6 +143,11 @@ class CourseCategoryController extends Controller
         return $result ?
             response($this->empty_success_message) :
             response($this->failed_message);
+    }
+
+    public function upload()
+    {
+        //TODO UPLOAD THE NEW FILE HERE
     }
 
     public function getTrashed()

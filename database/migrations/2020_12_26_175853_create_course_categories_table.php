@@ -22,7 +22,7 @@ class CreateCourseCategoriesTable extends Migration
             $table->boolean('status')->default(0);
             $table->text('short_description')->nullable();
             $table->unsignedBigInteger('parent')->default(0);
-            $table->string('course_image_cover_name')->nullable();
+            $table->string('cover_file_name')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -41,7 +41,19 @@ class ArticleCategory extends Model
 
     public function manyArticles()
     {
-        return $this->hasMany(Article::class,'articleCategory_id','id');
+        return $this->hasMany(Article::class, 'articleCategory_id', 'id');
+    }
+
+
+    public function father()
+    {
+        return $this->belongsTo(self::class, 'parent', 'id');
+    }
+
+
+    public function children()
+    {
+        return $this->hasMany(self::class, 'parent', 'id');
     }
 
 }

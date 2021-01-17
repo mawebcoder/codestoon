@@ -27,6 +27,7 @@ Route::get('/articles/tags/get-Trashed','ArticleTagController@getTrashed')->name
 Route::post('/articles/tags/restore','ArticleTagController@restore')->name('articles.tag.restore');
 Route::get('/articles/tags/de-actives','ArticleTagController@getDeActiveTags')->name('articles.tags.deActives');
 Route::get('/articles/tags/actives','ArticleTagController@getActiveTags')->name('articles.tags.actives');
+Route::get('/articles/tags/edit/{articleTag}','ArticleTagController@edit')->name('article.tags.edit');
 //articles
 Route::post('/articles/delete/multi', 'ArticleController@deleteMultipleArticle')->name('delete.article.multiple');
 Route::get('/articles/trashed','ArticleController@getTrashed')->name('articles.trashed');

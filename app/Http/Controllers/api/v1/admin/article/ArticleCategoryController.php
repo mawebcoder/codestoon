@@ -27,6 +27,8 @@ class ArticleCategoryController extends Controller
     }
 
 
+
+
     public function index()
     {
         $article_categories = ArticleCategory::select(
@@ -34,7 +36,8 @@ class ArticleCategoryController extends Controller
             'fa_title',
             'status',
             'created_at',
-            'updated_at')->paginate(30);
+            'parent',
+            'updated_at')->with('father:id,fa_title')->paginate(30);
 
         return $article_categories->isNotEmpty() ?
             response(['message' => 'success', 'data' => $article_categories]) :

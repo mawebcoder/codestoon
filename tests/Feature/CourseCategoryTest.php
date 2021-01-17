@@ -17,6 +17,7 @@ class CourseCategoryTest extends TestCase
         UploadedFile::fake();
 
         $file = UploadedFile::fake()->image('image.jpg');
+
         $data = [
             'meta' => 'meta',
             'description' => Str::random(400),
@@ -31,13 +32,14 @@ class CourseCategoryTest extends TestCase
                 'message' => 'success',
                 'data' => null
             ], 201);
-        $data['course_image_cover_name'] = 'image.jpg';
+
         $this->assertDatabaseHas('course_categories', [
             'meta' => 'meta',
             'fa_title' => 'fa_title',
-            'en_title' => 'en_title'
+            'en_title' => 'en_title',
+            'cover_file_name'=>$file->getClientOriginalName()
         ]);
-        $this->assertFileExists(storage_path('app/public/images/courses/categories/cover/6/image.jpg'));
+        $this->assertFileExists(storage_path('app/public/images/courses/categories/cover/1/image.jpg'));
     }
 
     public function testCanUpdateCourseCategory()
