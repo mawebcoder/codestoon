@@ -47,7 +47,7 @@ class ArticleController extends Controller
 
     public function getActiveArticles()
     {
-        //TODO GET ACTIVE ARTICLES
+
     }
 
     public function getDeActiveArticles()
@@ -55,9 +55,21 @@ class ArticleController extends Controller
         //TODO GET DE ACTIVE ARTICLES
     }
 
-    public function show()
+    public function edit()
     {
-        //TODO SHOW DETAILS OF THE SPECIFIC ARTICLE
+        //TODO RETURN THE ARTICLE INFORMATIN FOR EDITING
+    }
+
+    public function show(Article $article)
+    {
+        return response([
+            'message' => 'success',
+            'data' => [
+                'article' => $article,
+                'category' => $article->category,
+                'tags' => $article->tags
+            ]
+        ]);
     }
 
     public function store(StoreValidation $request)

@@ -56,6 +56,11 @@ class ArticleCategoryController extends Controller
             response($this->empty_success_message, 204);
     }
 
+    public function edit(ArticleCategory $articleCategory)
+    {
+       return response(['message'=>'success','data'=>$articleCategory]);
+    }
+
     public function getDeActiveCategories()
     {
         $article_categories = ArticleCategory::select(

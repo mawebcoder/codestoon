@@ -18,6 +18,11 @@ class ArticleTagController extends Controller
         //TODO SET PERMISSIONS IN THE SYSTEM HERE WITH MIDDLEWARES
     }
 
+    public function edit()
+    {
+        //TODO RETURN THE ARTICLE TAG INFORMATION FOR EDIT
+    }
+
     public function getActiveTags()
     {
         $article_tags = ArticleTag::select('id', 'fa_title', 'updated_at', 'created_at')
