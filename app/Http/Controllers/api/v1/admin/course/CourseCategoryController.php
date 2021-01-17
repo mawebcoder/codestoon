@@ -17,10 +17,19 @@ class CourseCategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    //TODO SHOW THE LIST OF THE COURSE CATEGORIES
+
     public function index()
     {
-//
+        $course_categories = CourseCategory::select(
+            'id',
+            'fa_title',
+            'short_description',
+            'status',
+            'cover_file_name',
+            'parent'
+        )->with('father:id,fa_title')
+            ->paginate(30);
+        return response(['message' => 'success', 'data' => $course_categories]);
     }
 
 

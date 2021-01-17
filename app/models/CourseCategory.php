@@ -44,6 +44,15 @@ class CourseCategory extends Model
         return $all_parents_ids;
     }
 
+    public function father()
+    {
+        return $this->belongsTo(self::class, 'parent', 'id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(self::class,'parent','id');
+    }
 
 
 }
