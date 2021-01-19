@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\v1\admin\course;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\courses\category\StoreCourseCategoryValidation;
+use App\Http\Requests\courses\category\UpdateCourseCategoryValidation;
 use App\models\CourseCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -108,9 +109,8 @@ class CourseCategoryController extends Controller
      * @param \App\models\CourseCategory $courseCategory
      * @return \Illuminate\Http\Response
      */
-    //TODO VALIDATION OF THE UPDATE COURSE CATEGORY
-    //TODO REFACTOR THIS METHOD FOR UPLOADING AND REMOVING OLD FILE
-    public function update(Request $request, CourseCategory $courseCategory)
+
+    public function update(UpdateCourseCategoryValidation $request, CourseCategory $courseCategory)
     {
         $data = $request->only(
             [
