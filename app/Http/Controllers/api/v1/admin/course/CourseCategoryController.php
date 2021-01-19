@@ -7,6 +7,7 @@ use App\Http\Requests\courses\category\StoreCourseCategoryValidation;
 use App\models\CourseCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class CourseCategoryController extends Controller
 {
@@ -57,20 +58,28 @@ class CourseCategoryController extends Controller
         $data['en_title'] = $request->en_title ?? null;
 
 
-        $article_category = CourseCategory::create($data);
+        $course_category = CourseCategory::create($data);
 
-        //TODO REFACTOR THIS FILE UPLOAD IN ANOTHER METHOD
+        $this->upload($course_category, $request);
+
+        return $course_category ?
+            response($this->empty_success_message, 201) :
+            response($this->failed_message);
+    }
+
+    public function upload($course_category,$request)
+    {
         if ($request->hasFile('file')) {
-            $path = 'images/courses/categories/cover/' . $article_category->id;
+            $path = 'images/courses/categories/cover/' . $course_category->id;
+            if (is_dir(storage_path('app/public/images/courses/categories/cover/'.$course_category->id))) {
+                Storage::disk('public')->deleteDirectory($path);
+            }
             $image_name = $request->file('file')->getClientOriginalName();
             $request->file('file')->storeAs($path, $image_name, 'public');
-            $article_category->update([
+            $course_category->update([
                 'cover_file_name' => $image_name
             ]);
         }
-        return $article_category ?
-            response($this->empty_success_message, 201) :
-            response($this->failed_message);
     }
 
 
@@ -115,14 +124,7 @@ class CourseCategoryController extends Controller
         $data['short_description'] = $request->description ?? null;
         $data['en_title'] = $request->en_title ?? null;
         $result = $courseCategory->update($data);
-        if ($request->hasFile('file')) {
-            $path = 'images/courses/categories/cover/' . $courseCategory->id;
-            $image_name = $request->file('file')->getClientOriginalName();
-            $request->file('file')->storeAs($path, $image_name, 'public');
-            $courseCategory->update([
-                'cover_file_name' => $image_name
-            ]);
-        }
+        $this->upload($courseCategory, $request);
         return $result ?
             response($this->empty_success_message) :
             response($this->failed_message);
@@ -161,10 +163,6 @@ class CourseCategoryController extends Controller
             response($this->failed_message);
     }
 
-    public function upload()
-    {
-        //TODO UPLOAD THE NEW FILE HERE
-    }
 
     public function getTrashed()
     {

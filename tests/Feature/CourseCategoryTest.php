@@ -45,7 +45,7 @@ class CourseCategoryTest extends TestCase
     public function testCanUpdateCourseCategory()
     {
         UploadedFile::fake();
-        $file = UploadedFile::fake()->image('image2.jpg');
+        $file = UploadedFile::fake()->image('image.jpg');
         $old_course_category = factory(CourseCategory::class)->create();
         $new_data = [
             'meta' => 'meta',
@@ -63,10 +63,10 @@ class CourseCategoryTest extends TestCase
             ]);
         $this->assertDatabaseHas('course_categories', [
             'fa_title' => 'fa_title',
-            'course_image_cover_name' => $file->getClientOriginalName(),
+            'cover_file_name' => $file->getClientOriginalName(),
             'en_title' => 'en_title'
         ]);
-        $this->assertFileExists(storage_path('app/public/images/courses/categories/cover/1/image2.jpg'));
+        $this->assertFileExists(storage_path('app/public/images/courses/categories/cover/1/image.jpg'));
     }
 
     public function testCanDeleteCourseCategory()
