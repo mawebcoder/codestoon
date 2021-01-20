@@ -56,7 +56,7 @@ class CourseTagController extends Controller
      */
     public function edit(CourseTag $courseTag)
     {
-        //TODO SHOW THE INFORMATION TO EDIT
+        return  response(['message'=>'success','data'=>$courseTag]);
     }
 
     /**
