@@ -16,7 +16,8 @@ class CourseTagTest extends TestCase
     {
         $data = [
             'fa_title' => 'fa_title',
-            'en_title' => 'en_title'
+            'en_title' => 'en_title',
+            'status'=>1
         ];
         $this->post(route('course.tag.store'), $data)
             ->assertStatus(201)

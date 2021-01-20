@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1\admin\course;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\courses\tag\StoreCourseTagValidation;
 use App\models\CourseTag;
 use Illuminate\Http\Request;
 
@@ -33,12 +34,12 @@ class CourseTagController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    //TODO VALIDATION OF THE STORING COURSE TAG
-    public function store(Request $request)
+    public function store(StoreCourseTagValidation $request)
     {
         $data = [
             'fa_title' => $request->fa_title,
-            'en_title' => $request->en_title ?? null
+            'en_title' => $request->en_title ?? null,
+            'status' => $request->status ? 1 : 0
         ];
         $result = CourseTag::create($data);
         return $result ?
@@ -46,16 +47,6 @@ class CourseTagController extends Controller
             response($this->failed_message, 500);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param \App\models\CourseTag $courseTag
-     * @return \Illuminate\Http\Response
-     */
-    public function show(CourseTag $courseTag)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -65,7 +56,7 @@ class CourseTagController extends Controller
      */
     public function edit(CourseTag $courseTag)
     {
-        //
+        //TODO SHOW THE INFORMATION TO EDIT
     }
 
     /**
