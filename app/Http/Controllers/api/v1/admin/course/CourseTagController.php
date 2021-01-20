@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\v1\admin\course;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\courses\category\UpdateCourseCategoryValidation;
+use App\Http\Requests\courses\tag\DeleteCourseTagValidation;
 use App\Http\Requests\courses\tag\StoreCourseTagValidation;
 use App\Http\Requests\courses\tag\UpdateCourseTagValidation;
 use App\models\CourseTag;
@@ -98,8 +99,7 @@ class CourseTagController extends Controller
     }
 
 
-    //TODO VALIDATION OF THE DELETE MULTIPLE COURSE TAG
-    public function deleteMultiple()
+    public function deleteMultiple(DeleteCourseTagValidation $deleteCourseTagValidation)
     {
         $result=CourseTag::whereIn('id',request()->ids)->delete();
         return $result ?
