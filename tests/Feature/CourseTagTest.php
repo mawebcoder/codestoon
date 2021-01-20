@@ -33,7 +33,8 @@ class CourseTagTest extends TestCase
         $courseTag = factory(CourseTag::class)->create();
         $data = [
             'fa_title' => 'fa_title',
-            'en_title' => 'en_title'
+            'en_title' => 'en_title',
+            'status'=>1
         ];
         $this->put(route('course.tag.update', ['courseTag' => $courseTag->id]), $data)
             ->assertOk()

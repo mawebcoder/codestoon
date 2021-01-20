@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\api\v1\admin\course;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\courses\category\UpdateCourseCategoryValidation;
 use App\Http\Requests\courses\tag\StoreCourseTagValidation;
+use App\Http\Requests\courses\tag\UpdateCourseTagValidation;
 use App\models\CourseTag;
 use Illuminate\Http\Request;
 
@@ -66,12 +68,13 @@ class CourseTagController extends Controller
      * @param \App\models\CourseTag $courseTag
      * @return \Illuminate\Http\Response
      */
-    //TODO VALIDATION OF THE UPDATE COURSE TAG IN THE SYSTEM
-    public function update(Request $request, CourseTag $courseTag)
+
+    public function update(UpdateCourseTagValidation $request, CourseTag $courseTag)
     {
         $data = [
             'fa_title' => $request->fa_title,
-            'en_title' => $request->en_title ?? null
+            'en_title' => $request->en_title ?? null,
+            'status' => $request->status ? 1 : 0
         ];
         $result = $courseTag->update($data);
         return $request ?
