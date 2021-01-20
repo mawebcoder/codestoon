@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\models\ArticleCategory;
 use App\models\CourseCategory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -37,16 +39,18 @@ class CourseCategoryTest extends TestCase
             'meta' => 'meta',
             'fa_title' => 'fa_title',
             'en_title' => 'en_title',
-            'cover_file_name'=>$file->getClientOriginalName()
+            'cover_file_name' => $file->getClientOriginalName()
         ]);
         $this->assertFileExists(storage_path('app/public/images/courses/categories/cover/1/image.jpg'));
     }
 
     public function testCanUpdateCourseCategory()
     {
+
         UploadedFile::fake();
         $file = UploadedFile::fake()->image('image.jpg');
         $old_course_category = factory(CourseCategory::class)->create();
+        Storage::disk('public')->put('images/courses/categories/cover/' . $old_course_category->id . '/mo.txt', 'hello');
         $new_data = [
             'meta' => 'meta',
             'en_title' => 'en_title',
@@ -66,6 +70,7 @@ class CourseCategoryTest extends TestCase
             'cover_file_name' => $file->getClientOriginalName(),
             'en_title' => 'en_title'
         ]);
+        Storage::disk('public')->assertMissing('images/courses/categories/cover/' . $old_course_category->id . '/mo.txt');
         $this->assertFileExists(storage_path('app/public/images/courses/categories/cover/1/image.jpg'));
     }
 
@@ -87,7 +92,26 @@ class CourseCategoryTest extends TestCase
 
     public function testCanForceDeleteCourseCategory()
     {
-        //TODO TEST CAN FORCE DELETE COURSE CATEGORY
+        $course_categories_ids = factory(ArticleCategory::class, 5)->create()
+            ->pluck('id')->toArray();
+        foreach ($course_categories_ids as $id) {
+            Storage::disk('public')->put('images/courses/categories/cover/' . $id . '/mo.txt', 'hello');
+        }
+
+
+        $this->post(route('course.category.force.delete'), ['ids' => $course_categories_ids])
+            ->assertOk();
+        foreach ($course_categories_ids as $id) {
+
+            $this->assertDatabaseMissing('course_categories', [
+                'id' => $id
+            ]);
+        }
+
+        foreach ($course_categories_ids as $id) {
+           Storage::disk('public')->assertMissing('images/courses/categories/cover/' . $id . '/mo.txt');
+        }
+
     }
 
     public function testCanRestoreCourseCategory()

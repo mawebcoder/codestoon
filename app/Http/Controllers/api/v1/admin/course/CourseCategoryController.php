@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1\admin\course;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\courses\category\ForceDeleteCourseCategoryValidation;
 use App\Http\Requests\courses\category\StoreCourseCategoryValidation;
 use App\Http\Requests\courses\category\UpdateCourseCategoryValidation;
 use App\models\CourseCategory;
@@ -68,11 +69,11 @@ class CourseCategoryController extends Controller
             response($this->failed_message);
     }
 
-    public function upload($course_category,$request)
+    public function upload($course_category, $request)
     {
         if ($request->hasFile('file')) {
             $path = 'images/courses/categories/cover/' . $course_category->id;
-            if (is_dir(storage_path('app/public/images/courses/categories/cover/'.$course_category->id))) {
+            if (is_dir(storage_path('app/public/images/courses/categories/cover/' . $course_category->id))) {
                 Storage::disk('public')->deleteDirectory($path);
             }
             $image_name = $request->file('file')->getClientOriginalName();
@@ -137,20 +138,20 @@ class CourseCategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    //TODO REMOVE OLD FILE OF THE THIS COURSE CATEGORY
     public function destroy(CourseCategory $courseCategory)
     {
-        //REMOVE THE COVER_FILE_NAME OF THE COURSE CATEGORY
+
+
         $result = $courseCategory->delete();
         return $result ?
             response($this->empty_success_message) :
             response($this->failed_message);
     }
 
-    //TODO VALIDATION OF THE FORCE DELETE OF THE COURSE CATEGORY
-    public function forceDelete()
+
+    public function forceDelete(ForceDeleteCourseCategoryValidation $request)
     {
-        $ids = request()->ids;
+        $ids = $request->ids;
         $result = CourseCategory::onlyTrashed()->whereIn('id', $ids)->forceDelete();
         foreach ($ids as $id) {
             $path = storage_path('app/public/images/courses/categories/cover/' . $id);
@@ -173,6 +174,7 @@ class CourseCategoryController extends Controller
             'data' => $all_trashed
         ]);
     }
+
 
     //TODO VALIDATION OF THE COURSE CATEGORY RESTORING
     public function restoreCourseCategory()

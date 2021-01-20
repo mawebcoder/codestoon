@@ -11,6 +11,8 @@ class CourseCategory extends Model
 
     protected $guarded = ['id'];
 
+
+
     /**
      * make many to many relationship between courses table and the course_categories table
      *
