@@ -18,7 +18,7 @@ Route::put('/courses/tags/{courseTag}', 'CourseTagController@update')->name('cou
 Route::delete('/courses/tags/{courseTag}', 'CourseTagController@destroy')->name('course.tag.destroy');
 Route::get('/courses/tags', 'CourseTagController@index')->name('course.tag.index');
 Route::get('/courses/tags/{courseTag}/edit','CourseTagController@edit')->name('course.tag.edit');
-
+Route::post('/courses/tags/delete-multiple','CourseTagController@deleteMultiple')->name('course.tag.delete.multi');
 
 //Course sections
 Route::post('/courses/sections','CourseSectionController@store')->name('course.section.store');

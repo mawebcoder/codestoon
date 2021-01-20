@@ -17,7 +17,7 @@ class CourseTagTest extends TestCase
         $data = [
             'fa_title' => 'fa_title',
             'en_title' => 'en_title',
-            'status'=>1
+            'status' => 1
         ];
         $this->post(route('course.tag.store'), $data)
             ->assertStatus(201)
@@ -34,7 +34,7 @@ class CourseTagTest extends TestCase
         $data = [
             'fa_title' => 'fa_title',
             'en_title' => 'en_title',
-            'status'=>1
+            'status' => 1
         ];
         $this->put(route('course.tag.update', ['courseTag' => $courseTag->id]), $data)
             ->assertOk()
@@ -55,13 +55,18 @@ class CourseTagTest extends TestCase
         ]);
     }
 
-    public function testCanForceDeleteCourseTag()
+    public function testCanDeleteMultipleCourseTag()
     {
-        //TODO TEST CAN FORCE DELETE COURSE TAG
-    }
+        $course_tags_ids = factory(CourseTag::class, 4)->create();
 
-    public function testCanRestoreCourseTag()
-    {
-        //TODO TEST CAN RESTORE COURSE TAG
+        $this->post(route('course.tag.delete.multi'), ['ids' => $course_tags_ids])
+            ->assertOk();
+
+        foreach ($course_tags_ids as $id) {
+            $this->assertDatabaseMissing('course_tags', [
+                'id' => $id
+            ]);
+        }
+
     }
 }
