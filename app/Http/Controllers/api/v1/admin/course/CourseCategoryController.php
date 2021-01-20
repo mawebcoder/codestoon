@@ -7,7 +7,6 @@ use App\Http\Requests\courses\category\ForceDeleteCourseCategoryValidation;
 use App\Http\Requests\courses\category\StoreCourseCategoryValidation;
 use App\Http\Requests\courses\category\UpdateCourseCategoryValidation;
 use App\models\CourseCategory;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
@@ -176,15 +175,22 @@ class CourseCategoryController extends Controller
     }
 
 
-    //TODO VALIDATION OF THE COURSE CATEGORY RESTORING
-    public function restoreCourseCategory()
+    public function restore(ForceDeleteCourseCategoryValidation $request)
     {
-        //TODO RESTORE COURSE CATEGORY RESTORE
+        $soft_deleted_course_categories = CourseCategory::onlyTrashed()
+            ->whereIn('id', $request->ids)->restore();
+        return $soft_deleted_course_categories ?
+            response($this->empty_success_message) :
+            response($this->failed_message);
     }
 
-    //TODO VALIDATION OF THE DELETE MULTIPLE COURSE CATEGORY
-    public function deleteMultiple()
+
+    public function deleteMulti(ForceDeleteCourseCategoryValidation $request)
     {
-        //TODO DELETE MULTIPLE COURSE CATEGORY
+        $result = CourseCategory::whereIn('id', $request->ids)->delete();
+
+        return $result ?
+            response($this->empty_success_message) :
+            response($this->failed_message);
     }
 }

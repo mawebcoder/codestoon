@@ -10,7 +10,8 @@ Route::delete('/courses/categories/{courseCategory}', 'CourseCategoryController@
 Route::post('/courses/categories/force-delete', 'CourseCategoryController@forceDelete')->name('course.category.force.delete');
 Route::get('/courses/categories/trashed', 'CourseCategoryController@getTrashed')->name('course.category.trashed');
 Route::get('/courses/categories/edit/{courseCategory}','CourseCategoryController@edit')->name('course.categories.edit');
-
+Route::post('/courses/categories/restore','CourseCategoryController@restore')->name('course.category.restore');
+Route::post('/courses/categories/delete-multi','CourseCategoryController@deleteMulti')->name('course.category.delete.multi');
 //course tags
 Route::post('/courses/tags', 'CourseTagController@store')->name('course.tag.store');
 Route::put('/courses/tags/{courseTag}', 'CourseTagController@update')->name('course.tag.update');

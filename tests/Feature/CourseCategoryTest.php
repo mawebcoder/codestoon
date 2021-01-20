@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\models\ArticleCategory;
 use App\models\CourseCategory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -89,11 +88,16 @@ class CourseCategoryTest extends TestCase
         ]);
     }
 
-
     public function testCanForceDeleteCourseCategory()
     {
-        $course_categories_ids = factory(ArticleCategory::class, 5)->create()
-            ->pluck('id')->toArray();
+        $course_categories = factory(CourseCategory::class, 5)->create();
+
+        $course_categories_ids = $course_categories->pluck('id')->toArray();
+
+        foreach ($course_categories as $item) {
+            $item->delete();
+        }
+
         foreach ($course_categories_ids as $id) {
             Storage::disk('public')->put('images/courses/categories/cover/' . $id . '/mo.txt', 'hello');
         }
@@ -109,13 +113,44 @@ class CourseCategoryTest extends TestCase
         }
 
         foreach ($course_categories_ids as $id) {
-           Storage::disk('public')->assertMissing('images/courses/categories/cover/' . $id . '/mo.txt');
+            Storage::disk('public')->assertMissing('images/courses/categories/cover/' . $id . '/mo.txt');
         }
 
     }
 
     public function testCanRestoreCourseCategory()
     {
-        //TODO TEST CAN RESTORE COURSE CATEGORY
+        $course_categories = factory(CourseCategory::class, 10)->create();
+        foreach ($course_categories as $item) {
+            $item->delete();
+        }
+
+        $ids = $course_categories->pluck('id')->toArray();
+
+        $this->post(route('course.category.restore'), ['ids' => $ids])
+            ->assertOk();
+
+
+        foreach ($ids as $id) {
+            $this->assertDatabaseHas('course_categories', [
+                'id' => $id
+            ]);
+        }
+
+    }
+
+    public function testCanDeleteMultiCourseCategories()
+    {
+        $course_categories = factory(CourseCategory::class, 10)->create();
+        $ids = $course_categories->pluck('id')->toArray();
+
+        $this->post(route('course.category.delete.multi'), ['ids' => $ids])
+            ->assertOk();
+
+        foreach ($ids as $id) {
+            $this->assertSoftDeleted('course_categories', [
+                'id' => $id
+            ]);
+        }
     }
 }
