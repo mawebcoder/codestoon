@@ -29,14 +29,15 @@ class CourseTest extends TestCase
             'fa_title' => 'fa_title',
             'en_title' => 'en_title',
             'price' => 20000,
-            'has_discount' => 1,
             'discount_value' => 10,
             'level' => 'beginner',
+            'is_completed_course' => 1,
             'user_id' => $user->id,
             'file' => $file,
-            'is_special_subscription' => 0,
+            'is_special_subscription' => 1,
             'description' => 'description',
             'meta' => 'meta',
+            'is_active' => 1,
             'tag_ids' => $course_tags_ids,
             'courseCategory_id' => $course_category_id,
             'short_description' => 'short_description',
@@ -52,7 +53,12 @@ class CourseTest extends TestCase
             'meta' => 'meta',
             'description' => 'description',
             'course_image_cover' => $file->getClientOriginalName(),
-            'courseCategory_id' => $course_category_id
+            'courseCategory_id' => $course_category_id,
+            'is_active' => 1,
+            'is_special_subscription' => 1,
+            'has_discount' => 1,
+            'is_completed_course' => 1,
+
         ]);
         $this->assertDatabaseHas('category_course', [
             'course_id' => 1,
@@ -126,6 +132,11 @@ class CourseTest extends TestCase
             'course_id' => 1
         ]);
         $this->assertFileExists(storage_path('app/public/images/courses/covers/' . $course->id . '/new_image.jpg'));
+    }
+
+    public function testCanDeleteMultipleCourse()
+    {
+        //TODO testCanDeleteMultipleCourse
     }
 
     public function testCanDeleteCourse()

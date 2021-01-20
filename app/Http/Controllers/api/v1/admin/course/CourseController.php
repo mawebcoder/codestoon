@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1\admin\course;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\courses\StoreCourseValidation;
 use App\models\Course;
 use App\models\CourseCategory;
 use Illuminate\Http\Request;
@@ -31,7 +32,7 @@ class CourseController extends Controller
      * @return \Illuminate\Http\Response
      */
     //TODO VALIDATION OF THE STORE COURSE IN THE SYSTEM
-    public function store(Request $request)
+    public function store(StoreCourseValidation $request)
     {
         $data = $request->only([
             'fa_title',
@@ -39,19 +40,47 @@ class CourseController extends Controller
             'description',
             'price',
             'has_discount',
-            'discount_value',
             'level',
             'user_id',
-            'is_special_subscription',
             'description',
             'short_description',
             'meta',
             'courseCategory_id'
         ]);
+        $data['has_discount'] = intval($request->discount_value) ? 1 : 0;
+        $data['discount_value'] = intval($request->discount_value) ?? 0;
+        $data['is_active'] = $request->is_active ? 1 : 0;
+        $data['is_special_subscription'] = $request->is_special_subscription ? 1 : 0;
+        $data['is_completed_course']=$request->is_completed_course ? 1:0;
         $course = Course::create($data);
-        $get_all_categories_parent = CourseCategory::getAllParents($request->courseCategory_id);
+
+        $this->syncCategories($course, $request);
+
+        $this->syncTags($course, $request);
+
+        $this->upload($course, $request);
+
+        return $course ?
+            response($this->empty_success, 201) :
+            response($this->failed, 500);
+
+    }
+
+    public function syncCategories($course, $request)
+    {
+        $get_all_categories_parent = CourseCategory::getAllParentsIds($request->courseCategory_id);
         $course->courseCategories()->sync($get_all_categories_parent);
-        $course->tags()->sync($request->tag_ids);
+    }
+
+    public function syncTags($course, $request)
+    {
+        if ($request->has('tag_ids')) {
+            $course->tags()->sync($request->tag_ids);
+        }
+    }
+
+    public function upload($course, $request)
+    {
         if ($request->hasFile('file')) {
             $path = 'images/courses/covers/' . $course->id;
             $file_name = $request->file('file')->getClientOriginalName();
@@ -60,22 +89,6 @@ class CourseController extends Controller
                 'course_image_cover' => $file_name
             ]);
         }
-
-        return $course ?
-            response($this->empty_success, 201) :
-            response($this->failed, 500);
-
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param \App\models\Course $course
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Course $course)
-    {
-        //
     }
 
     /**
@@ -86,7 +99,7 @@ class CourseController extends Controller
      */
     public function edit(Course $course)
     {
-        //
+        //TODO SHOW INFO OF THE COURSE
     }
 
     /**
@@ -121,6 +134,8 @@ class CourseController extends Controller
         $get_all_categories_parent = CourseCategory::getAllParents($request->courseCategory_id);
         $course->courseCategories()->sync($get_all_categories_parent);
         $course->tags()->sync($request->tag_ids);
+
+        //TODO REFACTOR THIS UPLOADING FILE IN ANOTHER METHOD
         if ($request->hasFile('file')) {
             $file = $request->file('file');
             $path = 'images/courses/covers/' . $course->id;

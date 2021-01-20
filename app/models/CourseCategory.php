@@ -28,7 +28,7 @@ class CourseCategory extends Model
         return $this->hasMany(Course::class, 'courseCategory_id');
     }
 
-    public function ScopeGetAllParentsIds($q, $childId)
+    public function ScopeGetAllParentsIds($q,$childId)
     {
         $all_parents_ids = [$childId];
 
