@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1\admin\course;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\courses\DeleteMultipleCourseValidation;
 use App\Http\Requests\courses\StoreCourseValidation;
 use App\Http\Requests\courses\UpdateCourseValidation;
 use App\models\Course;
@@ -190,9 +191,13 @@ class CourseController extends Controller
         //TODO GET TRASHED COURSES
     }
 
-    //TODO VALIDATION OF THE DELETE MULTIPLE COURSE
-    public function deleteMultiple()
+
+    public function deleteMultiple(DeleteMultipleCourseValidation $deleteMultipleCourseValidation)
     {
-        //TODO DELETE MULTIPLE COURSE
+
+        $result=Course::whereIn('id',request()->ids)->delete();
+        return $result ?
+            response($this->empty_success):
+            response($this->failed);
     }
 }

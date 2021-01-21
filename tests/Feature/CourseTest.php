@@ -135,7 +135,16 @@ class CourseTest extends TestCase
 
     public function testCanDeleteMultipleCourse()
     {
-        //TODO testCanDeleteMultipleCourse
+        $ids = factory(Course::class, 10)->create()->pluck('id')->toArray();
+
+        $this->post(route('course.delete.multi'), ['ids' => $ids])
+            ->assertOk();
+
+        foreach ($ids as $id) {
+            $this->assertSoftDeleted('courses', [
+                'id' => $id
+            ]);
+        }
     }
 
     public function testCanDeleteCourse()

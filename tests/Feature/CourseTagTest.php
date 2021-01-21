@@ -57,7 +57,8 @@ class CourseTagTest extends TestCase
 
     public function testCanDeleteMultipleCourseTag()
     {
-        $course_tags_ids = factory(CourseTag::class, 4)->create();
+        $course_tags_ids = factory(CourseTag::class, 4)->create()
+        ->pluck('id')->toArray();
 
         $this->post(route('course.tag.delete.multi'), ['ids' => $course_tags_ids])
             ->assertOk();
