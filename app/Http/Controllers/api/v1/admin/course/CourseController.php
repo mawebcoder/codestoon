@@ -174,30 +174,36 @@ class CourseController extends Controller
 
     }
 
-    //TODO VALIDATION OF THE FORCE IN COURSE CONTROLLER
-    public function forceDelete()
+
+    public function forceDelete(DeleteMultipleCourseValidation $deleteMultipleCourseValidation)
     {
-        //TODO FORCE DELETE OF THE COURSE
+        //TODO TEST CAN FORCE DELETE COURSES
     }
 
-    //TODO VALIDATION OF THE RESTORE COURSES
-    public function restore()
+
+    public function restore(DeleteMultipleCourseValidation $deleteMultipleCourseValidation)
     {
-        //TODO RESTORING THE COURSES IN COURSE CONTROLLER
+        $courses=Course::onlyTrashed()->whereIn('id',$deleteMultipleCourseValidation->ids)
+            ->restore();
+        return $courses ?
+            response($this->empty_success):
+            response($this->failed);
     }
 
     public function getTrashed()
     {
-        //TODO GET TRASHED COURSES
+        $courses = Course::onlyTrashed()->select('id', 'fa_title', 'en_title')->get();
+        return  $courses->isNotEmpty() ?
+        response(['message'=>'success','data'=>$courses]) :
+        response(['message'=>'success','data'=>null],204);
     }
 
 
     public function deleteMultiple(DeleteMultipleCourseValidation $deleteMultipleCourseValidation)
     {
-
-        $result=Course::whereIn('id',request()->ids)->delete();
+        $result = Course::whereIn('id', request()->ids)->delete();
         return $result ?
-            response($this->empty_success):
+            response($this->empty_success) :
             response($this->failed);
     }
 }

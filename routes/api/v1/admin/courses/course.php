@@ -29,5 +29,7 @@ Route::get('/courses/sections','CourseSectionController@index')->name('course.se
 
 
 //Courses
+Route::post('/courses/restore','CourseController@restore')->name('courses.restore');
+Route::get('/courses/trashed','CourseController@getTrashed')->name('course.trashed');
 Route::post('/courses/delete-multiple','CourseController@deleteMultiple')->name('course.delete.multi');
 Route::resource('courses', 'CourseController')->except(['show']);

@@ -171,7 +171,19 @@ class CourseTest extends TestCase
 
     public function testCanRestoreCourse()
     {
-        //TODO TEST CAN RESTORE DELETE COURSE
+        $courses = factory(Course::class, 10)->create();
+        $ids = [];
+        foreach ($courses as $item) {
+            array_push($ids, $item->id);
+            $item->delete();
+        }
+        $this->post(route('courses.restore'), ['ids' => $ids])
+            ->assertOk();
+        foreach ($ids as $id) {
+            $this->assertDatabaseHas('courses', [
+                'id' => $id
+            ]);
+        }
     }
 
 
