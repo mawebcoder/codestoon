@@ -89,7 +89,6 @@ class CourseTest extends TestCase
             'description' => 'new_description',
             'price' => 10,
             'meta' => 'new_meta',
-            'has_discount' => 1,
             'file' => $file,
             'is_active' => 1,
             'discount_value' => 20,

@@ -47,27 +47,27 @@ class CourseCategoryTest extends TestCase
     {
 
         UploadedFile::fake();
-        $file = UploadedFile::fake()->image('image.jpg');
+        $file = UploadedFile::fake()->image('image.jpg')->size(2000);
         $old_course_category = factory(CourseCategory::class)->create();
         Storage::disk('public')->put('images/courses/categories/cover/' . $old_course_category->id . '/mo.txt', 'hello');
         $new_data = [
-            'meta' => 'meta',
-            'en_title' => 'en_title',
-            'fa_title' => 'fa_title',
-            'description' => 'description',
-            'short_description' => 'short_description',
+            'meta' => Str::random(100),
+            'en_title' => Str::random(100),
+            'fa_title' => Str::random(100),
+            'description' => Str::random(100),
+            'short_description' => Str::random(100),
             'file' => $file
         ];
-        $this->put(route('courses.category.update', ['courseCategory' => $old_course_category->id]), $new_data)
+        $res=$this->json('put',route('courses.category.update', ['courseCategory' => $old_course_category->id]), $new_data)
             ->assertOk()
             ->assertJson([
                 'message' => 'success',
                 'data' => null
             ]);
         $this->assertDatabaseHas('course_categories', [
-            'fa_title' => 'fa_title',
+            'fa_title' => $new_data['fa_title'],
             'cover_file_name' => $file->getClientOriginalName(),
-            'en_title' => 'en_title'
+            'en_title' => $new_data['en_title']
         ]);
         Storage::disk('public')->assertMissing('images/courses/categories/cover/' . $old_course_category->id . '/mo.txt');
         $this->assertFileExists(storage_path('app/public/images/courses/categories/cover/1/image.jpg'));
@@ -141,6 +141,7 @@ class CourseCategoryTest extends TestCase
 
     public function testCanDeleteMultiCourseCategories()
     {
+        $this->withoutMiddleware();
         $course_categories = factory(CourseCategory::class, 10)->create();
         $ids = $course_categories->pluck('id')->toArray();
 

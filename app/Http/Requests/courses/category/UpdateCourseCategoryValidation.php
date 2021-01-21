@@ -30,7 +30,7 @@ class UpdateCourseCategoryValidation extends FormRequest
             'en_title' => [Rule::unique('course_categories','en_title')->ignore($this->route('courseCategory')), 'max:190'],
             'meta' => ['required', 'max:190'],
             'description' => ['required'],
-            'file' => ['mimes:png,jpg,jpeg','size:2048'],
+            'file' => ['mimes:png,jpg,jpeg'],
             'parent' => [Rule::notIn([$this->route('courseCategory')]),Rule::in(array_merge([0], CourseCategory::select('id')->pluck('id')->toArray()))]
         ];
     }
