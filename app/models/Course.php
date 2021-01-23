@@ -2,6 +2,7 @@
 
 namespace App\models;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -39,5 +40,10 @@ class Course extends Model
     public function videos()
     {
         return $this->hasMany(Video::class);
+    }
+
+    public function teacher()
+    {
+        return $this->belongsTo(User::class,'user_id','id');
     }
 }

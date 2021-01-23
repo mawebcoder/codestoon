@@ -18,6 +18,11 @@ class CourseTagController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct()
+    {
+        //TODO SET PERMISSIONS FOR THESE
+    }
     public function index()
     {
         $courses = CourseTag::select('fa_title', 'en_title', 'id')

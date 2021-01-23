@@ -3,6 +3,7 @@
 namespace App;
 
 use App\models\Article;
+use App\models\Course;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -51,5 +52,10 @@ class User extends Authenticatable
     public function articles()
     {
         return $this->hasMany(Article::class);
+    }
+
+    public function courses()
+    {
+        return $this->hasMany(Course::class,'user_id','id');
     }
 }

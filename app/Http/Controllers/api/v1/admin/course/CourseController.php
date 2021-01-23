@@ -16,6 +16,11 @@ class CourseController extends Controller
     public $empty_success = ['message' => 'success', 'data' => null];
     public $failed = ['message' => 'failed', 'data' => null];
 
+    public function __construct()
+    {
+        //TODO SET PERMISSIONS
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -23,7 +28,12 @@ class CourseController extends Controller
      */
     public function index()
     {
-        //TODO SHOW ALL COURSES IN PAGINATION MODE
+        $course = Course::select('id', 'fa_title', 'course_image_cover', 'is_active', 'courseCategory_id', 'price', 'user_id')
+            ->with(['courseCategory:id,fa_title', 'teacher:id,name,family'])->get();
+
+        return $course->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $course]) :
+            response(['message' => 'success', 'data' => null], 204);
     }
 
     public function getActiveCourses()
