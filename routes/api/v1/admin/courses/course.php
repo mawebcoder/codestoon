@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 //course categories
 Route::get('/courses/categories', 'CourseCategoryController@index');
+Route::get('/courses/categories/actives','CourseCategoryController@getActiveCourseCategory')->name('course.category.actives');
+Route::get('/courses/categories/de-actives','CourseCategoryController@getDeActiveCourseCategory')->name('course.category.actives');
 Route::post('/courses/categories', 'CourseCategoryController@store')->name('courses.category.store');
 Route::put('/courses/categories/{courseCategory}', 'CourseCategoryController@update')->name('courses.category.update');
 Route::delete('/courses/categories/{courseCategory}', 'CourseCategoryController@destroy')->name('courses.category.delete');

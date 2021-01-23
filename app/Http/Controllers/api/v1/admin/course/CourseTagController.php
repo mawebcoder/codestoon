@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\api\v1\admin\course;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\courses\category\UpdateCourseCategoryValidation;
 use App\Http\Requests\courses\tag\DeleteCourseTagValidation;
 use App\Http\Requests\courses\tag\StoreCourseTagValidation;
 use App\Http\Requests\courses\tag\UpdateCourseTagValidation;
 use App\models\CourseTag;
-use Illuminate\Http\Request;
 
 class CourseTagController extends Controller
 {
@@ -28,6 +26,15 @@ class CourseTagController extends Controller
             'message' => 'success',
             'data' => $courses
         ]);
+    }
+
+    public function getActiveCourseTags()
+    {
+        //TODO GET ACTIVE COURSE TAGS
+    }
+    public function getDeActiveCourseTags()
+    {
+        //TODO GET DE ACTIVE COURSE TAGS
     }
 
 
@@ -59,7 +66,7 @@ class CourseTagController extends Controller
      */
     public function edit(CourseTag $courseTag)
     {
-        return  response(['message'=>'success','data'=>$courseTag]);
+        return response(['message' => 'success', 'data' => $courseTag]);
     }
 
     /**
@@ -101,9 +108,9 @@ class CourseTagController extends Controller
 
     public function deleteMultiple(DeleteCourseTagValidation $deleteCourseTagValidation)
     {
-        $result=CourseTag::whereIn('id',request()->ids)->delete();
+        $result = CourseTag::whereIn('id', request()->ids)->delete();
         return $result ?
-            response($this->empty_success_message):
+            response($this->empty_success_message) :
             response($this->failed_message);
     }
 

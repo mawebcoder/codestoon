@@ -21,6 +21,11 @@ class CourseCategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    public function __construct()
+    {
+        //TODO SET PERMISSIONS OF THE COURSE CATEGORIES
+    }
+
     public function index()
     {
         $course_categories = CourseCategory::select(
@@ -35,6 +40,24 @@ class CourseCategoryController extends Controller
         return response(['message' => 'success', 'data' => $course_categories]);
     }
 
+    public function getActiveCourseCategory()
+    {
+        $course_categories = CourseCategory::select('parent', 'id', 'fa_title', 'en_title', 'cover_file_name')
+           ->whereStatus(1)->with('father:id,parent,fa_title,en_title,status')->get();
+        return $course_categories->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $course_categories]) :
+            response(['message'=>'success','data'=>null],204);
+
+    }
+
+    public function getDeActiveCourseCategory()
+    {
+        $course_categories = CourseCategory::select('parent', 'id', 'fa_title', 'en_title', 'cover_file_name')
+            ->whereStatus(0)->with('father:id,parent,fa_title,en_title,status')->get();
+        return $course_categories->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $course_categories]) :
+            response(['message'=>'success','data'=>null],204);
+    }
 
     /**
      * Store a newly created resource in storage.

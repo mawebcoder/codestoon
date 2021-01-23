@@ -21,14 +21,14 @@ class CourseSectionController extends Controller
         //TODO GET ALL COURSE SECTION IN PAGINATION MODE
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function getActiveCourseSection()
     {
-        //
+        //TODO GET ACTIVE COURSE SECTION
+    }
+
+    public function getDeActiveCourseSection()
+    {
+        //TODO GET DE ACTIVE COURSE SECTION
     }
 
     /**

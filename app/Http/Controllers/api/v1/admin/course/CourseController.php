@@ -26,6 +26,16 @@ class CourseController extends Controller
         //TODO SHOW ALL COURSES IN PAGINATION MODE
     }
 
+    public function getActiveCourses()
+    {
+        //TODO GET ACTIVE COURSES
+    }
+
+    public function getDeActiveCourses()
+    {
+        //TODO GET ACTIVE COURSES
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -183,19 +193,19 @@ class CourseController extends Controller
 
     public function restore(DeleteMultipleCourseValidation $deleteMultipleCourseValidation)
     {
-        $courses=Course::onlyTrashed()->whereIn('id',$deleteMultipleCourseValidation->ids)
+        $courses = Course::onlyTrashed()->whereIn('id', $deleteMultipleCourseValidation->ids)
             ->restore();
         return $courses ?
-            response($this->empty_success):
+            response($this->empty_success) :
             response($this->failed);
     }
 
     public function getTrashed()
     {
         $courses = Course::onlyTrashed()->select('id', 'fa_title', 'en_title')->get();
-        return  $courses->isNotEmpty() ?
-        response(['message'=>'success','data'=>$courses]) :
-        response(['message'=>'success','data'=>null],204);
+        return $courses->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $courses]) :
+            response(['message' => 'success', 'data' => null], 204);
     }
 
 
