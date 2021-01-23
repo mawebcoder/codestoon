@@ -38,12 +38,20 @@ class CourseController extends Controller
 
     public function getActiveCourses()
     {
-        //TODO GET ACTIVE COURSES
+       $courses=Course::where('is_active',1)->select('courseCategory_id','user_id','id','course_image_cover','fa_title')
+           ->with(['courseCategory:id,fa_title','teacher:id,name,family'])->get();
+       return $courses->isNotEmpty() ?
+           response(['message'=>'success','data'=>$courses]):
+           response(['message'=>'success','data'=>null],204);
     }
 
     public function getDeActiveCourses()
     {
-        //TODO GET ACTIVE COURSES
+        $courses=Course::where('is_active',0)->select('courseCategory_id','user_id','id','course_image_cover','fa_title')
+            ->with(['courseCategory:id,fa_title','teacher:id,name,family'])->get();
+        return $courses->isNotEmpty() ?
+            response(['message'=>'success','data'=>$courses]):
+            response(['message'=>'success','data'=>null],204);
     }
 
 
