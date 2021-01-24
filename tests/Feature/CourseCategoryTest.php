@@ -90,6 +90,7 @@ class CourseCategoryTest extends TestCase
 
     public function testCanForceDeleteCourseCategory()
     {
+        //TODO TEST CAN FORCE DELETE MULTIPLE COURSE CATEGORY
         $course_categories = factory(CourseCategory::class, 5)->create();
 
         $course_categories_ids = $course_categories->pluck('id')->toArray();

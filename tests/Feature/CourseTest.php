@@ -6,8 +6,10 @@ use App\models\Course;
 use App\models\CourseCategory;
 use App\models\CourseTag;
 use App\User;
+use Faker\Provider\File;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class CourseTest extends TestCase
@@ -166,7 +168,26 @@ class CourseTest extends TestCase
 
     public function testCanForceDeleteCourse()
     {
-        //TODO TEST CAN FORCE DELETE COURSE
+        $courses = factory(Course::class, 10)->create();
+        foreach ($courses as $item) {
+
+            $item->delete();
+
+        }
+        foreach ($courses->pluck('id')->toArray() as $id) {
+            Storage::disk('public')->put('images/courses/covers/' . $id . '/mo.txt', 'hello');
+        }
+        $this->json('post', route('course.force-delete'), ['ids' => $courses->pluck('id')->toArray()])
+            ->assertOk();
+        foreach ($courses->pluck('id')->toArray() as $id) {
+            $this->assertDatabaseMissing('courses', [
+                'id' => $id
+            ]);
+        }
+        foreach ($courses->pluck('id')->toArray() as $id) {
+            $this->assertFileDoesNotExist(storage_path('app/public/images/courses/covers/'.$id.'/mo.txt'));
+        }
+
     }
 
     public function testCanRestoreCourse()

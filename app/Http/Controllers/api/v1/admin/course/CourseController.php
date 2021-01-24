@@ -26,6 +26,7 @@ class CourseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
     {
         $course = Course::select('id', 'fa_title', 'course_image_cover', 'is_active', 'courseCategory_id', 'price', 'user_id')
@@ -38,20 +39,20 @@ class CourseController extends Controller
 
     public function getActiveCourses()
     {
-       $courses=Course::where('is_active',1)->select('courseCategory_id','user_id','id','course_image_cover','fa_title')
-           ->with(['courseCategory:id,fa_title','teacher:id,name,family'])->get();
-       return $courses->isNotEmpty() ?
-           response(['message'=>'success','data'=>$courses]):
-           response(['message'=>'success','data'=>null],204);
+        $courses = Course::where('is_active', 1)->select('courseCategory_id', 'user_id', 'id', 'course_image_cover', 'fa_title')
+            ->with(['courseCategory:id,fa_title', 'teacher:id,name,family'])->get();
+        return $courses->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $courses]) :
+            response(['message' => 'success', 'data' => null], 204);
     }
 
     public function getDeActiveCourses()
     {
-        $courses=Course::where('is_active',0)->select('courseCategory_id','user_id','id','course_image_cover','fa_title')
-            ->with(['courseCategory:id,fa_title','teacher:id,name,family'])->get();
+        $courses = Course::where('is_active', 0)->select('courseCategory_id', 'user_id', 'id', 'course_image_cover', 'fa_title')
+            ->with(['courseCategory:id,fa_title', 'teacher:id,name,family'])->get();
         return $courses->isNotEmpty() ?
-            response(['message'=>'success','data'=>$courses]):
-            response(['message'=>'success','data'=>null],204);
+            response(['message' => 'success', 'data' => $courses]) :
+            response(['message' => 'success', 'data' => null], 204);
     }
 
 
@@ -205,7 +206,15 @@ class CourseController extends Controller
 
     public function forceDelete(DeleteMultipleCourseValidation $deleteMultipleCourseValidation)
     {
-        //TODO TEST CAN FORCE DELETE COURSES
+        $courses = Course::onlyTrashed()->whereIn('id', $deleteMultipleCourseValidation->ids)
+            ->forceDelete();
+        foreach ($deleteMultipleCourseValidation->ids as $id) {
+            if (is_dir(storage_path('app/public/images/courses/covers/' . $id))) {
+                Storage::disk('public')->deleteDirectory('images/courses/covers/' . $id);
+            }
+        }
+
+        return response($this->empty_success);
     }
 
 

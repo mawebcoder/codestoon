@@ -31,6 +31,7 @@ Route::get('/courses/sections','CourseSectionController@index')->name('course.se
 
 
 //Courses
+Route::post('/courses/force-delete','CourseController@forceDelete')->name('course.force-delete');
 Route::get('/courses/actives','CourseController@getActiveCourses')->name('courses.actives');
 Route::get('/courses/de-actives','CourseController@getDeActiveCourses')->name('courses.de-actives');
 Route::post('/courses/restore','CourseController@restore')->name('courses.restore');
