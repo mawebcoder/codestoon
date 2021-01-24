@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1\admin\course;
 
 use App\Http\Controllers\Controller;
+use App\models\Course;
 use App\models\CourseSection;
 use Illuminate\Http\Request;
 
@@ -18,17 +19,32 @@ class CourseSectionController extends Controller
      */
     public function index()
     {
-        //TODO GET ALL COURSE SECTION IN PAGINATION MODE
+        $courses = Course::select('id', 'fa_title')->with('sections:id,course_id,fa_title,status')
+            ->get();
+        return $courses->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $courses]) :
+            response($this->empty_success);
     }
 
     public function getActiveCourseSection()
     {
-        //TODO GET ACTIVE COURSE SECTION
+        $actives_course_sections = CourseSection::whereStatus(1)->select('id', 'fa_title', 'course_id')
+            ->with('course:id,fa_title')->get();
+
+        return $actives_course_sections->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $actives_course_sections]) :
+            response($this->empty_success);
+
     }
 
     public function getDeActiveCourseSection()
     {
-        //TODO GET DE ACTIVE COURSE SECTION
+        $actives_course_sections = CourseSection::whereStatus(0)->select('id', 'fa_title', 'course_id')
+            ->with('course:id,fa_title')->get();
+
+        return $actives_course_sections->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $actives_course_sections]) :
+            response($this->empty_success);
     }
 
     /**
@@ -63,7 +79,7 @@ class CourseSectionController extends Controller
      */
     public function edit(CourseSection $courseSection)
     {
-        //TODO SHOW THE COURSE SECTION INFO TO EDIT THE COURSE SECTION
+        return response(['message' => 'success', 'data' => $courseSection]);
     }
 
     /**
