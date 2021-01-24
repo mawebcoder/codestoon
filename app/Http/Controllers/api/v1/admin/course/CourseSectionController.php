@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\v1\admin\course;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\courses\courseSections\StoreCourseSectionValidation;
+use App\Http\Requests\courses\courseSections\UpdateCourseSectionValidation;
 use App\models\Course;
 use App\models\CourseSection;
 use Illuminate\Http\Request;
@@ -91,8 +92,8 @@ class CourseSectionController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    //TODO VALIDATION OF THE UPDATE COURSE SECTION
-    public function update(Request $request, CourseSection $courseSection)
+
+    public function update(UpdateCourseSectionValidation $request, CourseSection $courseSection)
     {
         $data = $request->only([
             'fa_title',
