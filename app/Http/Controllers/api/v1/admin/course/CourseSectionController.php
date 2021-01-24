@@ -44,25 +44,16 @@ class CourseSectionController extends Controller
             [
                 'fa_title',
                 'en_title',
-                'course_id'
+                'course_id',
             ]
         );
+        $data['status'] = $request->status ? 1 : 0;
         $courseSection = CourseSection::create($data);
         return $courseSection ?
             response($this->empty_success, 201) :
             response($this->failed, 500);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param \App\models\CourseSection $courseSection
-     * @return \Illuminate\Http\Response
-     */
-    public function show(CourseSection $courseSection)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -72,7 +63,7 @@ class CourseSectionController extends Controller
      */
     public function edit(CourseSection $courseSection)
     {
-        //
+        //TODO SHOW THE COURSE SECTION INFO TO EDIT THE COURSE SECTION
     }
 
     /**
@@ -89,8 +80,9 @@ class CourseSectionController extends Controller
         $data = $request->only([
             'fa_title',
             'en_title',
-            'course_id'
+            'course_id',
         ]);
+        $data['status'] = $request->status ? 1 : 0;
         $result = $courseSection->update($data);
         return $request ?
             response($this->empty_success) :
@@ -129,8 +121,12 @@ class CourseSectionController extends Controller
     }
 
     //TODO VALIDATION OF THE DELETE MULTIPLE COURSE SECTION
-    public function deleteMultiple()
+    public function deleteMulti()
     {
-        //TODO  DELETE MULTIPLE COURSE SECTION
+        $ids = request()->ids;
+        $course_sections = CourseSection::whereIn('id', request()->ids)
+            ->delete();
+        return response($this->empty_success);
+
     }
 }

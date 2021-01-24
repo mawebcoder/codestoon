@@ -14,7 +14,8 @@ class courseSectionTest extends TestCase
         $data = [
             'fa_title' => 'fa_title',
             'en_title' => 'en_title',
-            'course_id' => $course_id
+            'course_id' => $course_id,
+            'status' => 1
         ];
         $this->post(route('course.section.store'), $data)
             ->assertStatus(201)
@@ -47,7 +48,8 @@ class courseSectionTest extends TestCase
         $data = [
             'course_id' => $course->id,
             'fa_title' => 'fa_title',
-            'en_title' => 'en_title'
+            'en_title' => 'en_title',
+            'status' => 1
         ];
         $this->put(route('course.section.update', ['courseSection' => $course_section->id]), $data)
             ->assertOk()
@@ -58,6 +60,22 @@ class courseSectionTest extends TestCase
         $this->assertDatabaseHas('course_sections', $data);
     }
 
+    public function testCanDeleteMultipleCourseSection()
+    {
+        $course_sections_id = factory(CourseSection::class, 10)->create()
+            ->pluck('id')->toArray();
+
+        $this->json('post', route('course.section.multi'), ['ids' => $course_sections_id])
+            ->assertOk();
+
+        foreach ($course_sections_id as $id) {
+            $this->assertSoftDeleted('course_sections', [
+                'id' => $id
+            ]);
+        }
+
+
+    }
 
     public function testCanForceDeleteCourseSection()
     {
