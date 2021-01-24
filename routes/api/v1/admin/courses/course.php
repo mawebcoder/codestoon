@@ -23,6 +23,7 @@ Route::get('/courses/tags/{courseTag}/edit','CourseTagController@edit')->name('c
 Route::post('/courses/tags/delete-multiple','CourseTagController@deleteMultiple')->name('course.tag.delete.multi');
 
 //Course sections
+Route::get('/courses/sections/trashed','CourseSectionController@getTrashed')->name('course.sections.trashed');
 Route::post('/courses/sections/delete-multi','CourseSectionController@deleteMulti')->name('course.section.multi');
 Route::post('/courses/sections/restore','CourseSectionController@restore')->name('course.sections.restore');
 Route::post('/courses/sections/force-delete','CourseSectionController@forceDelete')->name('course.section.force-delete');

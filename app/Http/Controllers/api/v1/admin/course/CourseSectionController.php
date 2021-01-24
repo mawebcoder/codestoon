@@ -105,15 +105,19 @@ class CourseSectionController extends Controller
 
     public function getTrashed()
     {
-        //TODO GET ALL TRASHED COURSE SECTIONS
+        $course_sections = CourseSection::onlyTrashed()->with('course:id,fa_title')->select('id', 'fa_title', 'en_title', 'course_id')
+            ->get();
+        return $course_sections->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $course_sections]) :
+            response($this->empty_success);
     }
 
     //TODO VALIDATION OF THE RESTORING COURSE SECTION
     public function restore()
     {
-      $ids=request()->ids;
-      $result=CourseSection::onlyTrashed()->whereIn('id',$ids)->restore();
-      return response($this->empty_success);
+        $ids = request()->ids;
+        $result = CourseSection::onlyTrashed()->whereIn('id', $ids)->restore();
+        return response($this->empty_success);
     }
 
     //TODO VALIDATION OF THE COURSE SECTION FORCE DELETE
