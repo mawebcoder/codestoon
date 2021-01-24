@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1\admin\course;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\courses\courseSections\DeleteCourseSectionValidation;
 use App\Http\Requests\courses\courseSections\StoreCourseSectionValidation;
 use App\Http\Requests\courses\courseSections\UpdateCourseSectionValidation;
 use App\models\Course;
@@ -130,27 +131,27 @@ class CourseSectionController extends Controller
             response($this->empty_success);
     }
 
-    //TODO VALIDATION OF THE RESTORING COURSE SECTION
-    public function restore()
+
+    public function restore(DeleteCourseSectionValidation $deleteCourseSectionValidation)
     {
-        $ids = request()->ids;
+        $ids = $deleteCourseSectionValidation->ids;
         $result = CourseSection::onlyTrashed()->whereIn('id', $ids)->restore();
         return response($this->empty_success);
     }
 
-    //TODO VALIDATION OF THE COURSE SECTION FORCE DELETE
-    public function forceDelete()
+
+    public function forceDelete(DeleteCourseSectionValidation $deleteCourseSectionValidation)
     {
-        $courses = CourseSection::onlyTrashed()->whereIn('id', request()->ids)
+        $courses = CourseSection::onlyTrashed()->whereIn('id', $deleteCourseSectionValidation->ids)
             ->forceDelete();
         return response($this->empty_success);
     }
 
-    //TODO VALIDATION OF THE DELETE MULTIPLE COURSE SECTION
-    public function deleteMulti()
+
+    public function deleteMulti(DeleteCourseSectionValidation $deleteCourseSectionValidation)
     {
-        $ids = request()->ids;
-        $course_sections = CourseSection::whereIn('id', request()->ids)
+        $ids = $deleteCourseSectionValidation->ids;
+        $course_sections = CourseSection::whereIn('id',$ids)
             ->delete();
         return response($this->empty_success);
 
