@@ -4,10 +4,13 @@ namespace Tests\Feature;
 
 use App\models\Course;
 use App\models\CourseSection;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class courseSectionTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function testCanStoreCourseSection()
     {
         $course_id = factory(Course::class)->create()->id;
@@ -79,7 +82,23 @@ class courseSectionTest extends TestCase
 
     public function testCanForceDeleteCourseSection()
     {
-        //TODO TEST CAN FORCE DELETE COURSE SECTION
+        $course_sections = factory(CourseSection::class, 10)->create();
+
+        $course_sections_id = $course_sections->pluck('id')->toArray();
+
+        foreach ($course_sections as $item) {
+
+            $item->delete();
+
+        }
+        $this->json('post', route('course.section.force-delete'), ['ids' => $course_sections_id])
+            ->assertOk();
+
+        foreach ($course_sections_id as $id) {
+            $this->assertDatabaseMissing('course_sections', [
+                'id' => $id
+            ]);
+        }
     }
 
     public function testCanRestoreCourseSection()

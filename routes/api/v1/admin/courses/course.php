@@ -24,6 +24,7 @@ Route::post('/courses/tags/delete-multiple','CourseTagController@deleteMultiple'
 
 //Course sections
 Route::post('/courses/sections/delete-multi','CourseSectionController@deleteMulti')->name('course.section.multi');
+Route::post('/courses/sections/force-delete','CourseSectionController@forceDelete')->name('course.section.force-delete');
 Route::post('/courses/sections','CourseSectionController@store')->name('course.section.store');
 Route::put('/courses/sections/{courseSection}','CourseSectionController@update')->name('course.section.update');
 Route::delete('/courses/sections/{courseSection}','CourseSectionController@destroy')->name('course.section.destroy');

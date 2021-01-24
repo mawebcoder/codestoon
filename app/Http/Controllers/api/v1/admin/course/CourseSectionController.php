@@ -117,7 +117,9 @@ class CourseSectionController extends Controller
     //TODO VALIDATION OF THE COURSE SECTION FORCE DELETE
     public function forceDelete()
     {
-        //TODO FORCE DELETE OF THE COURSE SECTION
+        $courses = CourseSection::onlyTrashed()->whereIn('id', request()->ids)
+            ->forceDelete();
+        return response($this->empty_success);
     }
 
     //TODO VALIDATION OF THE DELETE MULTIPLE COURSE SECTION
