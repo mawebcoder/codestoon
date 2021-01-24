@@ -103,7 +103,24 @@ class courseSectionTest extends TestCase
 
     public function testCanRestoreCourseSection()
     {
-        //TODO TEST CAN RESTORE COURSE SECTION
+        $course_sections = factory(CourseSection::class, 10)->create();
+
+        $course_sections_ids = $course_sections->pluck('id')->toArray();
+
+        foreach ($course_sections as $item) {
+            $item->delete();
+        }
+
+        $this->json('post', route('course.sections.restore'), ['ids' => $course_sections_ids])
+            ->assertOk();
+        foreach ($course_sections_ids as $id) {
+
+            $this->assertDatabaseHas('course_sections', [
+                'id' => $id
+            ]);
+        }
+
+
     }
 
 }

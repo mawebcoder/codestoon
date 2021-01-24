@@ -111,7 +111,9 @@ class CourseSectionController extends Controller
     //TODO VALIDATION OF THE RESTORING COURSE SECTION
     public function restore()
     {
-        //TODO RESTORING COURSE SECTION
+      $ids=request()->ids;
+      $result=CourseSection::onlyTrashed()->whereIn('id',$ids)->restore();
+      return response($this->empty_success);
     }
 
     //TODO VALIDATION OF THE COURSE SECTION FORCE DELETE
