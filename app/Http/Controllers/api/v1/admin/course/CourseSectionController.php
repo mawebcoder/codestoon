@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1\admin\course;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\courses\courseSections\StoreCourseSectionValidation;
 use App\models\Course;
 use App\models\CourseSection;
 use Illuminate\Http\Request;
@@ -53,8 +54,8 @@ class CourseSectionController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    //TODO VALIDATION OF THE STORE COURSE SECTION
-    public function store(Request $request)
+
+    public function store(StoreCourseSectionValidation $request)
     {
         $data = $request->only(
             [
