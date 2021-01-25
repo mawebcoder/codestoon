@@ -62,13 +62,16 @@ class VideoTagTest extends TestCase
         $this->assertDatabaseHas('video_tags', $data);
     }
 
-    public function testCanForceDeleteVideoTag()
+    public function testCanDeleteMultipleVideoTag()
     {
-        //TODO TEST CAN FORCE DELETE VIDEO TAG
-    }
+        $video_tags_ids = factory(VideoTag::class, 10)->create()->pluck('id')->toArray();
 
-    public function testCanRestoreVideoTag()
-    {
-        //TODO TEST CAN RESTORE VIDEO TAG
+        $this->post(route('video.tag.delete-multi'), ['ids' => $video_tags_ids])
+            ->assertOk();
+        foreach ($video_tags_ids as $id) {
+            $this->assertDatabaseMissing('video_tags', [
+                'id' => $id
+            ]);
+        }
     }
 }

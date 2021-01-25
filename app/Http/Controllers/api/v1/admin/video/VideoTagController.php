@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1\admin\video;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\video\tag\DeleteVideoTagValidation;
 use App\Http\Requests\video\tag\StoreVideoTagValidation;
 use App\Http\Requests\video\tag\UpdateVideoTagValidation;
 use App\models\VideoTag;
@@ -101,9 +102,13 @@ class VideoTagController extends Controller
             response($this->failed);
     }
 
-    //TODO VALIDATION OF THE DELETE MULTIPLE VIDEO TAG
-    public function deleteMultiple()
+
+    public function deleteMultiple(DeleteVideoTagValidation $deleteVideoTagValidation)
     {
-        //TODO  DELETE MULTIPLE VIDEO TAG
+        $ids=request()->ids;
+
+        $result=VideoTag::whereIn('id',$ids)->delete();
+
+        return response($this->empty_success_message);
     }
 }
