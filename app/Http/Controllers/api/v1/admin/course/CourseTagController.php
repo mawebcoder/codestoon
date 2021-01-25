@@ -23,6 +23,7 @@ class CourseTagController extends Controller
     {
         //TODO SET PERMISSIONS FOR THESE
     }
+
     public function index()
     {
         $courses = CourseTag::select('fa_title', 'en_title', 'id')
@@ -33,13 +34,23 @@ class CourseTagController extends Controller
         ]);
     }
 
-    public function getActiveCourseTags()
+    public function getActivesCourseTags()
     {
-        //TODO GET ACTIVE COURSE TAGS
+        $active_course_tags = CourseTag::whereStatus(1)
+            ->get();
+        return $active_course_tags->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $active_course_tags]) :
+            response(['message' => 'success', 'data' => null], 204);
+
     }
+
     public function getDeActiveCourseTags()
     {
-        //TODO GET DE ACTIVE COURSE TAGS
+        $active_course_tags = CourseTag::whereStatus(0)
+            ->get();
+        return $active_course_tags->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $active_course_tags]) :
+            response(['message' => 'success', 'data' => null], 204);
     }
 
 

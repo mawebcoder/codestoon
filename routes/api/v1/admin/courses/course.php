@@ -23,6 +23,8 @@ Route::post('/courses/categories/delete-multi', 'CourseCategoryController@delete
 
 
 //course tags
+Route::get('/courses/tags/actives','CourseTagController@getActivesCourseTags')->name('course.tags.actives');
+Route::get('/courses/tags/de-actives','CourseTagController@getDeActiveCourseTags')->name('course.tags.de-actives');
 Route::post('/courses/tags', 'CourseTagController@store')->name('course.tag.store');
 Route::put('/courses/tags/{courseTag}', 'CourseTagController@update')->name('course.tag.update');
 Route::delete('/courses/tags/{courseTag}', 'CourseTagController@destroy')->name('course.tag.destroy');

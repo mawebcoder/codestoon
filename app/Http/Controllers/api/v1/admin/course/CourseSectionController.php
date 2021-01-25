@@ -15,6 +15,11 @@ class CourseSectionController extends Controller
     public $empty_success = ['message' => 'success', 'data' => null];
     public $failed = ['message' => 'failed', 'data' => null];
 
+    public function __construct()
+    {
+        //TODO SET PERMISSIONS OF THE COURSE CATEGORIES
+    }
+
     /**
      * Display a listing of the resource.
      *
