@@ -49,16 +49,7 @@ class VideoTagController extends Controller
             response($this->failed);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param \App\models\VideoTag $videoTag
-     * @return \Illuminate\Http\Response
-     */
-    public function show(VideoTag $videoTag)
-    {
-        //
-    }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -68,7 +59,7 @@ class VideoTagController extends Controller
      */
     public function edit(VideoTag $videoTag)
     {
-        //
+        return  response(['message'=>'success','data'=>$videoTag]);
     }
 
     /**
