@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\v1\admin\video;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\video\tag\StoreVideoTagValidation;
+use App\Http\Requests\video\tag\UpdateVideoTagValidation;
 use App\models\VideoTag;
 use Illuminate\Http\Request;
 
@@ -33,7 +34,6 @@ class VideoTagController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    //TODO VALIDATION OF THE STORING VIDEO TAG
     public function store(StoreVideoTagValidation $request)
     {
         $data = $request->only(
@@ -71,8 +71,8 @@ class VideoTagController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    //TODO VALIDATION OF THE UPDATE VIDEO TAG
-    public function update(Request $request, VideoTag $videoTag)
+
+    public function update(UpdateVideoTagValidation $request, VideoTag $videoTag)
     {
         $data = $request->only([
             'en_title',
