@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1\admin\video;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\video\tag\StoreVideoTagValidation;
 use App\models\VideoTag;
 use Illuminate\Http\Request;
 
@@ -33,7 +34,7 @@ class VideoTagController extends Controller
      * @return \Illuminate\Http\Response
      */
     //TODO VALIDATION OF THE STORING VIDEO TAG
-    public function store(Request $request)
+    public function store(StoreVideoTagValidation $request)
     {
         $data = $request->only(
             [
@@ -98,24 +99,6 @@ class VideoTagController extends Controller
         return $result ?
             response($this->empty_success_message) :
             response($this->failed);
-    }
-
-
-    //TODO VALIDATION OF VIDEO TAG RESTORING
-    public function restore()
-    {
-        //TODO RESTORE VIDEO TAG
-    }
-
-    //TODO VALIDATION OF VIDEO TAG FORCE DELETE
-    public function forceDelete()
-    {
-        //TODO FORCE DELETE OF THE VIDEO TAG
-    }
-
-    public function getTrashed()
-    {
-        //TODO GET ALL VIDEO TAG TRASHED
     }
 
     //TODO VALIDATION OF THE DELETE MULTIPLE VIDEO TAG
