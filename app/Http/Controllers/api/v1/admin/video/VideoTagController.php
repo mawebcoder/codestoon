@@ -18,18 +18,13 @@ class VideoTagController extends Controller
      */
     public function index()
     {
-        //TODO SHOW ALL VIDEO TAG IN PAGINATION MODE
+        $video_tags = VideoTag::paginate(30);
+        return $video_tags->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $video_tags]) :
+            response(['message' => 'success', 'data' => null],204);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+
 
     /**
      * Store a newly created resource in storage.

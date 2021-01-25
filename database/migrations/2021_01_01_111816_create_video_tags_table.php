@@ -18,7 +18,6 @@ class CreateVideoTagsTable extends Migration
             $table->string('fa_title');
             $table->boolean('status')->default(0);
             $table->string('en_title');
-            $table->softDeletes();
             $table->timestamps();
         });
     }
