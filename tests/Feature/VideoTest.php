@@ -123,7 +123,7 @@ class VideoTest extends TestCase
         ]);
     }
 
-    public function testCanDeleteVideo()
+    public function testDeleteVideo()
     {
         $course = factory(Course::class)->create();
         $video = factory(Video::class)->create(['course_id' => $course->id]);

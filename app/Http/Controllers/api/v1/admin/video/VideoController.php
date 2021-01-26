@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1\admin\video;
 
 use App\Http\Controllers\Controller;
+use App\models\Course;
 use App\models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -25,17 +26,40 @@ class VideoController extends Controller
      */
     public function index()
     {
-        //TODO SHOW ALL VIDEOS IN PAGINATION MODE
+        //TODO THE USER ID FEATURE TO THE VIDEOS TABLE AND FIX THIS METHOD LATER
+        $videos = Course::where('is_active', 1)->select('id', 'fa_title', 'user_id')->with([
+            'videos:id,course_id,fa_title,status,time',
+            'teacher:id,name,family'
+        ])
+            ->get();
+        $single_videos = Video::where('is_single_video', 1)->select('id', 'fa_title,status,time')
+            ->get();
     }
 
     public function getActiveVideos()
     {
-        //TODO GET ACTIVE VIDEOS
+        $active_videos = Course::where('is_active', 1)->select('id', 'fa_title', 'user_id')->with([
+            'videos:id,course_id,fa_title,status,time',
+            'teacher:id,name,family'
+        ])->whereHas('videos',function ($video){
+            $video->whereStatus(1);
+        })->get();
+        return $active_videos->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $active_videos]) :
+            response($this->empty_success_message);
     }
 
     public function getDeActiveVideos()
     {
-        //TODO GET DE ACTIVE COURSES
+        $active_videos = Course::where('is_active', 1)->select('id', 'fa_title', 'user_id')->with([
+            'videos:id,course_id,fa_title,status,time',
+            'teacher:id,name,family'
+        ])->whereHas('videos',function ($video){
+            $video->whereStatus(0);
+        })->get();
+        return $active_videos->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $active_videos]) :
+            response($this->empty_success_message);
     }
 
 
@@ -50,7 +74,6 @@ class VideoController extends Controller
     public function store(Request $request)
     {
 
-        //TODO REFACTOR
 
         $data = $request->only([
             'fa_title',
@@ -95,35 +118,36 @@ class VideoController extends Controller
     //TODO VALIDATION OF THE UPLOAD VIDEO
     public function upload(Request $request, Video $video)
     {
-
         ini_set('max_execution_time', 0);
-        $file = $request->file('file');
-        $file_name = $file->getClientOriginalName();
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $file_name = $file->getClientOriginalName();
+            $path = $video->is_single_video ?
+                $path = 'unique_videos/' . $video->id :
+                $path = 'courses/' . $video->course_id . '/' . $video->id;
 
-        $path = $video->is_single_video ?
-            $path = 'unique_videos/' . $video->id :
-            $path = 'courses/' . $video->course_id . '/' . $video->id;
+            //has uploaded the video before?
+            if ($video->video_url_name) {
+                //is a single video?
+                if ($video->is_single_video) {
+                    if (Storage::disk('videos')->exists($path)) {
 
-        //has uploaded the video before?
-        if ($video->video_url_name) {
-            //is a single video?
-            if ($video->is_single_video) {
-                if (Storage::disk('videos')->exists($path)) {
-
-                    Storage::deleteDirectory($path);
-                }
-                //is not a single video?
-            } else {
-                if (Storage::disk('videos')->exists($path)) {
-                    Storage::deleteDirectory($path);
+                        Storage::deleteDirectory($path);
+                    }
+                    //is not a single video?
+                } else {
+                    if (Storage::disk('videos')->exists($path)) {
+                        Storage::deleteDirectory($path);
+                    }
                 }
             }
+            $file->storeAs($path, $file_name, 'videos');
+            $video->update([
+                'video_url_name' => $file_name
+            ]);
+            return response($this->empty_success_message, 201);
         }
-        $file->storeAs($path, $file_name, 'videos');
-        $video->update([
-            'video_url_name' => $file_name
-        ]);
-        return response($this->empty_success_message, 201);
+        return response($this->empty_success_message, 200);
     }
 
 
@@ -135,9 +159,9 @@ class VideoController extends Controller
      */
     public function edit(Video $video)
     {
-        $video=$video->with('course')->first();
+        $video = $video->with('course')->first();
 
-        return  response(['message'=>'success','data'=>$video]);
+        return response(['message' => 'success', 'data' => $video]);
     }
 
     /**
@@ -151,7 +175,6 @@ class VideoController extends Controller
     public function update(Request $request, Video $video)
     {
 
-        //TODO UPDATE VIDEO CONTENT HERE and refactor the code
         $data = $request->only([
             'fa_title',
             'en_title',
@@ -185,19 +208,8 @@ class VideoController extends Controller
      */
     public function destroy(Video $video)
     {
-        //TODO REFACTOR THIS SECTION
-        $video->delete();
-        if ($video->is_single_video) {
-            if (file_exists(storage_path('videos/unique_videos/' . $video->id . '/' . $video->video_url_name))) {
-                unlink(storage_path('videos/unique_videos/' . $video->id . '/' . $video->video_url_name));
-            }
-        } else {
-            $course_id = $video->course->id;
-            if (file_exists(storage_path('videos/courses/' . $course_id . '/' . $video->id . '/' . $video->video_url_name))) {
-                unlink(file_exists(storage_path('videos/courses/' . $course_id . '/' . $video->id . '/' . $video->video_url_name)));
-            }
-        }
-        return response($this->empty_success_message);
+       $result=$video->delete();
+       return  response($this->empty_success_message);
     }
 
     //TODO VALIDATION OF  THE RESTORE VIDEO IN THE SYSTEM
