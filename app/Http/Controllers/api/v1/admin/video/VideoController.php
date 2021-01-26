@@ -135,7 +135,9 @@ class VideoController extends Controller
      */
     public function edit(Video $video)
     {
+        $video=$video->with('course')->first();
 
+        return  response(['message'=>'success','data'=>$video]);
     }
 
     /**
