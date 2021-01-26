@@ -6,12 +6,17 @@ use App\Http\Controllers\Controller;
 use App\models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use function PHPUnit\Framework\fileExists;
+use Illuminate\Support\Facades\Storage;
 
 class VideoController extends Controller
 {
     public $empty_success_message = ['message' => 'success', 'data' => null];
     public $failed_message = ['message' => 'success', 'data' => null];
+
+    public function __construct()
+    {
+        //TODO SET THE PERMISSIONS
+    }
 
     /**
      * Display a listing of the resource.
@@ -23,15 +28,17 @@ class VideoController extends Controller
         //TODO SHOW ALL VIDEOS IN PAGINATION MODE
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function getActiveVideos()
     {
-        //
+        //TODO GET ACTIVE VIDEOS
     }
+
+    public function getDeActiveVideos()
+    {
+        //TODO GET DE ACTIVE COURSES
+    }
+
+
 
     /**
      * Store a newly created resource in storage.
@@ -42,6 +49,9 @@ class VideoController extends Controller
     //TODO VALIDATION OF THE STORE VIDEO
     public function store(Request $request)
     {
+
+        //TODO REFACTOR
+
         $data = $request->only([
             'fa_title',
             'en_title',
@@ -61,6 +71,7 @@ class VideoController extends Controller
         $data['time'] = $data['hour'] . ':' . $data['min'] . ':' . $data['sec'];
         $video = Video::create([
             'meta' => $data['meta'],
+            'status' => $request->status ? 1 : 0,
             'is_special_subscription' => $data['is_special_subscription'] ?? 0,
             'short_description' => $data['short_description'],
             'is_free' => $data['is_free'] ?? 0,
@@ -84,45 +95,37 @@ class VideoController extends Controller
     //TODO VALIDATION OF THE UPLOAD VIDEO
     public function upload(Request $request, Video $video)
     {
+
         ini_set('max_execution_time', 0);
         $file = $request->file('file');
         $file_name = $file->getClientOriginalName();
 
         $path = $video->is_single_video ?
-            $path = 'videos/unique_videos/' . $video->id :
-            $path = 'videos/courses/' . $video->course_id . '/' . $video->id;
+            $path = 'unique_videos/' . $video->id :
+            $path = 'courses/' . $video->course_id . '/' . $video->id;
 
-        if (!$video->is_single_video) {
-            if ($video->video_url_name != null) {
-                if (fileExists(storage_path('app/videos/courses/' . $video->course->id . '/' . $video->id . '/' . $video->video_url_name))) {
-                    unlink(storage_path('app/videos/courses/' . $video->course->id . '/' . $video->id . '/' . $video->video_url_name));
+        //has uploaded the video before?
+        if ($video->video_url_name) {
+            //is a single video?
+            if ($video->is_single_video) {
+                if (Storage::disk('videos')->exists($path)) {
+
+                    Storage::deleteDirectory($path);
                 }
-            }
-        } else {
-            if ($video->video_url_name != null) {
-                if (fileExists(storage_path('app/videos/unique_videos/' . $video->id . '/' . $video->video_url_name))) {
-                    unlink(storage_path('app/videos/unique_videos/' . $video->id . '/' . $video->video_url_name));
+                //is not a single video?
+            } else {
+                if (Storage::disk('videos')->exists($path)) {
+                    Storage::deleteDirectory($path);
                 }
             }
         }
-
-        $file->storeAs($path, $file_name);
+        $file->storeAs($path, $file_name, 'videos');
         $video->update([
             'video_url_name' => $file_name
         ]);
         return response($this->empty_success_message, 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param \App\models\Video $video
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Video $video)
-    {
-
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -132,7 +135,7 @@ class VideoController extends Controller
      */
     public function edit(Video $video)
     {
-        //
+
     }
 
     /**
@@ -145,6 +148,8 @@ class VideoController extends Controller
     //TODO VALIDATION OF THE UPDATE VIDEO
     public function update(Request $request, Video $video)
     {
+
+        //TODO UPDATE VIDEO CONTENT HERE and refactor the code
         $data = $request->only([
             'fa_title',
             'en_title',
@@ -178,7 +183,7 @@ class VideoController extends Controller
      */
     public function destroy(Video $video)
     {
-
+        //TODO REFACTOR THIS SECTION
         $video->delete();
         if ($video->is_single_video) {
             if (file_exists(storage_path('videos/unique_videos/' . $video->id . '/' . $video->video_url_name))) {

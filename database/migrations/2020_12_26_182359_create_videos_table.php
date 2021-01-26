@@ -21,7 +21,7 @@ class CreateVideosTable extends Migration
             $table->boolean('is_free')->default(0);
             $table->text('description');
             $table->boolean('is_single_video')->default(0);
-            $table->boolean('is_special_subscription');
+            $table->boolean('is_special_subscription')->default(0);
             $table->unsignedBigInteger('courseSection_id')->nullable();
             $table->foreign('courseSection_id')->references('id')
                 ->on('course_sections')->onDelete(null);
@@ -30,6 +30,7 @@ class CreateVideosTable extends Migration
                 ->on('courses')->onDelete(null);
             $table->text('short_description')->nullable();
             $table->string('meta');
+            $table->boolean('status')->default(0);
             $table->bigInteger('hint')->default(0);
             $table->string('likes')->nullable();
             $table->string('video_url_name')->nullable();

@@ -31,6 +31,7 @@ class VideoTest extends TestCase
             'video_tag_ids' => $video_tag_ids,
             'min' => "40",
             'sec' => "40",
+            'status'=>1,
             'meta' => 'meta',
             'is_special_subscription' => 0,
             'courseSection_id' => $courseSection->id,

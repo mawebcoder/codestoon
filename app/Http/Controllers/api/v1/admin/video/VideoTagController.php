@@ -14,6 +14,11 @@ class VideoTagController extends Controller
     public $empty_success_message = ['message' => 'success', 'data' => null];
     public $failed = ['message' => 'failed', 'data' => null];
 
+    public function __construct()
+    {
+        //TODO SET THE PERMISSIONS
+    }
+
     /**
      * Display a listing of the resource.
      *
