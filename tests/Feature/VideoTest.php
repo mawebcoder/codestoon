@@ -31,7 +31,7 @@ class VideoTest extends TestCase
             'video_tag_ids' => $video_tag_ids,
             'min' => "40",
             'sec' => "40",
-            'status'=>1,
+            'status' => 1,
             'meta' => 'meta',
             'is_special_subscription' => 0,
             'courseSection_id' => $courseSection->id,
@@ -146,7 +146,22 @@ class VideoTest extends TestCase
 
     public function testCanRestoreVideo()
     {
-        //TODO TEST CAN RESTORE VIDEO
+        $videos = factory(Video::class, 10)->create();
+        foreach ($videos as $item) {
+            $item->delete();
+        }
+        $ids = $videos->pluck('id')->toArray();
+
+        $this->post(route('videos.restore'), ['ids' => $ids])
+            ->assertOk();
+
+        foreach ($ids as $id) {
+            $this->assertDatabaseHas('videos', [
+                'id' => $id
+            ]);
+        }
+
+
     }
 
 }

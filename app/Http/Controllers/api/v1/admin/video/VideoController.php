@@ -215,7 +215,10 @@ class VideoController extends Controller
     //TODO VALIDATION OF  THE RESTORE VIDEO IN THE SYSTEM
     public function restore()
     {
-        //TODO RESTORE VIDEO
+        $result=Video::onlyTrashed()->whereIn('id',request()->ids)
+            ->restore();
+
+        return response($this->empty_success_message);
     }
 
     //TODO VALIDATION OF VIDEO FORCE DELETE
