@@ -26,7 +26,7 @@ class VideoController extends Controller
      */
     public function index()
     {
-        //TODO THE USER ID FEATURE TO THE VIDEOS TABLE AND FIX THIS METHOD LATER
+
         $videos = Course::where('is_active', 1)->select('id', 'fa_title', 'user_id')->with([
             'videos:id,course_id,fa_title,status,time',
             'teacher:id,name,family'
@@ -235,6 +235,9 @@ class VideoController extends Controller
     //TODO VALIDATION OF THE DELETE MULTIPLE VIDEO
     public function deleteMultiple()
     {
-        //TODO  DELETE MULTIPLE COURSE VIDEO
+        Video::whereIn('id',request()->ids)
+        ->delete();
+
+        return response($this->empty_success_message);
     }
 }

@@ -139,6 +139,20 @@ class VideoTest extends TestCase
         ]);
     }
 
+    public function testCanDeleteMultiVideos()
+    {
+        $videos = factory(Video::class, 10)->create();
+        $ids = $videos->pluck('id')->toArray();
+        $this->post(route('videos.delete.multi'), ['ids' => $ids])
+            ->assertOk();
+
+        foreach ($ids as $id) {
+            $this->assertSoftDeleted('videos', [
+                'id' => $id
+            ]);
+        }
+    }
+
     public function testCanForceDeleteVideo()
     {
         //TODO TEST CAN FORCE DELETE VIDEO
