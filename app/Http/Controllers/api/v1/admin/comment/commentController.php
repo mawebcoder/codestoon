@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1\admin\comment;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\comment\DeleteCommentValidation;
 use App\Http\Requests\comment\StoreCommentValidation;
 use App\models\Comment;
 use Illuminate\Http\Request;
@@ -81,7 +82,7 @@ class commentController extends Controller
     public function update(Request $request, Comment $comment)
     {
         $comment->update([
-            'active'=>$request->active ?1:0
+            'active'=>request()->active ?1:0
         ]);
         return  response($this->empty_success_message);
     }
@@ -98,23 +99,23 @@ class commentController extends Controller
        return  response($this->empty_success_message);
     }
 
-    //TODO VALIDATION OF  DELETE MULTIPLE COMMENT
-    public function deleteMulti()
+
+    public function deleteMulti(DeleteCommentValidation $deleteCommentValidation)
     {
         Comment::query()->whereIn('id',request()->ids)->delete();
         return response($this->empty_success_message);
     }
 
-    //TODO VALIDATION OF THE FORCE DELETE OF THE COMMENT IN THE SYSTEM
-    public function forceDelete()
+
+    public function forceDelete(DeleteCommentValidation $deleteCommentValidation)
     {
         Comment::onlyTrashed()->whereIn('id',request()->ids)
             ->forceDelete();
         return response($this->empty_success_message);
     }
 
-    //TODO VALIDATION OF THE RESTORE COMMENTS
-    public function restore()
+
+    public function restore(DeleteCommentValidation $deleteCommentValidation)
     {
         Comment::onlyTrashed()->whereIn('id',request()->ids)
             ->restore();

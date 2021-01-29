@@ -55,4 +55,15 @@ class StoreCommentValidation extends FormRequest
         }
         return $arr;
     }
+    public function messages()
+    {
+        return [
+          'text.required'=>'محتوای خود را وارد کنید',
+          'parent.in'=>'داده نامعتبر است',
+          'type.required'=>'داده نامعتبر است',
+          'type.in'=>'داده نامعتبر است',
+          'commentable_id.required'=>'داده نامعتبر است',
+          'commentable_id.exists'=>'داده نامعتبر است'
+        ];
+    }
 }
