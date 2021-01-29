@@ -12,6 +12,8 @@ Route::get('/videos/tags/{videoTag}/edit','VideoTagController@edit')->name('vide
 Route::post('/videos/tags/delete-multi','VideoTagController@deleteMultiple')->name('video.tag.delete-multi');
 
 //videos
+Route::get('/videos/trashed','VideoController@getTrashed')->name('video.trashes');
+Route::post('/videos/force-delete','VideoController@forceDelete')->name('video.force-delete');
 Route::post('/videos/delete/multi','VideoController@deleteMultiple')->name('videos.delete.multi');
 Route::post('/videos/restore','VideoController@restore')->name('videos.restore');
 Route::get('/videos/actives','VideoController@getActiveVideos')->name('video.actives');

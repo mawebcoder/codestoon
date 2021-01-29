@@ -41,7 +41,7 @@ class VideoController extends Controller
         $active_videos = Course::where('is_active', 1)->select('id', 'fa_title', 'user_id')->with([
             'videos:id,course_id,fa_title,status,time',
             'teacher:id,name,family'
-        ])->whereHas('videos',function ($video){
+        ])->whereHas('videos', function ($video) {
             $video->whereStatus(1);
         })->get();
         return $active_videos->isNotEmpty() ?
@@ -54,7 +54,7 @@ class VideoController extends Controller
         $active_videos = Course::where('is_active', 1)->select('id', 'fa_title', 'user_id')->with([
             'videos:id,course_id,fa_title,status,time',
             'teacher:id,name,family'
-        ])->whereHas('videos',function ($video){
+        ])->whereHas('videos', function ($video) {
             $video->whereStatus(0);
         })->get();
         return $active_videos->isNotEmpty() ?
@@ -208,14 +208,14 @@ class VideoController extends Controller
      */
     public function destroy(Video $video)
     {
-       $result=$video->delete();
-       return  response($this->empty_success_message);
+        $result = $video->delete();
+        return response($this->empty_success_message);
     }
 
     //TODO VALIDATION OF  THE RESTORE VIDEO IN THE SYSTEM
     public function restore()
     {
-        $result=Video::onlyTrashed()->whereIn('id',request()->ids)
+        $result = Video::onlyTrashed()->whereIn('id', request()->ids)
             ->restore();
 
         return response($this->empty_success_message);
@@ -224,20 +224,97 @@ class VideoController extends Controller
     //TODO VALIDATION OF VIDEO FORCE DELETE
     public function forceDelete()
     {
-        //TODO FORCE DELETE VIDEO
+        $video_ids = request()->ids;
+
+        //single_videos
+        $this->ForceDeleteVideosThatDontHaveCourse($video_ids);
+
+        //course_videos
+        $this->ForceDeleteVideosThatHaveCourse($video_ids);
+
+        return response($this->empty_success_message);
+    }
+
+    public function ForceDeleteVideosThatDontHaveCourse($video_ids)
+    {
+        $videos = Video::onlyTrashed()->select('id', 'fa_title', 'course_id')->whereIn('id', $video_ids)->whereDoesntHave('course');
+
+
+        $ids = $videos->pluck('id')->toArray();
+
+        $videos->forceDelete();
+
+
+        $this->deleteVideosFilesThatDontHaveCourse($ids);
+
+    }
+
+    public function deleteVideosFilesThatDontHaveCourse($ids)
+    {
+        foreach ($ids as $id){
+
+            $path = 'unique_videos/' . $id;
+
+            $base_path = Storage::disk('videos');
+
+            if ($base_path->exists($path)) {
+                $base_path->deleteDirectory($path);
+            }
+        }
+    }
+
+    public function ForceDeleteVideosThatHaveCourse($video_ids)
+    {
+        $videos = Video::onlyTrashed()->select('id', 'course_id', 'fa_title')
+            ->whereIn('id', $video_ids)->with('course:id,fa_title')
+            ->whereHas('course');
+
+        $video_ids_with_course_ids = [];
+
+        foreach ($videos->get() as $item) {
+
+            $value = ['course_id' => $item->course->id, 'video_id' => $item->id];
+
+            array_push($video_ids_with_course_ids, $value);
+
+        }
+        $videos->forceDelete();
+
+        $this->deleteVideosFilesThatHaveCourse($video_ids_with_course_ids);
+    }
+
+    public function deleteVideosFilesThatHaveCourse($video_ids_with_course_ids)
+    {
+        foreach ($video_ids_with_course_ids as $item) {
+
+            $path = 'courses/' . $item['course_id'] . '/' . $item['video_id'];
+
+            $base_path = Storage::disk('videos');
+
+            if ($base_path->exists($path)) {
+
+                $base_path->deleteDirectory($path);
+            }
+        }
     }
 
     public function getTrashed()
     {
-        //TODO GET ALL VIDEO TRASHED
+        $trashed_videos = Video::onlyTrashed()->select('id', 'fa_title', 'time', 'course_id', 'courseSection_id')
+            ->with(['course:id,fa_title', 'section:id,fa_title'])->get();
+        return $trashed_videos->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $trashed_videos]) :
+            response($this->empty_success_message);
     }
 
     //TODO VALIDATION OF THE DELETE MULTIPLE VIDEO
     public function deleteMultiple()
     {
-        Video::whereIn('id',request()->ids)
-        ->delete();
+        Video::whereIn('id', request()->ids)
+            ->delete();
 
         return response($this->empty_success_message);
     }
+
+
 }

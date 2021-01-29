@@ -8,6 +8,7 @@ use App\models\Video;
 use App\models\VideoTag;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class VideoTest extends TestCase
@@ -155,7 +156,40 @@ class VideoTest extends TestCase
 
     public function testCanForceDeleteVideo()
     {
-        //TODO TEST CAN FORCE DELETE VIDEO
+
+        $videos = factory(Video::class, 10)->create();
+
+        $base_path=Storage::disk('videos');
+
+       $videos->each(function ($item) use ($base_path){
+
+           $file='courses/' . $item->course_id . '/' . $item->id . '/mo.txt';
+
+           $base_path ->put($file, 'hello mohammad');
+
+            $item->delete();
+
+       });
+
+
+
+        $ids = $videos->pluck('id')->toArray();
+
+        $course_ids=$videos->pluck('course_id')->toArray();
+
+        $this->post(route('video.force-delete'), ['ids' => $ids])
+            ->assertOk();
+
+        foreach ($ids as $id) {
+            $this->assertDatabaseMissing('videos', [
+                'id' => $id
+            ]);
+        }
+        foreach ($ids as $key=>$id) {
+            $path =storage_path('app/videos/courses/'.$course_ids[$key].'/'.$id.'/mo.txt');
+            $this->assertFileDoesNotExist($path);
+       }
+
     }
 
     public function testCanRestoreVideo()
