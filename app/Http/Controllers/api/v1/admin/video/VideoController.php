@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\video\DeleteVideoValidation;
 use App\Http\Requests\video\StoreVideoValidation;
 use App\Http\Requests\video\tag\StoreVideoTagValidation;
+use App\Http\Requests\video\UploadVideoValidation;
 use App\models\Course;
 use App\models\Video;
 use Illuminate\Http\Request;
@@ -120,8 +121,8 @@ class VideoController extends Controller
 
     }
 
-    //TODO VALIDATION OF THE UPLOAD VIDEO FILE
-    public function upload(Request $request, Video $video)
+
+    public function upload(UploadVideoValidation $request, Video $video)
     {
         ini_set('max_execution_time', 0);
         if ($request->hasFile('file')) {
@@ -226,7 +227,6 @@ class VideoController extends Controller
         return response($this->empty_success_message);
     }
 
-    //TODO VALIDATION OF VIDEO FORCE DELETE
     public function forceDelete(DeleteVideoValidation $deleteVideoValidation)
     {
         $video_ids = request()->ids;
@@ -320,6 +320,7 @@ class VideoController extends Controller
 
         return response($this->empty_success_message);
     }
+
 
 
 }
