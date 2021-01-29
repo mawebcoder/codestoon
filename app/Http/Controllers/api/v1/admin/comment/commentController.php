@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 
 class commentController extends Controller
 {
+    public $empty_success_message = ['message' => 'success', 'data' => null];
+    public $empty_failed_message = ['message' => 'failed', 'data' => null];
+
     /**
      * Display a listing of the resource.
      *
@@ -29,8 +32,27 @@ class commentController extends Controller
     //TODO VALIDATION OF THE STORE COMMENT
     public function store(Request $request)
     {
-        //TODO STORE COMMENT IN THE SYSTEM
+        $type = $request->type;
+
+        $types = [
+            'video' => 'App\models\Video',
+            'course' => 'App\models\Course',
+            'article' => 'App\models\Article'
+        ];
+
+        $result = Comment::query()->create([
+            'user_id' => auth()->user()->id,
+            'text' => request()->text,
+            'commentable_id' => request()->commentable_id,
+            'commentable_type' => $types[$type],
+            'parent' => request()->parent ?? 0,
+        ]);
+
+        return $result ?
+            response($this->empty_success_message,201) :
+            response($this->empty_failed_message, 500);
     }
+
 
     /**
      * Show the form for editing the specified resource.
