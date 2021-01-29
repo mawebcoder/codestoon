@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\api\v1\admin\video;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\video\StoreVideoValidation;
+use App\Http\Requests\video\tag\StoreVideoTagValidation;
 use App\models\Course;
 use App\models\Video;
 use Illuminate\Http\Request;
@@ -70,8 +72,8 @@ class VideoController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    //TODO VALIDATION OF THE STORE VIDEO
-    public function store(Request $request)
+
+    public function store(StoreVideoValidation $request)
     {
 
 
@@ -80,9 +82,6 @@ class VideoController extends Controller
             'en_title',
             'description',
             'short_description',
-            'hour',
-            'min',
-            'sec',
             'is_free',
             'is_single_video',
             'is_special_subscription',
@@ -91,11 +90,16 @@ class VideoController extends Controller
             'meta',
             'video_url_name'
         ]);
+        $data['hour']=$data['hour'] ?? "00";
+        $data['min']=$data['min'] ?? "00";
+        $data['sec']=$data['sec'] ?? "00";
+
         $data['time'] = $data['hour'] . ':' . $data['min'] . ':' . $data['sec'];
+
         $video = Video::create([
             'meta' => $data['meta'],
             'status' => $request->status ? 1 : 0,
-            'is_special_subscription' => $data['is_special_subscription'] ?? 0,
+            'is_special_subscription' => $data['is_special_subscription'] ? 1: 0,
             'short_description' => $data['short_description'],
             'is_free' => $data['is_free'] ?? 0,
             'en_title' => $data['en_title'],
@@ -103,7 +107,7 @@ class VideoController extends Controller
             'courseSection_id' => $data['courseSection_id'] ?? null,
             'course_id' => $data['course_id'] ?? null,
             'description' => $data['description'],
-            'is_single_video' => $data['is_single_video'] ?? 0,
+            'is_single_video' => $data['is_single_video'] ? 1: 0,
             'time' => $data['time']
         ]);
 
