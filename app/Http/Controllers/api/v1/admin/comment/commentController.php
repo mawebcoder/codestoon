@@ -18,7 +18,10 @@ class commentController extends Controller
      */
     public function index()
     {
-        //TODO GET ALL COMMENTS OF THE SYSTEM IN PAGINATION MODE
+       $comments=Comment::withTrashed()->paginate(30);
+       return  $comments->isNotEmpty()?
+           response(['message'=>'success','data'=>$comments]):
+           response($this->empty_success_message,204);
     }
 
 
@@ -62,7 +65,7 @@ class commentController extends Controller
      */
     public function edit(Comment $comment)
     {
-        //
+        return  response(['message'=>'success','data'=>$comment]);
     }
 
     /**
@@ -72,10 +75,14 @@ class commentController extends Controller
      * @param \App\models\Comment $comment
      * @return \Illuminate\Http\Response
      */
-    //TODO VALIDATION OF THE UPDATE COMMENT IN THE SYSTEM
+
+
     public function update(Request $request, Comment $comment)
     {
-        //TODO  UPDATE COMMENT IN THE SYSTEM
+        $comment->update([
+            'active'=>$request->active ?1:0
+        ]);
+        return  response($this->empty_success_message);
     }
 
     /**
@@ -86,29 +93,39 @@ class commentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        //TODO SOFT DELETE OF THE COMMENT IN THE SYSTEM
+       $comment->query()->delete();
+       return  response($this->empty_success_message);
     }
 
     //TODO VALIDATION OF  DELETE MULTIPLE COMMENT
-    public function deleteMultiple()
+    public function deleteMulti()
     {
-        //TODO DELETE MULTIPLE COMMENT
+        Comment::query()->whereIn('id',request()->ids)->delete();
+        return response($this->empty_success_message);
     }
 
     //TODO VALIDATION OF THE FORCE DELETE OF THE COMMENT IN THE SYSTEM
     public function forceDelete()
     {
-        //TODO FORCE DELETE COMMENT
+        Comment::onlyTrashed()->whereIn('id',request()->ids)
+            ->forceDelete();
+        return response($this->empty_success_message);
     }
 
     //TODO VALIDATION OF THE RESTORE COMMENTS
-    public function restoreComments()
+    public function restore()
     {
-        //TODO RESTORE COMMENTS IN THE SYSTEM
+        Comment::onlyTrashed()->whereIn('id',request()->ids)
+            ->restore();
+        return response($this->empty_success_message);
     }
 
-    public function getTrashedComments()
+    public function getTrashed()
     {
-        //TODO GET TRASHED COMMENTS
+        $trashed_comments=Comment::onlyTrashed()->paginate(30);
+
+        return $trashed_comments->isNotEmpty() ?
+            response(['message'=>'success',$trashed_comments]):
+            response($this->empty_success_message,204);
     }
 }
