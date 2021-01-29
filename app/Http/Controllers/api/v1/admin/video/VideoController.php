@@ -242,7 +242,8 @@ class VideoController extends Controller
 
     public function ForceDeleteVideosThatDontHaveCourse($video_ids)
     {
-        $videos = Video::onlyTrashed()->select('id', 'fa_title', 'course_id')->whereIn('id', $video_ids)->whereDoesntHave('course');
+        $videos = Video::onlyTrashed()->select('id', 'fa_title', 'course_id')
+            ->whereIn('id', $video_ids)->doesntHave('course');
 
 
         $ids = $videos->pluck('id')->toArray();
@@ -272,7 +273,7 @@ class VideoController extends Controller
     {
         $videos = Video::onlyTrashed()->select('id', 'course_id', 'fa_title')
             ->whereIn('id', $video_ids)->with('course:id,fa_title')
-            ->whereHas('course');
+            ->Has('course');
 
         $video_ids_with_course_ids = [];
 

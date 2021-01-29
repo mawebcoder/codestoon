@@ -243,4 +243,5 @@ class CourseController extends Controller
             response($this->empty_success) :
             response($this->failed);
     }
+
 }

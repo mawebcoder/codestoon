@@ -2,17 +2,28 @@
 
 namespace Tests\Feature;
 
-use App\models\Course;
-use App\User;
-use Illuminate\Support\Arr;
 use Tests\TestCase;
 
 class CommentsTest extends TestCase
 {
-    public function testCanStoreComments()
+    public function testCanStoreVideoComments()
     {
 
-      //TODO WRITE THAT TEST CAN STORE A COMMENT
+        //TODO WRITE THAT TEST CAN STORE A Video COMMENT
+
+    }
+
+    public function testCanStoreCourseComments()
+    {
+
+        //TODO WRITE THAT TEST CAN STORE A Course COMMENT
+
+    }
+
+    public function testCanStoreArticleComments()
+    {
+
+        //TODO WRITE THAT TEST CAN STORE A Course COMMENT
 
     }
 
@@ -20,6 +31,11 @@ class CommentsTest extends TestCase
     {
 
         //TODO write that test can delete a comment
+    }
+
+    public function testCanDeleteMultiComment()
+    {
+        //TODO TEST CAN DELETE MULTI
     }
 
     public function testCanUpdateComment()

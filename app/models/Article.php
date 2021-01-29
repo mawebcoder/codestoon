@@ -29,7 +29,8 @@ class Article extends Model
     }
 
     public function comments(){
-        return $this->morphMany(Comment::class,'commentable','commentable_type','commentable_id');
+
+        return $this->morphMany(Comment::class,'commentable');
     }
 
     /**

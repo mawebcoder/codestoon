@@ -18,15 +18,7 @@ class commentController extends Controller
         //TODO GET ALL COMMENTS OF THE SYSTEM IN PAGINATION MODE
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -38,17 +30,6 @@ class commentController extends Controller
     public function store(Request $request)
     {
         //TODO STORE COMMENT IN THE SYSTEM
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param \App\models\Comment $comment
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Comment $comment)
-    {
-        //
     }
 
     /**
