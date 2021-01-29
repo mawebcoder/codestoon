@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1\admin\comment;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\comment\StoreCommentValidation;
 use App\models\Comment;
 use Illuminate\Http\Request;
 
@@ -32,10 +33,10 @@ class commentController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    //TODO VALIDATION OF THE STORE COMMENT
-    public function store(Request $request)
+
+    public function store(StoreCommentValidation $request)
     {
-        $type = $request->type;
+        $type = request()->type;
 
         $types = [
             'video' => 'App\models\Video',
