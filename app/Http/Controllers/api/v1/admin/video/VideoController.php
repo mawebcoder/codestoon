@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1\admin\video;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\video\DeleteVideoValidation;
 use App\Http\Requests\video\StoreVideoValidation;
 use App\Http\Requests\video\tag\StoreVideoTagValidation;
 use App\models\Course;
@@ -119,7 +120,7 @@ class VideoController extends Controller
 
     }
 
-    //TODO VALIDATION OF THE UPLOAD VIDEO
+    //TODO VALIDATION OF THE UPLOAD VIDEO FILE
     public function upload(Request $request, Video $video)
     {
         ini_set('max_execution_time', 0);
@@ -175,8 +176,8 @@ class VideoController extends Controller
      * @param \App\models\Video $video
      * @return \Illuminate\Http\JsonResponse
      */
-    //TODO VALIDATION OF THE UPDATE VIDEO
-    public function update(Request $request, Video $video)
+
+    public function update(StoreVideoValidation $request, Video $video)
     {
 
         $data = $request->only([
@@ -216,8 +217,8 @@ class VideoController extends Controller
         return response($this->empty_success_message);
     }
 
-    //TODO VALIDATION OF  THE RESTORE VIDEO IN THE SYSTEM
-    public function restore()
+
+    public function restore(DeleteVideoValidation $deleteVideoValidation)
     {
         $result = Video::onlyTrashed()->whereIn('id', request()->ids)
             ->restore();
@@ -226,7 +227,7 @@ class VideoController extends Controller
     }
 
     //TODO VALIDATION OF VIDEO FORCE DELETE
-    public function forceDelete()
+    public function forceDelete(DeleteVideoValidation $deleteVideoValidation)
     {
         $video_ids = request()->ids;
 
@@ -311,10 +312,10 @@ class VideoController extends Controller
             response($this->empty_success_message);
     }
 
-    //TODO VALIDATION OF THE DELETE MULTIPLE VIDEO
-    public function deleteMultiple()
+
+    public function deleteMultiple(DeleteVideoValidation $deleteVideoValidation)
     {
-        Video::whereIn('id', request()->ids)
+        Video::query()->whereIn('id', request()->ids)
             ->delete();
 
         return response($this->empty_success_message);

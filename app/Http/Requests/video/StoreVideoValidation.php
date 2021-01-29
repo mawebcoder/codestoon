@@ -30,8 +30,8 @@ class StoreVideoValidation extends FormRequest
             'hour' => ['numeric', 'integer'],
             'min' => ['numeric', 'integer', 'max:59'],
             'sec' => ['numeric', 'integer', 'max:59'],
-            'courseSection_id' => ['exists:course_sections:id'],
-            'course_id' => ['exists:courses:id'],
+            'courseSection_id' => ['exists:course_sections,id'],
+            'course_id' => ['exists:courses,id'],
             'meta' => ['required', 'max:190'],
         ];
     }
