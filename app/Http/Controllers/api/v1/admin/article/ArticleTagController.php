@@ -15,7 +15,7 @@ class ArticleTagController extends Controller
 
     public function __construct()
     {
-        //TODO SET PERMISSIONS IN THE SYSTEM HERE WITH MIDDLEWARES
+        //TODO SET PERMISSIONS IN THE SYSTEM HERE WITH MIDDLE WARES
     }
 
 
