@@ -37,7 +37,7 @@ class CourseCategory extends Model
 
         while ($parent_id) {
 
-            $parent = CourseCategory::find($parent_id);
+            $parent = CourseCategory::withTrashed()->find($parent_id);
 
             $all_parents_ids = array_merge($all_parents_ids, [$parent->id]);
 

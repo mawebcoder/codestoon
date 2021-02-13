@@ -30,10 +30,11 @@ class ArticleCategory extends Model
 
         while ($parent_id) {
 
-            $parent = ArticleCategory::find($parent_id);
-
+            $parent = ArticleCategory::withTrashed()->find($parent_id);
+            if (!$parent) {
+                break;
+            }
             $all_parents_ids = array_merge($all_parents_ids, [$parent->id]);
-
             $parent_id = $parent->parent;
         }
         return $all_parents_ids;
@@ -54,6 +55,12 @@ class ArticleCategory extends Model
     public function children()
     {
         return $this->hasMany(self::class, 'parent', 'id');
+    }
+
+    public function setFaTitleAttribute($value)
+    {
+        $this->attributes['slug'] = join('-', explode(' ', $value));
+        return $this->attributes['fa_title'] = $value;
     }
 
 }

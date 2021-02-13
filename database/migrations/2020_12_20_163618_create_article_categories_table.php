@@ -18,6 +18,7 @@ class CreateArticleCategoriesTable extends Migration
             $table->string('fa_title');
             $table->boolean('status')->default(0);
             $table->string('en_title')->nullable();
+            $table->string('slug');
             $table->string('cover_file_name')->nullable();
             $table->unsignedBigInteger('parent')->default(0);
             $table->text('description')->nullable();

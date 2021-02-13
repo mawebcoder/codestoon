@@ -31,7 +31,7 @@ class UpdateArticleValidation extends FormRequest
             'fa_title' => ['bail', 'required', 'max:190', Rule::unique('article_categories', 'fa_title')->ignore($this->route('articleCategory'))],
             'en_title' => ['max:190'],
             'description' => ['bail', 'nullable', 'max:2000'],
-            'file' => ['bail', 'max:2048', 'mimes:png,jpeg,jpg'],
+            'file' => ['nullable','bail', 'max:2048',],
             'parent' => ['bail', Rule::in(array_merge([0], ArticleCategory::select('id')->whereNotIn('id', [$this->route('articleCategory')])->get()->pluck('id')->toArray()))]
         ];
     }

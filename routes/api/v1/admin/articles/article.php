@@ -2,19 +2,21 @@
 
 use Illuminate\Support\Facades\Route;
 
-//article categories
+//article categoriesRoute::post('/articles/categories/restore','ArticleCategoryController@restore')->name('articles.categories.restore');
+Route::post('/articles/categories/force-delete','ArticleCategoryController@ForceDelete');
+Route::post('/articles/categories/deleteMultipleArticleCategory','ArticleCategoryController@deleteMultipleArticleCategory')->name('delete.multiple.article.category');
 Route::get('/articles/categories', 'ArticleCategoryController@index')->name('article.category.index');
 Route::post('/articles/categories', 'ArticleCategoryController@store')->name('article.category.store');
-Route::put('/articles/categories/{articleCategory}', 'ArticleCategoryController@update')->name('article.category.update');
+Route::post('/articles/categories/{articleCategory}', 'ArticleCategoryController@update')->name('article.category.update');
 Route::delete('/articles/categories/{articleCategory}', 'ArticleCategoryController@destroy')->name('article.category.destroy');
-Route::post('/articles/categories/deleteMultipleArticleCategory', 'ArticleCategoryController@deleteMultipleArticleCategory')->name('delete.multiple.article.category');
 Route::get('/articles/categories/trashed','ArticleCategoryController@getTrashedArticleCategory')->name('articles.categories.trashed');
-Route::post('/articles/categories/force-delete','ArticleCategoryController@ForceDelete')->name('articles.categories.force.delete');
-Route::post('/articles/categories/restore','ArticleCategoryController@restore')->name('articles.categories.restore');
+Route::post('/articles/cat/restore','ArticleCategoryController@restore')->name('articles.categories.restore');
 Route::get('/articles/categories/actives','ArticleCategoryController@getActiveCategories')->name('articles.categories.actives');
 Route::get('/articles/categories/de-actives','ArticleCategoryController@getDeActiveCategories')->name('articles.categories.deActives');
 Route::get('/articles/categories/{articleCategory}','ArticleCategoryController@show')->name('articles.categories.show');
 Route::get('/articles/categories/edit/{articleCategory}','ArticleCategoryController@edit')->name('articles.category.edit');
+
+
 
 //articles tags
 Route::post('/articles/tags', 'ArticleTagController@store')->name('article.tag.store');
@@ -29,10 +31,14 @@ Route::get('/articles/tags/de-actives','ArticleTagController@getDeActiveTags')->
 Route::get('/articles/tags/actives','ArticleTagController@getActiveTags')->name('articles.tags.actives');
 Route::get('/articles/tags/edit/{articleTag}','ArticleTagController@edit')->name('article.tags.edit');
 //articles
+Route::post('/articles/switch-status/{article}','ArticleController@switchStatus');
+Route::post('/upload-article-images','ArticleController@UploadArticleImages')->name('upload-article-images');
 Route::post('/articles/delete/multi', 'ArticleController@deleteMultipleArticle')->name('delete.article.multiple');
 Route::get('/articles/trashed','ArticleController@getTrashed')->name('articles.trashed');
 Route::post('/articles/force-delete', 'ArticleController@forceDelete')->name('article.forceDelete');
 Route::get('/articles/actives','ArticleController@getActiveArticles')->name('articles.active');
 Route::post('/articles/restore','ArticleController@restore')->name('articles.restore');
-Route::resource('articles', 'ArticleController')->except(['create']);
+Route::get('/articles/de-actives','ArticleController@getDeActiveArticles')->name('articles-de-actives');
+Route::post('/articles/update/{article}','ArticleController@update')->name('article.update');
+Route::resource('articles', 'ArticleController')->except(['create','update']);
 

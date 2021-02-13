@@ -28,15 +28,22 @@ class CourseCategoryController extends Controller
 
     public function index()
     {
-        $course_categories = CourseCategory::select(
-            'id',
-            'fa_title',
-            'short_description',
-            'status',
-            'cover_file_name',
-            'parent'
-        )->with('father:id,fa_title')
-            ->paginate(30);
+        if (request()->has('select_box')){
+            $course_categories=CourseCategory::query()
+                ->select('id','fa_title')
+                ->get();
+        }else{
+            $course_categories = CourseCategory::select(
+                'id',
+                'fa_title',
+                'short_description',
+                'status',
+                'cover_file_name',
+                'parent'
+            )->with('father:id,fa_title')
+                ->paginate(30);
+        }
+
         return response(['message' => 'success', 'data' => $course_categories]);
     }
 
@@ -80,6 +87,7 @@ class CourseCategoryController extends Controller
         $data['parent'] = $request->parent ?? 0;
         $data['short_description'] = $request->description ?? null;
         $data['en_title'] = $request->en_title ?? null;
+
 
 
         $course_category = CourseCategory::create($data);

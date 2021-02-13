@@ -7,6 +7,7 @@ use App\Http\Requests\articles\category\DeleteMultiple;
 use App\Http\Requests\articles\category\StoreArticle;
 use App\Http\Requests\articles\category\UpdateArticleValidation;
 use App\models\ArticleCategory;
+use http\Env\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ArticleCategoryController extends Controller
@@ -29,13 +30,23 @@ class ArticleCategoryController extends Controller
 
     public function index()
     {
+
         $article_categories = ArticleCategory::select(
             'id',
             'fa_title',
             'status',
             'created_at',
             'parent',
-            'updated_at')->with('father:id,fa_title')->paginate(30);
+            'en_title',
+            'description',
+            'updated_at')->with('father:id,fa_title');
+        if (!request()->has('search')) {
+            $article_categories = $article_categories->paginate(30);
+        } else {
+            $article_categories = $article_categories->where('fa_title', 'like', '%' . request()->search . '%')
+                ->orWhere('en_title', 'like', '%' . request()->search . '%')
+                ->get();
+        }
 
         return $article_categories->isNotEmpty() ?
             response(['message' => 'success', 'data' => $article_categories]) :
@@ -45,13 +56,40 @@ class ArticleCategoryController extends Controller
 
     public function getActiveCategories()
     {
-        $article_categories = ArticleCategory::select(
-            'id',
-            'fa_title',
-            'status',
-            'created_at',
-            'updated_at')->whereStatus(1)->paginate(30);
 
+        if (!request()->has('search')) {
+            $article_categories = ArticleCategory::select(
+                'id',
+                'fa_title',
+                'status',
+                'created_at',
+                'parent',
+                'en_title',
+                'description',
+                'updated_at')->with('father:id,fa_title')
+                ->whereStatus(1);
+            if (request()->has('select_box')) {
+                $article_categories = $article_categories->get();
+            } else {
+                $article_categories = $article_categories->paginate(30);
+            }
+        } else {
+            $article_categories = ArticleCategory::select(
+                'id',
+                'fa_title',
+                'status',
+                'created_at',
+                'parent',
+                'en_title',
+                'description',
+                'updated_at')->with('father:id,fa_title')
+                ->whereStatus(1)
+                ->where(function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                    $q->orWhere('en_title', 'like', '%' . request()->search . '%');
+                })->where('status', 1)
+                ->get();
+        }
         return $article_categories->isNotEmpty() ?
             response(['message' => 'success', 'data' => $article_categories]) :
             response($this->empty_success_message, 204);
@@ -59,26 +97,52 @@ class ArticleCategoryController extends Controller
 
     public function edit(ArticleCategory $articleCategory)
     {
-        $article_categories = ArticleCategory::whereNotIn('id', [$articleCategory->id])->get();
+        $article_categories = ArticleCategory::whereStatus(1)->whereNotIn('id', [$articleCategory->id])->get();
         return response(
             [
                 'message' => 'success',
-                'data'=>[
-                  'category'=>$articleCategory,
-                  'categories'=>$article_categories
+                'data' => [
+                    'category' => $articleCategory,
+                    'categories' => $article_categories
                 ],
             ]);
     }
 
     public function getDeActiveCategories()
     {
-        $article_categories = ArticleCategory::select(
-            'id',
-            'fa_title',
-            'status',
-            'created_at',
-            'updated_at')->whereStatus(0)->paginate(30);
-
+        if (!request()->has('search')) {
+            $article_categories = ArticleCategory::select(
+                'id',
+                'fa_title',
+                'status',
+                'created_at',
+                'parent',
+                'en_title',
+                'description',
+                'updated_at')->with('father:id,fa_title')
+                ->whereStatus(0);
+            if (request()->has('select_box')) {
+                $article_categories = $article_categories->get();
+            } else {
+                $article_categories = $article_categories->paginate(30);
+            }
+        } else {
+            $article_categories = ArticleCategory::select(
+                'id',
+                'fa_title',
+                'status',
+                'created_at',
+                'parent',
+                'en_title',
+                'description',
+                'updated_at')->with('father:id,fa_title')
+                ->whereStatus(0)
+                ->where(function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                    $q->orWhere('en_title', 'like', '%' . request()->search . '%');
+                })->where('status', 0)
+                ->get();
+        }
         return $article_categories->isNotEmpty() ?
             response(['message' => 'success', 'data' => $article_categories]) :
             response($this->empty_success_message, 204);
@@ -150,6 +214,7 @@ class ArticleCategoryController extends Controller
 
     public function update(ArticleCategory $articleCategory, UpdateArticleValidation $updateArticleValidation)
     {
+
         $data = $updateArticleValidation->only(['fa_title', 'en_title', 'description']);
 
         $data['status'] = $updateArticleValidation->status ? 1 : 0;
@@ -158,7 +223,7 @@ class ArticleCategoryController extends Controller
         $result = $articleCategory->update($data);
 
         if ($updateArticleValidation->hasFile('file')) {
-            $this->upload($articleCategory, $updateArticleValidation->file('file'));
+            $this->upload($articleCategory, $updateArticleValidation->file('file'), $updateArticleValidation);
         }
 
         return $result ? response()->json($this->empty_success_message) :
@@ -168,13 +233,8 @@ class ArticleCategoryController extends Controller
     public function deleteMultipleArticleCategory(DeleteMultiple $deleteMultiple)
     {
         $article_ids = $deleteMultiple->ids;
-
-
         ArticleCategory::whereIn('id', $article_ids)->delete();
-
         return response($this->empty_success_message, 200);
-
-
     }
 
     public function ForceDelete(DeleteMultiple $deleteMultiple)
@@ -218,17 +278,46 @@ class ArticleCategoryController extends Controller
         }
     }
 
+
     public function restore(DeleteMultiple $deleteMultiple)
     {
         $ids = $deleteMultiple->ids;
-        $result = ArticleCategory::withTrashed()
+        $result = ArticleCategory::onlyTrashed()
             ->select('id')->whereIn('id', $ids)->restore();
         return response($this->empty_success_message);
+    }
+    public function mohammad(){
+
     }
 
     public function getTrashedArticleCategory()
     {
-        $trashed = ArticleCategory::onlyTrashed()->select('id', 'fa_title', 'en_title')->paginate(3);
+        if(!request()->has('search')){
+            $trashed = ArticleCategory::onlyTrashed()->select
+            (
+                'id',
+                'fa_title',
+                'status',
+                'created_at',
+                'parent',
+                'en_title',
+                'description',
+                'updated_at')->with('father:id,fa_title')->paginate(3);
+        }else{
+            $trashed = ArticleCategory::onlyTrashed()->select
+            (
+                'id',
+                'fa_title',
+                'status',
+                'created_at',
+                'parent',
+                'en_title',
+                'description',
+                'updated_at')->with('father:id,fa_title')
+                ->where('fa_title','like','%'.request()->search.'%')
+                ->orWhere('en_title','like','%'.request()->search.'%')
+                ->get();
+        }
         return response()->json([
             'message' => 'success',
             'data' => $trashed

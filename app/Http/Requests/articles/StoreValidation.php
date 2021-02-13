@@ -26,7 +26,7 @@ class StoreValidation extends FormRequest
         return [
             'fa_title' => ['required', 'unique:articles,fa_title', 'max:190'],
             'en_title' => ['max:190'],
-            'writer' => ['required', 'exists:users,id'],
+            'writer' => ['required'],
             'file' => ['max:2048', 'mimes:jpg,jpeg,png'],
             'meta' => ['required', 'max:190'],
             'text' => ['required'],
@@ -48,7 +48,6 @@ class StoreValidation extends FormRequest
             'meta.required' => 'وارد کردن توضیحات متا الزامی است',
             'meta.max' => 'حداکثر کاراکترهای مجاز برای توضیحات متا تگ 190 میباشد',
             'writer.required' => 'نویسنده این مقاله را مشخص نکرده اید',
-            'writer.exists' => 'نویسنده انتخاب شده نامعتبر است',
             'text.required'=>'محتوای مقاله خالی است'
         ];
     }

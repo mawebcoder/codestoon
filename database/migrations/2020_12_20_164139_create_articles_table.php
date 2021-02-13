@@ -28,8 +28,7 @@ class CreateArticlesTable extends Migration
             $table->string('slug')->nullable();
             $table->softDeletes();
             $table->longText('hint')->nullable();
-            $table->unsignedBigInteger('writer')->nullable();
-            $table->foreign('writer')->references('id')->on('users')->onDelete(null);
+            $table->string('writer');
             $table->unsignedBigInteger('Registrar')->nullable();
             $table->foreign('Registrar')->references('id')->on('users')->onDelete(null);
             $table->timestamps();

@@ -29,7 +29,7 @@ class StoreArticle extends FormRequest
             'fa_title' => ['bail','required', 'max:190','unique:article_categories,fa_title'],
             'en_title' => ['max:190'],
             'description' => ['bail','nullable', 'max:2000'],
-            'file' => ['bail','max:2048', 'mimes:png,jpeg,jpg'],
+            'file' => ['required','max:2048', 'mimes:png,jpeg,jpg'],
             'parent' => ['bail',Rule::in(array_merge([0], ArticleCategory::select('id')->get()->pluck('id')->toArray()))]
         ];
     }
@@ -44,6 +44,7 @@ class StoreArticle extends FormRequest
             'description.max'=>'حداکثر کاراکترهای مجاز برای توضیحات 2000 کاراکتر است',
             'file.max'=>'حداکثر حجم عکس کاور مقاله 2 مگابایت است',
             'file.mimes'=>'فرمت های مجاز png,jpeg,jpg  می باشند',
+            'file.required'=>'کاور دسته بندی را باید آپلود کنید',
             'parent.in'=>'مقدار وارد شده برای دسته والد نامعتبر است'
         ];
     }

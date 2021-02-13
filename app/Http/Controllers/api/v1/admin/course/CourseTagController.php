@@ -26,18 +26,39 @@ class CourseTagController extends Controller
 
     public function index()
     {
-        $courses = CourseTag::select('fa_title', 'en_title', 'id')
-            ->get();
-        return response([
-            'message' => 'success',
-            'data' => $courses
-        ]);
+        if (!request()->has('search')){
+            $courses = CourseTag::select('fa_title', 'en_title', 'id','status')
+                ->paginate(30);
+        }else{
+            $courses = CourseTag::select('fa_title', 'en_title', 'id','status')
+                ->where('fa_title','like','%'.request()->search.'%')
+                ->orWhere('en_title','like','%'.request()->search.'%')
+                ->get();
+        }
+
+
+        return $courses->isNotEmpty()
+            ? response([
+                'message' => 'success',
+                'data' => $courses
+            ]) : response([
+                'message' => 'success',
+                'data' => $courses
+            ], 204);
     }
 
     public function getActivesCourseTags()
     {
-        $active_course_tags = CourseTag::whereStatus(1)
-            ->get();
+        if (!request()->has('search')){
+            $active_course_tags = CourseTag::whereStatus(1)
+                ->paginate(30);
+        }else{
+            $active_course_tags = CourseTag::whereStatus(1)
+                ->where(function ($q){
+                    $q->where('fa_title','like','%'.request()->search.'%');
+                    $q->orWhere('en_title','like','%'.request()->search.'%');
+                })->get();
+        }
         return $active_course_tags->isNotEmpty() ?
             response(['message' => 'success', 'data' => $active_course_tags]) :
             response(['message' => 'success', 'data' => null], 204);
@@ -46,8 +67,16 @@ class CourseTagController extends Controller
 
     public function getDeActiveCourseTags()
     {
-        $active_course_tags = CourseTag::whereStatus(0)
-            ->get();
+        if (!request()->has('search')){
+            $active_course_tags = CourseTag::whereStatus(0)
+                ->paginate(30);
+        }else{
+            $active_course_tags = CourseTag::whereStatus(0)
+                ->where(function ($q){
+                    $q->where('fa_title','like','%'.request()->search.'%');
+                    $q->orWhere('en_title','like','%'.request()->search.'%');
+                })->get();
+        }
         return $active_course_tags->isNotEmpty() ?
             response(['message' => 'success', 'data' => $active_course_tags]) :
             response(['message' => 'success', 'data' => null], 204);

@@ -81,7 +81,7 @@ class AdminArticleCategoryTest extends TestCase
             'status' => 1,
             'file' => $file
         ];
-        $this->put(route('article.category.update', ['articleCategory' => $article_category->id]), $data)
+        $this->post(route('article.category.update', ['articleCategory' => $article_category->id]), $data)
             ->assertStatus(200)
             ->assertJson([
                 'message' => 'success',
