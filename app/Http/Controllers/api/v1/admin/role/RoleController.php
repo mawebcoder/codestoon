@@ -17,7 +17,18 @@ class RoleController extends Controller
             'name' => $request->name
         ]);
         return $result ?
-            response($this->success,201) :
+            response($this->success, 201) :
+            response($this->error);
+    }
+
+    public function update(Role $role, Request $request)
+    {
+        return
+        $result = $role->update([
+            'name' => $request->name
+        ]);
+        return $result ?
+            response($this->success) :
             response($this->error);
     }
 }

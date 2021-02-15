@@ -1,12 +1,13 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+/** @var Factory $factory */
 
-use App\Spatie\Permission\Models\Role;
+use Illuminate\Database\Eloquent\Factory;
+use Spatie\Permission\Models\Role;
 use Faker\Generator as Faker;
 
 $factory->define(Role::class, function (Faker $faker) {
     return [
-
+        'name'=>\Illuminate\Support\Str::random(20)
     ];
 });
