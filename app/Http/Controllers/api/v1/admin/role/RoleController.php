@@ -23,12 +23,21 @@ class RoleController extends Controller
 
     public function update(Role $role, Request $request)
     {
-        return
+
         $result = $role->update([
             'name' => $request->name
         ]);
         return $result ?
             response($this->success) :
             response($this->error);
+    }
+    public function edit(Role $role)
+    {
+        return response(['message'=>'success','data'=>$role]);
+    }
+
+    public function deleteMultiple()
+    {
+
     }
 }

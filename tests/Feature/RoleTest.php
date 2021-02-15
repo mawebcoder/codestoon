@@ -21,13 +21,19 @@ class RoleTest extends TestCase
 
     public function testCanUpdateRole()
     {
-        $role=factory(Role::class)->create();
-        $this->put(route('role-update',['role'=>$role->id]),['name'=>'new_name'])
+        $role = factory(Role::class)->create();
+        $this->put(route('role-update', ['role' => $role->id]), ['name' => 'new_name'])
             ->assertOk();
 
-        $this->assertDatabaseHas('roles',[
-            'name'=>'new_name',
-            'id'=>$role->id
+        $this->assertDatabaseHas('roles', [
+            'name' => 'new_name',
+            'id' => $role->id
         ]);
+    }
+
+
+    public function testCanDeleteMultipleRoles()
+    {
+
     }
 }
