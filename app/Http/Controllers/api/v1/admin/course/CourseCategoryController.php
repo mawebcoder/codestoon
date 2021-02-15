@@ -7,6 +7,7 @@ use App\Http\Requests\courses\category\ForceDeleteCourseCategoryValidation;
 use App\Http\Requests\courses\category\StoreCourseCategoryValidation;
 use App\Http\Requests\courses\category\UpdateCourseCategoryValidation;
 use App\models\CourseCategory;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
@@ -18,7 +19,7 @@ class CourseCategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
 
     public function __construct()
@@ -28,49 +29,133 @@ class CourseCategoryController extends Controller
 
     public function index()
     {
-        if (request()->has('select_box')){
-            $course_categories=CourseCategory::query()
-                ->select('id','fa_title')
-                ->get();
-        }else{
+        if (!request()->has('search')) {
+            if (request()->has('select_box')) {
+                $course_categories = CourseCategory::query()
+                    ->select('id', 'fa_title')
+                    ->get();
+            } else {
+                $course_categories = CourseCategory::select(
+                    'id',
+                    'fa_title',
+                    'en_title',
+                    'short_description',
+                    'status',
+                    'description',
+                    'cover_file_name',
+                    'parent',
+                    'meta'
+                )->with('father:id,fa_title')
+                    ->paginate(30);
+            }
+        } else {
             $course_categories = CourseCategory::select(
                 'id',
                 'fa_title',
+                'en_title',
                 'short_description',
                 'status',
+                'description',
                 'cover_file_name',
-                'parent'
+                'parent',
+                'meta'
             )->with('father:id,fa_title')
-                ->paginate(30);
+                ->where('fa_title', 'like', '%' . request()->search . '%')
+                ->orWhere('en_title', 'like', '%' . request()->search . '%')
+                ->get();
         }
 
-        return response(['message' => 'success', 'data' => $course_categories]);
+        return $course_categories->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $course_categories]) :
+            response($this->empty_success_message, 204);
     }
 
     public function getActiveCourseCategory()
     {
-        $course_categories = CourseCategory::select('parent', 'id', 'fa_title', 'en_title', 'cover_file_name')
-           ->whereStatus(1)->with('father:id,parent,fa_title,en_title,status')->get();
+        if (!request()->has('search')) {
+            $course_categories = CourseCategory::select(
+                'id',
+                'fa_title',
+                'en_title',
+                'short_description',
+                'status',
+                'description',
+                'cover_file_name',
+                'parent',
+                'meta'
+            )->whereStatus(1)
+                ->with('father:id,fa_title')
+                ->paginate(30);
+        } else {
+            $course_categories = CourseCategory::select(
+                'id',
+                'fa_title',
+                'en_title',
+                'short_description',
+                'status',
+                'description',
+                'cover_file_name',
+                'parent',
+                'meta'
+            )->with('father:id,fa_title')
+                ->where(function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                    $q->orWhere('en_title', 'like', '%' . request()->search . '%');
+                })->whereStatus(1)
+                ->get();
+        }
+
         return $course_categories->isNotEmpty() ?
             response(['message' => 'success', 'data' => $course_categories]) :
-            response(['message'=>'success','data'=>null],204);
+            response($this->empty_success_message, 204);
 
     }
 
     public function getDeActiveCourseCategory()
     {
-        $course_categories = CourseCategory::select('parent', 'id', 'fa_title', 'en_title', 'cover_file_name')
-            ->whereStatus(0)->with('father:id,parent,fa_title,en_title,status')->get();
+        if (!request()->has('search')) {
+            $course_categories = CourseCategory::select(
+                'id',
+                'fa_title',
+                'en_title',
+                'short_description',
+                'status',
+                'description',
+                'cover_file_name',
+                'parent',
+                'meta'
+            )->whereStatus(0)
+                ->with('father:id,fa_title')
+                ->paginate(30);
+        } else {
+            $course_categories = CourseCategory::select(
+                'id',
+                'fa_title',
+                'en_title',
+                'short_description',
+                'status',
+                'description',
+                'cover_file_name',
+                'parent',
+                'meta'
+            )->with('father:id,fa_title')
+                ->where(function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                    $q->orWhere('en_title', 'like', '%' . request()->search . '%');
+                })->whereStatus(0)
+                ->get();
+        }
+
         return $course_categories->isNotEmpty() ?
             response(['message' => 'success', 'data' => $course_categories]) :
-            response(['message'=>'success','data'=>null],204);
+            response($this->empty_success_message, 204);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
 
 
@@ -81,13 +166,12 @@ class CourseCategoryController extends Controller
                 'fa_title',
                 'meta',
                 'description',
-                'short_description',
             ]
         );
         $data['parent'] = $request->parent ?? 0;
         $data['short_description'] = $request->description ?? null;
         $data['en_title'] = $request->en_title ?? null;
-
+        $data['status'] = $request->status ? 1 : 0;
 
 
         $course_category = CourseCategory::create($data);
@@ -118,17 +202,16 @@ class CourseCategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param \App\models\CourseCategory $courseCategory
-     * @return \Illuminate\Http\Response
+     * @param CourseCategory $courseCategory
+     * @return Response
      */
     public function edit(CourseCategory $courseCategory)
     {
-        $courseCategories = CourseCategory::whereNotIn('id', [$courseCategory->id])->get();
+
         return response([
             'message' => 'success',
             'data' => [
                 'category' => $courseCategory,
-                'categories' => $courseCategories
             ]
         ]);
     }
@@ -136,9 +219,9 @@ class CourseCategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\models\CourseCategory $courseCategory
-     * @return \Illuminate\Http\Response
+     * @param UpdateCourseCategoryValidation $request
+     * @param CourseCategory $courseCategory
+     * @return Response
      */
 
     public function update(UpdateCourseCategoryValidation $request, CourseCategory $courseCategory)
@@ -148,10 +231,10 @@ class CourseCategoryController extends Controller
                 'fa_title',
                 'meta',
                 'description',
-                'short_description',
             ]
         );
         $data['parent'] = $request->parent ?? 0;
+        $data['status'] = $request->status ? 1 : 0;
         $data['short_description'] = $request->description ?? null;
         $data['en_title'] = $request->en_title ?? null;
         $result = $courseCategory->update($data);
@@ -164,8 +247,8 @@ class CourseCategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\models\CourseCategory $courseCategory
-     * @return \Illuminate\Http\Response
+     * @param CourseCategory $courseCategory
+     * @return Response
      */
 
     public function destroy(CourseCategory $courseCategory)
@@ -197,12 +280,30 @@ class CourseCategoryController extends Controller
 
     public function getTrashed()
     {
-        $all_trashed = CourseCategory::onlyTrashed()->select('fa_title', 'en_title', 'meta', 'id')
-            ->get();
-        return response([
+
+        if (!request()->has('search')){
+            $all_trashed = CourseCategory::onlyTrashed()->select
+            (
+                'id',
+                'fa_title',
+                'en_title')->paginate(1);
+        }else{
+            $all_trashed = CourseCategory::onlyTrashed()->select
+            (
+                'id',
+                'fa_title',
+                'en_title')
+                ->where('fa_title','like','%'.request()->search.'%')
+                ->orWhere('en_title','like','%'.request()->search.'%')
+                ->get();
+        }
+
+        return $all_trashed->isNotEmpty()?
+            response([
             'message' => 'success',
             'data' => $all_trashed
-        ]);
+        ]):
+            response(['message'=>'success','data'=>null],204);
     }
 
 

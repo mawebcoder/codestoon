@@ -46,6 +46,7 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapAdminCourseApiRoutes();
         $this->mapAdminCommentsApiRoutes();
         $this->mapAdminVideoApiRoutes();
+        $this->mapAdminRoleApiRoutes();
         $this->mapWebRoutes();
 
         //
@@ -78,6 +79,21 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace . '\api\v1\admin\article')
             ->group(base_path('routes/api/v1/admin/articles/article.php'));
+    }
+
+    /**
+     * Define the "api" routes for the application.
+     *
+     * These routes are typically stateless.
+     *
+     * @return void
+     */
+    protected function mapAdminRoleApiRoutes()
+    {
+        Route::prefix('api/v1')
+            ->middleware('api')
+            ->namespace($this->namespace . '\api\v1\admin\role')
+            ->group(base_path('routes/api/v1/admin/role/role.php'));
     }
 
     /**

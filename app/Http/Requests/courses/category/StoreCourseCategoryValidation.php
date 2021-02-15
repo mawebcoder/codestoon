@@ -30,7 +30,7 @@ class StoreCourseCategoryValidation extends FormRequest
             'en_title' => ['unique:course_categories,en_title', 'max:190'],
             'meta' => ['required', 'max:190'],
             'description' => ['required'],
-            'file' => ['mimes:png,jpg,jpeg','size:2048'],
+            'file' => ['mimes:png,jpg,jpeg','max:2048'],
             'parent' => [Rule::in(array_merge([0], CourseCategory::select('id')->pluck('id')->toArray()))]
         ];
     }
@@ -47,7 +47,7 @@ class StoreCourseCategoryValidation extends FormRequest
             'meta.max' => 'حداکثر کاراکترهای مجاز برای متا 190 کاراکتر است',
             'description.required' => 'وارد کردن توضیحات الزامی است',
             'file.mimes' => 'فرمت فابل نامعتبر است',
-            'file.size' => 'سایز فایل بیشتر از 2 مگابایت است',
+            'file.max' => 'سایز فایل بیشتر از 2 مگابایت است',
             'parent.in'=>'دسته والد نامعتبر است',
         ];
     }

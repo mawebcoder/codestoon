@@ -30,7 +30,6 @@ class UpdateCourseCategoryValidation extends FormRequest
             'en_title' => [Rule::unique('course_categories','en_title')->ignore($this->route('courseCategory')), 'max:190'],
             'meta' => ['required', 'max:190'],
             'description' => ['required'],
-            'file' => ['mimes:png,jpg,jpeg'],
             'parent' => [Rule::notIn([$this->route('courseCategory')]),Rule::in(array_merge([0], CourseCategory::select('id')->pluck('id')->toArray()))]
         ];
     }
@@ -46,7 +45,6 @@ class UpdateCourseCategoryValidation extends FormRequest
             'meta.required' => 'وارد کردن متا الزامی است',
             'meta.max' => 'حداکثر کاراکترهای مجاز برای متا 190 کاراکتر است',
             'description.required' => 'وارد کردن توضیحات الزامی است',
-            'file.mimes' => 'فرمت فابل نامعتبر است',
             'file.size' => 'سایز فایل بیشتر از 2 مگابایت است',
             'parent.in'=>'دسته والد نامعتبر است',
             'parent.not_in'=>'دسته والد نامعتبر است',

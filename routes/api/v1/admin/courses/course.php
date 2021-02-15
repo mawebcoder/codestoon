@@ -9,13 +9,14 @@ Route::get('/courses/categories', 'CourseCategoryController@index');
 Route::get('/courses/categories/actives', 'CourseCategoryController@getActiveCourseCategory')->name('course.category.actives');
 Route::get('/courses/categories/de-actives', 'CourseCategoryController@getDeActiveCourseCategory')->name('course.category.actives');
 Route::post('/courses/categories', 'CourseCategoryController@store')->name('courses.category.store');
-Route::put('/courses/categories/{courseCategory}', 'CourseCategoryController@update')->name('courses.category.update');
+Route::post('/courses/categories/{courseCategory}', 'CourseCategoryController@update')->name('courses.category.update');
 Route::delete('/courses/categories/{courseCategory}', 'CourseCategoryController@destroy')->name('courses.category.delete');
-Route::post('/courses/categories/force-delete', 'CourseCategoryController@forceDelete')->name('course.category.force.delete');
-Route::get('/courses/categories/trashed', 'CourseCategoryController@getTrashed')->name('course.category.trashed');
+Route::post('/courses/category/force-delete', 'CourseCategoryController@forceDelete')->name('course.category.force.delete');
+Route::get('/courses/category/trashed', 'CourseCategoryController@getTrashed')->name('course.category.trashed');
 Route::get('/courses/categories/edit/{courseCategory}', 'CourseCategoryController@edit')->name('course.categories.edit');
-Route::post('/courses/categories/restore', 'CourseCategoryController@restore')->name('course.category.restore');
-Route::post('/courses/categories/delete-multi', 'CourseCategoryController@deleteMulti')->name('course.category.delete.multi');
+Route::post('/courses/category/restore', 'CourseCategoryController@restore')->name('course.category.restore');
+Route::post('/courses/delete/categories/delete-multi', 'CourseCategoryController@deleteMulti')->name('course.category.delete.multi');
+
 
 
 

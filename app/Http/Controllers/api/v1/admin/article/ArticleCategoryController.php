@@ -66,12 +66,12 @@ class ArticleCategoryController extends Controller
                 'parent',
                 'en_title',
                 'description',
-                'updated_at')->with('father:id,fa_title')
-                ->whereStatus(1);
+                'updated_at')->with('father:id,fa_title');
+
             if (request()->has('select_box')) {
                 $article_categories = $article_categories->get();
             } else {
-                $article_categories = $article_categories->paginate(30);
+                $article_categories = $article_categories->whereStatus(1)->paginate(30);
             }
         } else {
             $article_categories = ArticleCategory::select(
