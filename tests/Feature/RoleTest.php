@@ -32,8 +32,17 @@ class RoleTest extends TestCase
     }
 
 
-    public function testCanDeleteMultipleRoles()
+    public function testCanSoftDeleteMultipleRoles()
     {
+        $roles = factory(Role::class, 10)->create();
+        $ids = $roles->pluck('id')->toArray();
+        $this->post(route('role-delete-multi'), ['ids' => $ids])
+            ->assertOk();
 
+        foreach ($ids as $id) {
+            $this->assertDatabaseMissing('roles', [
+                'id' => $id
+            ]);
+        }
     }
 }
