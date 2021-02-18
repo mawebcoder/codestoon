@@ -25,11 +25,11 @@ class UserController extends Controller
 
         } elseif ($role->name == 'teacher') {
 
-            $this->storeTeacher();
+            $this->storeTeacher($role);
 
         } else {
 
-            $this->storeAdmin();
+            $this->storeAdmin($role);
 
         }
 
@@ -40,6 +40,7 @@ class UserController extends Controller
         $data = request()->only('name', 'family', 'cell', 'email', 'password');
 
         DB::beginTransaction();
+
         try {
 
             $user = User::query()->create([
@@ -72,12 +73,12 @@ class UserController extends Controller
 
     }
 
-    public function storeTeacher()
+    public function storeTeacher($role)
     {
 
     }
 
-    public function storeAdmin()
+    public function storeAdmin($role)
     {
 
     }
