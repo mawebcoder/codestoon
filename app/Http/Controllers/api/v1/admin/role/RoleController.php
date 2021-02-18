@@ -25,20 +25,21 @@ class RoleController extends Controller
             if($request->has('select_box')){
                 $all_roles=Role::all();
             }else{
-                $all_roles=Role::query()->paginate(30);
+                $all_roles=Role::query()->paginate(1);
             }
         }else{
 
 //            search in roles
             $all_roles=Role::query()->where('name','like','%'.$request->search.'%')
+                ->orWhere('fa_name','like','%'.$request->search.'%')
             ->get();
         }
         return $all_roles->isNotEmpty()?
             response(['message'=>'success','data'=>$all_roles]):
-            response(['message'=>'success','data'=>null]);
+            response(['message'=>'success','data'=>null],204);
     }
 
-    //TODO  VALIDATE HERE
+
     public function store(StoreRoleValidation $request)
     {
         $result = Role::query()->create([
@@ -50,7 +51,7 @@ class RoleController extends Controller
             response($this->error);
     }
 
-    //TODO  VALIDATE HERE
+
     public function update(Role $role, UpdateRoleValidation $request)
     {
 
@@ -63,12 +64,9 @@ class RoleController extends Controller
             response($this->error);
     }
 
-    public function edit(Role $role)
-    {
-        return response(['message' => 'success', 'data' => $role]);
-    }
 
-    //TODO  VALIDATE HERE
+
+
     public function deleteMultiple(DeleteRoleValidation $request)
     {
 
