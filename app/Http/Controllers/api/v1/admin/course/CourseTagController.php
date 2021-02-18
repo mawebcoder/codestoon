@@ -26,13 +26,19 @@ class CourseTagController extends Controller
 
     public function index()
     {
-        if (!request()->has('search')){
-            $courses = CourseTag::select('fa_title', 'en_title', 'id','status')
-                ->paginate(30);
-        }else{
-            $courses = CourseTag::select('fa_title', 'en_title', 'id','status')
-                ->where('fa_title','like','%'.request()->search.'%')
-                ->orWhere('en_title','like','%'.request()->search.'%')
+        if (!request()->has('search')) {
+            if (!request()->has('select_box')) {
+                $courses = CourseTag::select('fa_title', 'en_title', 'id', 'status')
+                    ->paginate(30);
+            } else {
+                $courses = CourseTag::select('fa_title', 'en_title', 'id', 'status')
+                    ->get();
+            }
+
+        } else {
+            $courses = CourseTag::select('fa_title', 'en_title', 'id', 'status')
+                ->where('fa_title', 'like', '%' . request()->search . '%')
+                ->orWhere('en_title', 'like', '%' . request()->search . '%')
                 ->get();
         }
 
@@ -49,14 +55,14 @@ class CourseTagController extends Controller
 
     public function getActivesCourseTags()
     {
-        if (!request()->has('search')){
+        if (!request()->has('search')) {
             $active_course_tags = CourseTag::whereStatus(1)
                 ->paginate(30);
-        }else{
+        } else {
             $active_course_tags = CourseTag::whereStatus(1)
-                ->where(function ($q){
-                    $q->where('fa_title','like','%'.request()->search.'%');
-                    $q->orWhere('en_title','like','%'.request()->search.'%');
+                ->where(function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                    $q->orWhere('en_title', 'like', '%' . request()->search . '%');
                 })->get();
         }
         return $active_course_tags->isNotEmpty() ?
@@ -67,14 +73,14 @@ class CourseTagController extends Controller
 
     public function getDeActiveCourseTags()
     {
-        if (!request()->has('search')){
+        if (!request()->has('search')) {
             $active_course_tags = CourseTag::whereStatus(0)
                 ->paginate(30);
-        }else{
+        } else {
             $active_course_tags = CourseTag::whereStatus(0)
-                ->where(function ($q){
-                    $q->where('fa_title','like','%'.request()->search.'%');
-                    $q->orWhere('en_title','like','%'.request()->search.'%');
+                ->where(function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                    $q->orWhere('en_title', 'like', '%' . request()->search . '%');
                 })->get();
         }
         return $active_course_tags->isNotEmpty() ?

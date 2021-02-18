@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\api\v1\admin\role;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Role\DeleteRoleValidation;
+use App\Http\Requests\Role\StoreRoleValidation;
+use App\Http\Requests\Role\UpdateRoleValidation;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 
@@ -36,10 +39,11 @@ class RoleController extends Controller
     }
 
     //TODO  VALIDATE HERE
-    public function store(Request $request)
+    public function store(StoreRoleValidation $request)
     {
         $result = Role::query()->create([
-            'name' => $request->name
+            'name' => $request->name,
+            'fa_name'=>$request->fa_name,
         ]);
         return $result ?
             response($this->success, 201) :
@@ -47,11 +51,12 @@ class RoleController extends Controller
     }
 
     //TODO  VALIDATE HERE
-    public function update(Role $role, Request $request)
+    public function update(Role $role, UpdateRoleValidation $request)
     {
 
         $result = $role->update([
-            'name' => $request->name
+            'name' => $request->name,
+            'fa_name'=>$request->fa_name,
         ]);
         return $result ?
             response($this->success) :
@@ -64,7 +69,7 @@ class RoleController extends Controller
     }
 
     //TODO  VALIDATE HERE
-    public function deleteMultiple(Request $request)
+    public function deleteMultiple(DeleteRoleValidation $request)
     {
 
         $result = Role::query()->whereIn('id', $request->ids)->delete();
@@ -73,5 +78,4 @@ class RoleController extends Controller
             response($this->success) :
             response($this->error);
     }
-
 }

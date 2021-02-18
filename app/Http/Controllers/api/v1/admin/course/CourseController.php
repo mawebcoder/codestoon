@@ -69,10 +69,8 @@ class CourseController extends Controller
             'en_title',
             'description',
             'price',
-            'has_discount',
             'level',
             'user_id',
-            'description',
             'short_description',
             'meta',
             'courseCategory_id'
