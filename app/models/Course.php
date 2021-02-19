@@ -44,6 +44,11 @@ class Course extends Model
 
     public function teacher()
     {
-        return $this->belongsTo(User::class,'user_id','id');
+        return $this->belongsTo(User::class,'teacher_id','id');
+    }
+    public function confirmer(){
+
+        return $this->belongsTo(User::class,'admin_id','id');
+
     }
 }

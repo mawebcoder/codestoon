@@ -17,10 +17,13 @@ class CreateTeacherInformationTable extends Migration
             $table->id();
             $table->unsignedBigInteger('teacher_id');
             $table->foreign('teacher_id')->references('id')->on('users')->onDelete('cascade');
-            $table->text('address');
-            $table->text('description');
+            $table->text('address')->nullable();
+            $table->text('description')->nullable();
             $table->string('nationality_code');
-            $table->string('resume');
+            $table->string('resume')->nullable();
+            $table->string('nationality_card_front')->nullable();
+            $table->string('nationality_card_back')->nullable();
+            $table->enum('status',['active','inactive']);
             $table->timestamps();
         });
     }

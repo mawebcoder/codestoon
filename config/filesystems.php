@@ -58,6 +58,14 @@ return [
             'driver' => 'local',
             'root' => storage_path('app/videos'),
         ],
+        'nationality_card' => [
+            'driver' => 'local',
+            'root' => storage_path('app/documents/nationality-card-images')
+        ],
+        'resumes' => [
+            'driver' => 'local',
+            'root' => storage_path('app/documents/resumes')
+        ],
 
         's3' => [
             'driver' => 's3',
