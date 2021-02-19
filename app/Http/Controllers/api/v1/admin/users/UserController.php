@@ -270,7 +270,14 @@ class UserController extends Controller
             response(['message' => 'success', 'data' => null], 204);
     }
 
+    public function getTeacherCourses(User $user)
+    {
+        $courses = $user->courses()->paginate();
 
+        return $courses->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $courses]) :
+            response(['message' => 'success', 'data' => null], 204);
+    }
 
 
 }
