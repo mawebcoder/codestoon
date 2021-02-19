@@ -35,6 +35,7 @@ class UserController extends Controller
 
     }
 
+    //TODO VALIDATION OF THE STORE USER
     public function storeUser($role)
     {
         $data = request()->only('name', 'family', 'cell', 'email', 'password');
@@ -46,7 +47,6 @@ class UserController extends Controller
         try {
 
             $user = User::query()->create($data);
-
 
             $assign_role_result = $this->assignRole($user, $role);
 
@@ -69,6 +69,7 @@ class UserController extends Controller
 
     }
 
+    //TODO VALIDATION OF THE STOE TEACHER
     public function storeTeacher($role)
     {
         DB::beginTransaction();
@@ -277,6 +278,67 @@ class UserController extends Controller
         return $courses->isNotEmpty() ?
             response(['message' => 'success', 'data' => $courses]) :
             response(['message' => 'success', 'data' => null], 204);
+    }
+
+    //TODO VALIDATION OF THE UPDATE USER
+    public function updateUser(User $user)
+    {
+        DB::beginTransaction();
+
+
+        try {
+            $data = request()->only('name', 'family', 'cell', 'password', 'email');
+
+            $role = Role::query()->find(request()->role_id);
+
+            $data['username'] = $data['cell'];
+
+            $user->update($data);
+
+            $this->assignRole($user, $role);
+
+            $this->uploadProfileImage($user);
+
+            DB::commit();
+
+            return response(['message' => 'success', 'data' => null], 201);
+        } catch (\Exception $exception) {
+            DB::commit();
+            DB::rollBack();
+            return response(['message' => $exception->getMessage(), 'data' => null], $exception->getCode());
+        }
+
+
+    }
+
+    //TODO VALIDATION OF THE UPDATE TEACHER
+    public function updateTeacher()
+    {
+        //TODO UPDATE TEACHER
+    }
+
+    //TODO VALIDATION
+    public function deleteUsers()
+    {
+
+        //TODO DELETE USERS
+    }
+
+    //TODO VALIDATION
+    public function forceDeleteUsers()
+    {
+        //TODO FORCE DELETE USERS
+    }
+
+    public function getTrashedUsers()
+    {
+
+    }
+
+    //TODO VALIDATION
+    public function restoreUsers()
+    {
+        //TODO RESTORE USERS
     }
 
 

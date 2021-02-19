@@ -23,7 +23,7 @@ class RoleController extends Controller
 
 //            are we need for the select box ?
             if($request->has('select_box')){
-                $all_roles=Role::all();
+                $all_roles=Role::query()->where('name','<>','teacher')->get();
             }else{
                 $all_roles=Role::query()->paginate(1);
             }
