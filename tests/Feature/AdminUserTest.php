@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\models\TeacherInformation;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -37,9 +38,9 @@ class AdminUserTest extends TestCase
         ]);
         $last_user_id = User::query()->orderBy('id', 'desc')->first()->id;
 
-        $this->assertDatabaseHas('model_has_roles',[
-            'role_id'=>$user_role->id,
-            'model_id'=>$last_user_id
+        $this->assertDatabaseHas('model_has_roles', [
+            'role_id' => $user_role->id,
+            'model_id' => $last_user_id
         ]);
         $profile_image_storage_path = 'app/public/images/users/profile-image/' . $last_user_id . '/' . $file->getClientOriginalName();
         $this->assertFileExists(storage_path($profile_image_storage_path));
@@ -99,9 +100,9 @@ class AdminUserTest extends TestCase
         ]);
 
         $last_user_id = User::query()->orderBy('id', 'desc')->first()->id;
-        $this->assertDatabaseHas('model_has_roles',[
-            'role_id'=>$role->id,
-            'model_id'=>$last_user_id
+        $this->assertDatabaseHas('model_has_roles', [
+            'role_id' => $role->id,
+            'model_id' => $last_user_id
         ]);
         $profile_image_storage_path = 'app/public/images/users/profile-image/' . $last_user_id . '/' . $profile_image->getClientOriginalName();
 
@@ -126,11 +127,11 @@ class AdminUserTest extends TestCase
 
         $user = factory(User::class)->create();
 
-        $file=UploadedFile::fake()->image('user.jpg');
+        $file = UploadedFile::fake()->image('user.jpg');
 
         $role = factory(Role::class)->create(['name' => 'admin']);
 
-        $role2=factory(Role::class)->create(['name'=>'super_admin']);
+        $role2 = factory(Role::class)->create(['name' => 'super_admin']);
 
 
         $user->syncRoles([$role->id]);
@@ -145,30 +146,107 @@ class AdminUserTest extends TestCase
             'username' => $cell,
             'cell' => $cell,
             'email' => $email,
-            'file'=>$file,
-            'password'=>Str::random(10),
-            'role_id'=>$role2->id
+            'file' => $file,
+            'password' => Str::random(10),
+            'role_id' => $role2->id
         ];
-        $this->post(route('admin-users-update-user',['user'=>$user->id]),$data)
+        $this->post(route('admin-users-update-user', ['user' => $user->id]), $data)
             ->assertStatus(201);
 
-        $this->assertDatabaseHas('users',[
-            'name'=>'mohammad',
-            'email'=>$email,
-            'cell'=>$cell
+        $this->assertDatabaseHas('users', [
+            'name' => 'mohammad',
+            'email' => $email,
+            'cell' => $cell
         ]);
 
-        $this->assertDatabaseHas('model_has_roles',[
-            'role_id'=>$role2->id,
-            'model_id'=>$user->id
+        $this->assertDatabaseHas('model_has_roles', [
+            'role_id' => $role2->id,
+            'model_id' => $user->id
         ]);
 
-        $last_user_id =$user->id;
+        $last_user_id = $user->id;
 
         $profile_image_storage_path = 'app/public/images/users/profile-image/' . $last_user_id . '/' . $file->getClientOriginalName();
 
         $this->assertFileExists(storage_path($profile_image_storage_path));
 
+    }
+
+    public function testCanUpdateTeacher()
+    {
+        $user=factory(User::class)->create();
+
+        $role=factory(Role::class)->create(['name'=>'teacher']);
+
+        $user->syncRoles([$role->id]);
+
+        factory(TeacherInformation::class)->create(['teacher_id'=>$user->id]);
+
+
+        $front_nationality_card_image = UploadedFile::fake()->image('front_code_melli.jpg');
+
+        $back_nationality_card_image = UploadedFile::fake()->image('back_code_melli.jpg');
+
+        $profile_image = UploadedFile::fake()->image('user.jpg');
+
+        $resume_pdf_file = UploadedFile::fake()->create('resume.pdf');
+
+        $cell = Str::random(11);
+
+        $email = Str::random(9) . '@gmail.com';
+
+        $data = [
+            'name' => 'mohammad',
+            'family' => 'amiri',
+            'cell' => $cell,
+            'password' => 'mohammadeng',
+            'email' => $email,
+            'nationality_code' => '2580746056',
+            'description' => 'description',
+            'address' => 'address',
+            'status' => 'active',
+            'front_nationality_card_image' => $front_nationality_card_image,
+            'back_nationality_card_image' => $back_nationality_card_image,
+            'file' => $profile_image,
+            'resume_pdf_file' => $resume_pdf_file
+        ];
+        $this->post(route('admin-users-update-teacher',['user'=>$user->id]), $data)
+            ->assertStatus(201);
+
+
+        $this->assertDatabaseHas('users', [
+            'email' => $email,
+            'name' => 'mohammad',
+            'family' => 'amiri',
+            'cell' => $cell
+        ]);
+
+
+        $this->assertDatabaseHas('teacher_information', [
+            'address' => 'address',
+            'description' => 'description',
+            'status' => 'active',
+            'nationality_card_back' => $back_nationality_card_image->getClientOriginalName(),
+            'nationality_card_front' => $front_nationality_card_image->getClientOriginalName()
+        ]);
+
+        $last_user_id =$user->id;
+
+        $profile_image_storage_path = 'app/public/images/users/profile-image/' . $last_user_id . '/' . $profile_image->getClientOriginalName();
+
+        $this->assertFileExists(storage_path($profile_image_storage_path));
+
+        $front_nationality_card_image_path = storage_path('app/documents/nationality-card-images/' . $last_user_id . '/back-image/' . $back_nationality_card_image->getClientOriginalName());
+
+        $this->assertFileExists($front_nationality_card_image_path);
+
+        $back_nationality_card_image_path = storage_path('app/documents/nationality-card-images/' . $last_user_id . '/front-image/' . $front_nationality_card_image->getClientOriginalName());
+
+        $this->assertFileExists($back_nationality_card_image_path);
+
+        $resume_pdf_file_path = storage_path('app/documents/resumes/' . $last_user_id . '/' . $resume_pdf_file->getClientOriginalName());
+
+        $this->assertFileExists($resume_pdf_file_path);
 
     }
 

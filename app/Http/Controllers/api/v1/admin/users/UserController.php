@@ -108,6 +108,15 @@ class UserController extends Controller
 
     }
 
+    public function updateTeacherInformation($user)
+    {
+        $data = request()->only('description', 'nationality_code', 'status', 'address');
+
+        $user->TeacherInfo()->update($data);
+
+        $this->uploadTeacherDocuments($user);
+    }
+
     public function uploadTeacherDocuments($user)
     {
         $this->uploadTeacherFrontNationalityCardImage($user);
@@ -312,16 +321,34 @@ class UserController extends Controller
     }
 
     //TODO VALIDATION OF THE UPDATE TEACHER
-    public function updateTeacher()
+    public function updateTeacher(User $user)
     {
-        //TODO UPDATE TEACHER
+        $data = request()->only('name', 'family', 'cell', 'password', 'email');
+
+        $data['username'] = $data['cell'];
+
+        $user->update($data);
+
+        $this->uploadProfileImage($user);
+
+        $this->updateTeacherInformation($user);
+
+        return response(['message' => 'success', 'data' => null], 201);
+
+
     }
 
     //TODO VALIDATION
-    public function deleteUsers()
+    public function softDeleteUsers()
     {
 
-        //TODO DELETE USERS
+        //TODO SOFT DELETE USERS
+    }
+
+    //TODO VALIDATION
+    public function forceDeleteTeachers()
+    {
+        //TODO force DELETE TEACHERS
     }
 
     //TODO VALIDATION
@@ -332,7 +359,12 @@ class UserController extends Controller
 
     public function getTrashedUsers()
     {
+        //TODO TRASHED USERS
+    }
 
+    public function getTrashedTeachers()
+    {
+        //TODO GET TRASHED TEACHERS
     }
 
     //TODO VALIDATION
@@ -340,6 +372,7 @@ class UserController extends Controller
     {
         //TODO RESTORE USERS
     }
+
 
 
 }
