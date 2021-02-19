@@ -335,6 +335,7 @@ class UserController extends Controller
             $this->uploadProfileImage($user);
 
             $this->updateTeacherInformation($user);
+
             DB::commit();
             return response(['message' => 'success', 'data' => null], 201);
         } catch (\Exception $exception) {
@@ -353,35 +354,67 @@ class UserController extends Controller
 
         User::query()->whereIn('id', $ids)->delete();
 
-        return response(['message'=>'success','data'=>null]);
+        return response(['message' => 'success', 'data' => null]);
+    }
+
+
+    //TODO VALIDATION
+    public function forceDeleteUsers()
+    {
+        $ids = request()->ids;
+
+        User::onlyTrashed()->whereIn('id', $ids)->forceDelete();
+
+        $this->deleteProfileImages($ids);
+
+        return response(['message' => 'success', 'data' => null]);
+    }
+
+    public function deleteProfileImages($ids)
+    {
+        foreach ($ids as $id) {
+            $path = 'images/users/profile-image/' . $id;
+
+            Storage::disk('public')->deleteDirectory($path);
+
+        }
+    }
+
+
+    //TODO VALIDATION
+    public function restoreUsers()
+    {
+        $ids = request('ids');
+
+        User::onlyTrashed()->whereIn('id', $ids)->restore();
+
+        return response(['message' => 'success', 'data' => null]);
+
+    }
+
+    public function getTrashedUsers()
+    {
+        $users = User::onlyTrashed()->select('name', 'family', 'id', 'cell')
+            ->with('roles')->paginate(30);
+        return $users->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $users]) :
+            response(['message' => 'success', 'data' => null], 204);
+    }
+
+    public function getTrashedTeachers()
+    {
+        $teachers=User::onlyTrashed()->whereHas('roles',function ($q){
+            $q->where('name','teacher');
+        })->select('name','family','id','cell')->paginate(30);
+        return $teachers->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $teachers]) :
+            response(['message' => 'success', 'data' => null], 204);
     }
 
     //TODO VALIDATION
     public function forceDeleteTeachers()
     {
         //TODO force DELETE TEACHERS
-    }
-
-    //TODO VALIDATION
-    public function forceDeleteUsers()
-    {
-        //TODO FORCE DELETE USERS
-    }
-
-    public function getTrashedUsers()
-    {
-        //TODO TRASHED USERS
-    }
-
-    public function getTrashedTeachers()
-    {
-        //TODO GET TRASHED TEACHERS
-    }
-
-    //TODO VALIDATION
-    public function restoreUsers()
-    {
-        //TODO RESTORE USERS
     }
 
 

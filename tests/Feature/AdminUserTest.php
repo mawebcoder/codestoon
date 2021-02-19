@@ -6,6 +6,7 @@ use App\models\TeacherInformation;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -265,8 +266,58 @@ class AdminUserTest extends TestCase
                 'id' => $id
             ]);
         }
+    }
+
+    public function testCanForceDeleteTheUsers()
+    {
+        $users = factory(User::class, 10)->create(['profile_image_name' => 'user.jpg']);
+
+        $ids = $users->pluck('id')->toArray();
+
+//        create profile images
+        foreach ($ids as $id) {
+            Storage::disk('public')->put('images/users/profile-image/' . $id . '/user.jpg', 'hello');
+        }
+
+        //soft delete users
+        foreach ($users as $user) {
+            $user->delete();
+        }
+
+        $this->post(route('admin-users-force-delete'), ['ids' => $ids])
+            ->assertOk();
+
+        foreach ($ids as $id) {
+            $this->assertDatabaseMissing('users', [
+                'id' => $id
+            ]);
+        }
+        foreach ($ids as $id) {
+            $this->assertDirectoryDoesNotExist(storage_path('app/public/images/users/profile-image/' . $id));
+        }
+
+    }
+
+    public function testCanRestoreUsers()
+    {
+        $users = factory(User::class, 10)->create(['profile_image_name' => 'user.jpg']);
+
+        $ids = $users->pluck('id')->toArray();
 
 
+        //soft delete users
+        foreach ($users as $user) {
+            $user->delete();
+        }
+
+        $this->post(route('admin-users-restore'), ['ids' => $ids])
+            ->assertOk();
+
+        foreach ($ids as $id) {
+            $this->assertDatabaseHas('users', [
+                'id' => $id
+            ]);
+        }
     }
 
 

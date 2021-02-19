@@ -13,3 +13,7 @@ Route::get('/users/teachers/courses/{user}','UserController@getTeacherCourses')-
 Route::post('/users/update/user/{user}','UserController@updateUser')->name('admin-users-update-user');
 Route::post('/users/update/teacher/{user}','UserController@updateTeacher')->name('admin-users-update-teacher');
 Route::post('/users/delete','UserController@softDeleteUsers')->name('admin-users-delete');
+Route::post('/users/user/force-delete','UserController@forceDeleteUsers')->name('admin-users-force-delete');
+Route::post('/users/restore','UserController@restoreUsers')->name('admin-users-restore');
+Route::get('/users/trashes','UserController@getTrashedUsers')->name('admin-users-trashes');
+Route::get('/users/teachers/trashes','UserController@getTrashedTeachers')->name('admin-users-teachers-trashes');
