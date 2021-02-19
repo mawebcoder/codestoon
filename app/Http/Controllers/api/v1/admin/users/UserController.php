@@ -374,9 +374,9 @@ class UserController extends Controller
     {
         foreach ($ids as $id) {
             $path = 'images/users/profile-image/' . $id;
-
-            Storage::disk('public')->deleteDirectory($path);
-
+            if (is_dir(storage_path('app/public/images/users/profile-image/'.$id))){
+                Storage::disk('public')->deleteDirectory($path);
+            }
         }
     }
 
@@ -403,9 +403,9 @@ class UserController extends Controller
 
     public function getTrashedTeachers()
     {
-        $teachers=User::onlyTrashed()->whereHas('roles',function ($q){
-            $q->where('name','teacher');
-        })->select('name','family','id','cell')->paginate(30);
+        $teachers = User::onlyTrashed()->whereHas('roles', function ($q) {
+            $q->where('name', 'teacher');
+        })->select('name', 'family', 'id', 'cell')->paginate(30);
         return $teachers->isNotEmpty() ?
             response(['message' => 'success', 'data' => $teachers]) :
             response(['message' => 'success', 'data' => null], 204);
@@ -414,7 +414,31 @@ class UserController extends Controller
     //TODO VALIDATION
     public function forceDeleteTeachers()
     {
-        //TODO force DELETE TEACHERS
+        $ids = request('ids');
+
+        $result = User::onlyTrashed()->whereIn('id', $ids)->forceDelete();
+
+        $this->deleteProfileImages($ids);
+
+        $this->removeTeacherDocuments($ids);
+
+        return response(['message'=>'success','data'=>null]);
+    }
+
+    public function removeTeacherDocuments($ids)
+    {
+        foreach ($ids as $id) {
+
+            //remove nationality card images
+            if (is_dir(storage_path('app/documents/nationality-card-images/'.$id))){
+                Storage::disk('nationality_card')->deleteDirectory((string) $id);
+            }
+
+            //remove resume pdf file
+            if (is_dir(storage_path('app/documents/resumes/'.$id))){
+                Storage::disk('resumes')->deleteDirectory((string) $id);
+            }
+        }
     }
 
 

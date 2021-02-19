@@ -17,3 +17,4 @@ Route::post('/users/user/force-delete','UserController@forceDeleteUsers')->name(
 Route::post('/users/restore','UserController@restoreUsers')->name('admin-users-restore');
 Route::get('/users/trashes','UserController@getTrashedUsers')->name('admin-users-trashes');
 Route::get('/users/teachers/trashes','UserController@getTrashedTeachers')->name('admin-users-teachers-trashes');
+Route::post('/users/teachers/force-delete','UserController@forceDeleteTeachers')->name('admin-users-teachers-force-delete');

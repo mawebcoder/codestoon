@@ -320,5 +320,87 @@ class AdminUserTest extends TestCase
         }
     }
 
+    public function testCanForceDeleteTeachers()
+    {
+
+        $users = factory(User::class, 10)->create(['profile_image_name' => 'user.jpg']);
+
+        $teacher_role = factory(Role::class)->create(['name' => 'teacher']);
+
+        $ids = $users->pluck('id')->toArray();
+
+
+        foreach ($users as $user) {
+            $user->syncRoles([$teacher_role->id]);
+
+            Storage::disk('public')->put('images/users/profile-image/' . $user->id . '/user.jpg', 'hello');
+            Storage::disk('nationality_card')->put($user->id . '/front-image/front.jpg', 'hello');
+            Storage::disk('nationality_card')->put($user->id . '/back-image/back.jpg', 'hello');
+            Storage::disk('resumes')->put($user->id . '/resume.pdf', 'hello');
+            $user->TeacherInfo()->create([
+                'teacher_id' => $user->id,
+                'description' => 'description',
+                'address' => 'address',
+                'nationality_code' => Str::random(10),
+                'nationality_card_front' => 'front.jpg',
+                'nationality_card_bach' => 'back.jpg',
+                'resume' => 'resume.pdf',
+                'status' => 'active'
+            ]);
+        }
+
+        //soft delete the teachers
+        foreach ($users as $user) {
+            $user->delete();
+        }
+
+        $this->post(route('admin-users-teachers-force-delete'), ['ids' => $ids])
+            ->assertOk();
+
+        foreach ($users as $user) {
+            $this->assertDatabaseMissing('users', [
+                'email' => $user->email,
+                'name' => 'mohammad',
+                'family' => 'amiri',
+                'cell' => $user->cell
+            ]);
+        }
+
+
+        foreach ($users as $user){
+            $this->assertDatabaseMissing('teacher_information', [
+                'address' => 'address',
+                'description' => 'description',
+                'status' => 'active',
+                'nationality_card_back' => 'front.jpg',
+                'nationality_card_front' => 'back.jpg',
+                'resume'=>'resume.pdf'
+            ]);
+        }
+
+
+        foreach ($users as $user) {
+            $last_user_id = $user->id;
+            $profile_image_storage_path = 'app/public/images/users/profile-image/' . $last_user_id . '/user.jpg';
+
+            $this->assertFileDoesNotExist(storage_path($profile_image_storage_path));
+
+            $front_nationality_card_image_path = storage_path('app/documents/nationality-card-images/' . $last_user_id . '/back-image/back.jpg');
+
+            $this->assertFileDoesNotExist($front_nationality_card_image_path);
+
+            $back_nationality_card_image_path = storage_path('app/documents/nationality-card-images/' . $last_user_id . '/front-image/front.jpg');
+
+            $this->assertFileDoesNotExist($back_nationality_card_image_path);
+
+            $resume_pdf_file_path = storage_path('app/documents/resumes/' . $last_user_id . '/resume.pdf');
+
+            $this->assertFileDoesNotExist($resume_pdf_file_path);
+        }
+
+
+
+    }
+
 
 }
