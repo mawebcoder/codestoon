@@ -174,13 +174,13 @@ class AdminUserTest extends TestCase
 
     public function testCanUpdateTeacher()
     {
-        $user=factory(User::class)->create();
+        $user = factory(User::class)->create();
 
-        $role=factory(Role::class)->create(['name'=>'teacher']);
+        $role = factory(Role::class)->create(['name' => 'teacher']);
 
         $user->syncRoles([$role->id]);
 
-        factory(TeacherInformation::class)->create(['teacher_id'=>$user->id]);
+        factory(TeacherInformation::class)->create(['teacher_id' => $user->id]);
 
 
         $front_nationality_card_image = UploadedFile::fake()->image('front_code_melli.jpg');
@@ -210,7 +210,7 @@ class AdminUserTest extends TestCase
             'file' => $profile_image,
             'resume_pdf_file' => $resume_pdf_file
         ];
-        $this->post(route('admin-users-update-teacher',['user'=>$user->id]), $data)
+        $this->post(route('admin-users-update-teacher', ['user' => $user->id]), $data)
             ->assertStatus(201);
 
 
@@ -230,7 +230,7 @@ class AdminUserTest extends TestCase
             'nationality_card_front' => $front_nationality_card_image->getClientOriginalName()
         ]);
 
-        $last_user_id =$user->id;
+        $last_user_id = $user->id;
 
         $profile_image_storage_path = 'app/public/images/users/profile-image/' . $last_user_id . '/' . $profile_image->getClientOriginalName();
 
@@ -247,6 +247,25 @@ class AdminUserTest extends TestCase
         $resume_pdf_file_path = storage_path('app/documents/resumes/' . $last_user_id . '/' . $resume_pdf_file->getClientOriginalName());
 
         $this->assertFileExists($resume_pdf_file_path);
+
+    }
+
+
+    public function testCanSoftDeleteUsers()
+    {
+        $users = factory(User::class, 10)->create();
+
+        $ids = $users->pluck('id')->toArray();
+
+        $this->post(route('admin-users-delete'), ['ids' => $ids])
+            ->assertOk();
+
+        foreach ($ids as $id) {
+            $this->assertSoftDeleted('users', [
+                'id' => $id
+            ]);
+        }
+
 
     }
 

@@ -12,3 +12,4 @@ Route::get('/users/teachers/list/de-actives','UserController@getDeActiveTeachers
 Route::get('/users/teachers/courses/{user}','UserController@getTeacherCourses')->name('admin-teacher-courses');
 Route::post('/users/update/user/{user}','UserController@updateUser')->name('admin-users-update-user');
 Route::post('/users/update/teacher/{user}','UserController@updateTeacher')->name('admin-users-update-teacher');
+Route::post('/users/delete','UserController@softDeleteUsers')->name('admin-users-delete');

@@ -312,8 +312,8 @@ class UserController extends Controller
 
             return response(['message' => 'success', 'data' => null], 201);
         } catch (\Exception $exception) {
-            DB::commit();
             DB::rollBack();
+            DB::commit();
             return response(['message' => $exception->getMessage(), 'data' => null], $exception->getCode());
         }
 
@@ -323,17 +323,25 @@ class UserController extends Controller
     //TODO VALIDATION OF THE UPDATE TEACHER
     public function updateTeacher(User $user)
     {
-        $data = request()->only('name', 'family', 'cell', 'password', 'email');
+        DB::beginTransaction();
 
-        $data['username'] = $data['cell'];
+        try {
+            $data = request()->only('name', 'family', 'cell', 'password', 'email');
 
-        $user->update($data);
+            $data['username'] = $data['cell'];
 
-        $this->uploadProfileImage($user);
+            $user->update($data);
 
-        $this->updateTeacherInformation($user);
+            $this->uploadProfileImage($user);
 
-        return response(['message' => 'success', 'data' => null], 201);
+            $this->updateTeacherInformation($user);
+            DB::commit();
+            return response(['message' => 'success', 'data' => null], 201);
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            DB::commit();
+            return response(['message' => $exception->getMessage(), 'data' => null], $exception->getCode());
+        }
 
 
     }
@@ -341,8 +349,11 @@ class UserController extends Controller
     //TODO VALIDATION
     public function softDeleteUsers()
     {
+        $ids = request()->ids;
 
-        //TODO SOFT DELETE USERS
+        User::query()->whereIn('id', $ids)->delete();
+
+        return response(['message'=>'success','data'=>null]);
     }
 
     //TODO VALIDATION
@@ -372,7 +383,6 @@ class UserController extends Controller
     {
         //TODO RESTORE USERS
     }
-
 
 
 }
