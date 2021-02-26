@@ -4,7 +4,10 @@ namespace App\Http\Controllers\api\v1\admin\users;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\user\admin\StoreUserValidation;
+use App\Http\Requests\user\admin\UpdateTeacherValidation;
+use App\Http\Requests\user\admin\UpdateUserValidation;
 use App\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
@@ -24,6 +27,10 @@ class UserController extends Controller
 
             $result = $this->storeTeacher($role);
 
+            if (isset($result['nationality_code_error'])) {
+                return response(['errors' => ['nationality_code' => 'فرمت کد ملی نادرست است']], 422);
+            }
+
             return response(['message' => $result['message'], 'data' => null], $result['code']);
 
         } else {
@@ -36,8 +43,8 @@ class UserController extends Controller
 
     }
 
-    //TODO VALIDATION OF THE STORE USER
-    public function storeUser($role)
+
+    public function storeUser($role): array
     {
         $data = request()->only('name', 'family', 'cell', 'email', 'password');
 
@@ -70,9 +77,12 @@ class UserController extends Controller
 
     }
 
-    //TODO VALIDATION OF THE STOE TEACHER
-    public function storeTeacher($role)
+
+    public function storeTeacher($role): array
     {
+        if (!$this->checkNationalityCode()) {
+            return ['nationality_code_error' => true];
+        }
         DB::beginTransaction();
 
         try {
@@ -99,8 +109,28 @@ class UserController extends Controller
 
     }
 
+    public function checkNationalityCode(): bool
+    {
+        $code = request()->nationality_code;
+
+        if (!preg_match('/^[0-9]{10}$/', $code))
+            return false;
+        for ($i = 0; $i < 10; $i++)
+            if (preg_match('/^' . $i . '{10}$/', $code))
+                return false;
+        for ($i = 0, $sum = 0; $i < 9; $i++)
+            $sum += ((10 - $i) * intval(substr($code, $i, 1)));
+        $ret = $sum % 11;
+        $parity = intval(substr($code, 9, 1));
+        if (($ret < 2 && $ret == $parity) || ($ret >= 2 && $ret == 11 - $parity))
+            return true;
+        return false;
+    }
+
     public function storeTeacherInformation($user)
     {
+
+
         $data = request()->only('description', 'nationality_code', 'status', 'address');
 
         $user->TeacherInfo()->create($data);
@@ -290,8 +320,8 @@ class UserController extends Controller
             response(['message' => 'success', 'data' => null], 204);
     }
 
-    //TODO VALIDATION OF THE UPDATE USER
-    public function updateUser(User $user)
+
+    public function updateUser(User $user,UpdateUserValidation $userValidation)
     {
         DB::beginTransaction();
 
@@ -321,8 +351,7 @@ class UserController extends Controller
 
     }
 
-    //TODO VALIDATION OF THE UPDATE TEACHER
-    public function updateTeacher(User $user)
+    public function updateTeacher(User $user,UpdateTeacherValidation $updateTeacherValidation)
     {
         DB::beginTransaction();
 
@@ -375,7 +404,7 @@ class UserController extends Controller
     {
         foreach ($ids as $id) {
             $path = 'images/users/profile-image/' . $id;
-            if (is_dir(storage_path('app/public/images/users/profile-image/'.$id))){
+            if (is_dir(storage_path('app/public/images/users/profile-image/' . $id))) {
                 Storage::disk('public')->deleteDirectory($path);
             }
         }
@@ -423,7 +452,7 @@ class UserController extends Controller
 
         $this->removeTeacherDocuments($ids);
 
-        return response(['message'=>'success','data'=>null]);
+        return response(['message' => 'success', 'data' => null]);
     }
 
     public function removeTeacherDocuments($ids)
@@ -431,13 +460,13 @@ class UserController extends Controller
         foreach ($ids as $id) {
 
             //remove nationality card images
-            if (is_dir(storage_path('app/documents/nationality-card-images/'.$id))){
-                Storage::disk('nationality_card')->deleteDirectory((string) $id);
+            if (is_dir(storage_path('app/documents/nationality-card-images/' . $id))) {
+                Storage::disk('nationality_card')->deleteDirectory((string)$id);
             }
 
             //remove resume pdf file
-            if (is_dir(storage_path('app/documents/resumes/'.$id))){
-                Storage::disk('resumes')->deleteDirectory((string) $id);
+            if (is_dir(storage_path('app/documents/resumes/' . $id))) {
+                Storage::disk('resumes')->deleteDirectory((string)$id);
             }
         }
     }

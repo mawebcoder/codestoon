@@ -3,9 +3,10 @@
 namespace App\Http\Requests\user\admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 
-class StoreUserValidation extends FormRequest
+class UpdateTeacherValidation extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,59 +23,29 @@ class StoreUserValidation extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules():array
     {
-        $validation = [];
+        $user_id=request()->route('user');
 
-        $role_id = request()->role_id;
-
-        $role = Role::query()->find($role_id);
-
-        //if there is no any role
-        if (!$role) {
-            $validation = array_merge($validation, [
-                'role_id' => ['required', 'exists:roles,id'],
-            ]);
-//           if the user is the user
-        } elseif ($role->name == 'user') {
-
-            $validation = array_merge($validation, [
-                'name' => ['required', 'max:190'],
-                'family' => ['required', 'max:190'],
-                'cell' => ['required', 'unique:users,cell', 'regex:/09[0-3][0-9][0-9]{7}$/'],
-                'password' => ['required', 'min:9', 'max:190'],
-                'confirm_password' => ['required', 'same:password'],
-                'email' => ['required', 'email', 'unique:users,email'],
-                'role_id' => ['required', 'exists:roles,id'],
-                'file' => ['nullable', 'mimes:png,jpg,jpeg', 'max:2048'],
-
-
-            ]);
-
-//          if the user is a teacher
-        } elseif ($role->name == 'teacher') {
-
-            $validation = array_merge($validation, [
-                'name' => ['required', 'max:190'],
-                'family' => ['required', 'max:190'],
-                'cell' => ['required', 'unique:users,cell', 'regex:/09[0-3][0-9][0-9]{7}$/'],
-                'password' => ['required', 'min:9', 'max:190'],
-                'confirm_password' => ['required', 'same:password'],
-                'email' => ['required', 'email', 'unique:users,email'],
-                'role_id' => ['required', 'exists:roles,id'],
-                'file' => ['nullable', 'mimes:png,jpg,jpeg', 'max:2048'],
-                'resume_pdf_file' => ['required','mimes:pdf','max:1024'],
-                'back_nationality_card_image' => ['required','mimes:jpg,jpeg,png','max:2048'],
-                'front_nationality_card_image' => ['required','mimes:jpg,jpeg,png','max:2048'],
-                'description'=>['required'],
-                'address'=>['required'],
-                'nationality_code'=>['required','unique:users,nationality_code'],
-            ]);
-        }
-        return $validation;
+        return [
+            'name' => ['required', 'max:190'],
+            'family' => ['required', 'max:190'],
+            'cell' => ['required',Rule::unique('users','cell')->ignore($user_id),'regex:/09[0-3][0-9][0-9]{7}$/'],
+            'password' => ['required', 'min:9', 'max:190'],
+            'confirm_password' => ['required', 'same:password'],
+            'email' => ['required', 'email', Rule::unique('users','email')->ignore($user_id)],
+            'role_id' => ['required', 'exists:roles,id'],
+            'file' => ['nullable', 'mimes:png,jpg,jpeg', 'max:2048'],
+            'resume_pdf_file' => ['required','mimes:pdf','max:1024'],
+            'back_nationality_card_image' => ['required','mimes:jpg,jpeg,png','max:2048'],
+            'front_nationality_card_image' => ['required','mimes:jpg,jpeg,png','max:2048'],
+            'description'=>['required'],
+            'address'=>['required'],
+            'nationality_code'=>['required',Rule::unique('users','nationality_code')->ignore($user_id)],
+        ];
     }
 
-    public function messages()
+    public function messages():array
     {
         return [
             'name.required' => 'وارد کردن نام کاربر الزامی است',
@@ -107,8 +78,8 @@ class StoreUserValidation extends FormRequest
             'front_nationality_card_image.max'=>'عکس کارت ملی از جلو حداکثر سایز ۲ مگابایت میتواند باشد',
             'description.required'=>'توضیحات را وارد نکرده اید',
             'address.required'=>'آدرس را وارد کنید',
-            'nationality_code.required'=>'کد ملی را وارد کنید',
-            'nationality_code.unique'=>'کد ملی را وارد کنید'
+            'nationality_code.required'=>'کد ملی را وارد کنید'
         ];
     }
+
 }
