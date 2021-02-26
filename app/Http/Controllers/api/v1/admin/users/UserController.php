@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1\admin\users;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\user\admin\DeleteUserValidation;
 use App\Http\Requests\user\admin\StoreUserValidation;
 use App\Http\Requests\user\admin\UpdateTeacherValidation;
 use App\Http\Requests\user\admin\UpdateUserValidation;
@@ -377,8 +378,7 @@ class UserController extends Controller
 
     }
 
-    //TODO VALIDATION
-    public function softDeleteUsers()
+    public function softDeleteUsers(DeleteUserValidation $deleteUserValidation)
     {
         $ids = request()->ids;
 
@@ -388,8 +388,7 @@ class UserController extends Controller
     }
 
 
-    //TODO VALIDATION
-    public function forceDeleteUsers()
+    public function forceDeleteUsers(DeleteUserValidation $deleteUserValidation)
     {
         $ids = request()->ids;
 
@@ -411,8 +410,7 @@ class UserController extends Controller
     }
 
 
-    //TODO VALIDATION
-    public function restoreUsers()
+    public function restoreUsers(DeleteUserValidation $deleteUserValidation)
     {
         $ids = request('ids');
 
@@ -441,8 +439,7 @@ class UserController extends Controller
             response(['message' => 'success', 'data' => null], 204);
     }
 
-    //TODO VALIDATION
-    public function forceDeleteTeachers()
+    public function forceDeleteTeachers(DeleteUserValidation $deleteUserValidation)
     {
         $ids = request('ids');
 
