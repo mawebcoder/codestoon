@@ -26,6 +26,7 @@ class AdminUserTest extends TestCase
             'family' => 'amiri',
             'cell' => $cell,
             'password' => 'mohammadeng',
+            'confirm_password'=>'mohammadeng',
             'email' => $email,
             'file' => $file,
             'role_id' => $user_role->id,
@@ -43,7 +44,9 @@ class AdminUserTest extends TestCase
             'role_id' => $user_role->id,
             'model_id' => $last_user_id
         ]);
+
         $profile_image_storage_path = 'app/public/images/users/profile-image/' . $last_user_id . '/' . $file->getClientOriginalName();
+
         $this->assertFileExists(storage_path($profile_image_storage_path));
     }
 

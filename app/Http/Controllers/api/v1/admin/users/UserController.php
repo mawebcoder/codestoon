@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1\admin\users;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\user\admin\StoreUserValidation;
 use App\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -11,7 +12,7 @@ use Spatie\Permission\Models\Role;
 class UserController extends Controller
 {
 
-    public function store()
+    public function store(StoreUserValidation $storeUserValidation)
     {
 
         $role_id = request()->role_id;
