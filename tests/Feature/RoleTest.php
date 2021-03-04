@@ -45,4 +45,11 @@ class RoleTest extends TestCase
             ]);
         }
     }
+
+
+    public function testCanAssignPermissionsToRole()
+    {
+        $role=factory(Role::class)->create();
+        $permission
+    }
 }

@@ -8,6 +8,7 @@ use Faker\Generator as Faker;
 
 $factory->define(Role::class, function (Faker $faker) {
     return [
-        'name'=>\Illuminate\Support\Str::random(20)
+        'name'=>\Illuminate\Support\Str::random(20),
+        'guard_name'=>'web'
     ];
 });

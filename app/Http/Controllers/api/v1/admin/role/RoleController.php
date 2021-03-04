@@ -18,18 +18,18 @@ class RoleController extends Controller
 
     public function index(Request $request){
 
-//        is the request is not  for search
+        //is the request is not  for search
         if (!$request->has('search')){
 
-//            are we need for the select box ?
+            //are we need for the select box ?
             if($request->has('select_box')){
                 $all_roles=Role::query()->where('name','<>','teacher')->get();
             }else{
-                $all_roles=Role::query()->paginate(1);
+                $all_roles=Role::query()->paginate(30);
             }
         }else{
 
-//            search in roles
+            //search in roles
             $all_roles=Role::query()->where('name','like','%'.$request->search.'%')
                 ->orWhere('fa_name','like','%'.$request->search.'%')
             ->get();
