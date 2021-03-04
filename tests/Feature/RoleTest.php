@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -49,7 +50,20 @@ class RoleTest extends TestCase
 
     public function testCanAssignPermissionsToRole()
     {
-        $role=factory(Role::class)->create();
-        $permission
+        $role = factory(Role::class)->create();
+
+        $permissions_ids = factory(Permission::class, 10)->create()
+            ->pluck('id')->toArray();
+
+        $this->post(route('set-role-permissions',['role'=>$role->id]), ['ids' => $permissions_ids])
+            ->assertStatus(201);
+
+        foreach ($permissions_ids as $id) {
+            $this->assertDatabaseHas('role_has_permissions', [
+                'permission_id' => $id,
+                'role_id' => $role->id
+            ]);
+        }
+
     }
 }
