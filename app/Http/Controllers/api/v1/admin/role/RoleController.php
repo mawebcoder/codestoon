@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\api\v1\admin\role;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Role\AssignPermissionsToRoleValidation;
 use App\Http\Requests\Role\DeleteRoleValidation;
 use App\Http\Requests\Role\StoreRoleValidation;
 use App\Http\Requests\Role\UpdateRoleValidation;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
@@ -24,7 +26,9 @@ class RoleController extends Controller
 
             //are we need for the select box ?
             if ($request->has('select_box')) {
-                $all_roles = Role::query()->where('name', '<>', 'teacher')->get();
+                $all_roles = Role::query()->where('name', '<>', 'teacher')
+                    ->select('id', 'name')->get();
+
             } else {
                 $all_roles = Role::query()->paginate(30);
             }
@@ -40,6 +44,14 @@ class RoleController extends Controller
             response(['message' => 'success', 'data' => null], 204);
     }
 
+    public function getPermissions()
+    {
+        $permissions = Permission::query()->select('name', 'id')->get();
+
+        return $permissions->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $permissions]) :
+            response(['message' => 'success', 'data' => null], 204);
+    }
 
     public function store(StoreRoleValidation $request)
     {
@@ -76,7 +88,7 @@ class RoleController extends Controller
             response($this->error);
     }
 
-    public function setPermissions(Role $role)
+    public function setPermissions(Role $role,AssignPermissionsToRoleValidation $assignPermissionsToRoleValidation)
     {
 
         $ids = request()->ids;
