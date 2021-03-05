@@ -51,9 +51,9 @@ class UserController extends Controller
 
         $data['username'] = $data['cell'];
 
-        DB::beginTransaction();
+//        DB::beginTransaction();
 
-        try {
+//        try {
 
             $user = User::query()->create($data);
 
@@ -61,19 +61,19 @@ class UserController extends Controller
 
             $upload_image_result = $this->uploadProfileImage($user);
 
-            DB::commit();
+//            DB::commit();
 
             return ['code' => 201, 'message' => 'success'];
 
-        } catch (\Exception $e) {
+//        } catch (\Exception $e) {
 
-            DB::rollBack();
+//            DB::rollBack();
 
-            DB::commit();
+//            DB::commit();
 
-            return ['code' => $e->getCode(), 'message' => $e->getMessage()];
+//            return ['code' => 500, 'message' => $e->getMessage()];
 
-        }
+//        }
 
 
     }
