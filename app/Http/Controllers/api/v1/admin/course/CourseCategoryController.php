@@ -32,7 +32,7 @@ class CourseCategoryController extends Controller
         if (!request()->has('search')) {
             if (request()->has('select_box')) {
                 $course_categories = CourseCategory::query()
-                    ->select('id', 'fa_title')
+                    ->whereStatus(1)->select('id', 'fa_title')
                     ->get();
             } else {
                 $course_categories = CourseCategory::select(
@@ -286,7 +286,7 @@ class CourseCategoryController extends Controller
             (
                 'id',
                 'fa_title',
-                'en_title')->paginate(1);
+                'en_title')->paginate(30);
         }else{
             $all_trashed = CourseCategory::onlyTrashed()->select
             (

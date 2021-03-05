@@ -18,3 +18,4 @@ Route::post('/users/restore','UserController@restoreUsers')->name('admin-users-r
 Route::get('/users/trashes','UserController@getTrashedUsers')->name('admin-users-trashes');
 Route::get('/users/teachers/trashes','UserController@getTrashedTeachers')->name('admin-users-teachers-trashes');
 Route::post('/users/teachers/force-delete','UserController@forceDeleteTeachers')->name('admin-users-teachers-force-delete');
+Route::get('/teachers/actives','UserController@getActiveTeachers')->name('users-teachers-actives');

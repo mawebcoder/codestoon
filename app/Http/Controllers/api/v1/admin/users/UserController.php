@@ -44,6 +44,23 @@ class UserController extends Controller
 
     }
 
+    public function getActiveTeachers()
+    {
+        $active_teachers = User::query()
+            ->whereHas('roles', function ($q) {
+
+                $q->where('name', 'teacher');
+
+            })->whereHas('TeacherInfo', function ($q) {
+
+                $q->where('status', 'active');
+
+            })->select('id','name')->get();
+
+        return $active_teachers->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $active_teachers]) :
+            response(['message' => 'success', 'data' => null], 204);
+    }
 
     public function storeUser($role): array
     {
@@ -55,15 +72,15 @@ class UserController extends Controller
 
 //        try {
 
-            $user = User::query()->create($data);
+        $user = User::query()->create($data);
 
-            $assign_role_result = $this->assignRole($user, $role);
+        $assign_role_result = $this->assignRole($user, $role);
 
-            $upload_image_result = $this->uploadProfileImage($user);
+        $upload_image_result = $this->uploadProfileImage($user);
 
 //            DB::commit();
 
-            return ['code' => 201, 'message' => 'success'];
+        return ['code' => 201, 'message' => 'success'];
 
 //        } catch (\Exception $e) {
 
@@ -322,7 +339,7 @@ class UserController extends Controller
     }
 
 
-    public function updateUser(User $user,UpdateUserValidation $userValidation)
+    public function updateUser(User $user, UpdateUserValidation $userValidation)
     {
         DB::beginTransaction();
 
@@ -352,7 +369,7 @@ class UserController extends Controller
 
     }
 
-    public function updateTeacher(User $user,UpdateTeacherValidation $updateTeacherValidation)
+    public function updateTeacher(User $user, UpdateTeacherValidation $updateTeacherValidation)
     {
         DB::beginTransaction();
 

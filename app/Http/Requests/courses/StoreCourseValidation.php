@@ -25,18 +25,17 @@ class StoreCourseValidation extends FormRequest
     {
         return [
             'fa_title' => ['required', 'max:190', 'unique:courses,fa_title'],
-            'en_title' => ['unique:courses,en_title', 'max:190'],
+            'en_title' => ['sometimes','unique:courses,en_title', 'max:190'],
             'description' => ['required'],
             'price' => ['required', 'numeric'],
-            'discount_value' => ['min:0', 'max:100', 'numeric'],
+            'discount_value' => ['nullable','min:0', 'max:100', 'numeric'],
             'level' => ['required', 'in:beginner,medium,advanced'],
-            'user_id' => ['required', 'exists:users,id'],
+            'teacher_id' => ['required', 'exists:users,id'],
             'short_description' => ['required'],
             'meta' => ['required', 'max:190'],
             'file' => ['required', 'mimes:jpg,png,jpeg', 'max:2048'],
             'courseCategory_id' => ['required', 'exists:course_categories,id'],
-            'tag_ids' => ['array'],
-            'tags_ids.*' => ['distinct', 'exists:course_tags,id']
+            'tags_ids.*' => ['sometimes','distinct', 'exists:course_tags,id']
         ];
     }
 
@@ -57,16 +56,18 @@ class StoreCourseValidation extends FormRequest
             'discount_value.numeric' => 'مقدار کد تخفیف نامعتبر است',
             'level.required' => 'سطح وارد شده نامعتبر است',
             'level.in' => 'سطح وارد شده نامعتبر است',
-            'user_id.required' => 'یک مدرس انتخاب کنید',
-            'user_id.exists' => 'این مدرس نامعتبر است',
+            'teacher_id.required' => 'یک مدرس انتخاب کنید',
+            'teacher_id.exists' => 'این مدرس نامعتبر است',
             'short_description.required' => 'توضیحات کوتاه را وارد کنید',
             'meta.required' => 'وارد کردن توضیحات متا الزامی است',
             'meta.max' => 'حداکثر کاراکترهای توضیحات متا 190 کاراکتر است',
             'courseCategory_id.required' => 'دسته بندی این دوره را انتخاب نکرده اید',
             'courseCategory_id.exists' => 'دسته بندی انتخاب شده نامعتبر است',
-            'tags_ids.array' => 'تگ های انتخاب شده نامعتبر است',
-            'tags_ids.*.distinct' => 'تگ های انتخاب شده نامعتبر است',
-            'tags_ids.*.exists' => 'تگ های انتخاب شده نامعتبر است',
+            'tag_ids.*.distinct' => 'تگ های انتخاب شده نامعتبر است',
+            'tag_ids.*.exists' => 'تگ های انتخاب شده نامعتبر است',
+            'file.required'=>'هیچ عکسی را انتخاب نکرده اید',
+            'file.max'=>'سایز عکس از ۲ مگابایت نمیتواند بیشتر باشد',
+            'file.mimes'=>'فرمت فایل نامعتبر است'
         ];
     }
 }

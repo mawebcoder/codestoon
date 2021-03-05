@@ -2,8 +2,8 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="149b3ad7-6e2e-44c9-b07e-8359adbb7275" name="six2fit" url="http://six2fit.com">
-        <fileTransfer host="six2fit.com" port="21">
+      <webServer id="149b3ad7-6e2e-44c9-b07e-8359adbb7275" name="six2fit" url="http://87.107.161.242">
+        <fileTransfer host="87.107.161.242" port="21">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>

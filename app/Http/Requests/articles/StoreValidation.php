@@ -25,11 +25,12 @@ class StoreValidation extends FormRequest
     {
         return [
             'fa_title' => ['required', 'unique:articles,fa_title', 'max:190'],
-            'en_title' => ['max:190'],
+            'en_title' => ['sometimes','max:190'],
             'writer' => ['required'],
-            'file' => ['max:2048', 'mimes:jpg,jpeg,png'],
+            'file' => ['required', 'max:2048', 'mimes:jpg,jpeg,png'],
             'meta' => ['required', 'max:190'],
             'text' => ['required'],
+            'article_tags.*' => ['sometimes', 'exists:article_tags,id', 'distinct'],
             'articleCategory_id' => ['required', 'exists:article_categories,id']
         ];
     }
@@ -48,7 +49,9 @@ class StoreValidation extends FormRequest
             'meta.required' => 'وارد کردن توضیحات متا الزامی است',
             'meta.max' => 'حداکثر کاراکترهای مجاز برای توضیحات متا تگ 190 میباشد',
             'writer.required' => 'نویسنده این مقاله را مشخص نکرده اید',
-            'text.required'=>'محتوای مقاله خالی است'
+            'text.required' => 'محتوای مقاله خالی است',
+            'article_tags.*.exists'=>'تگ های انتخاب شده نامعتبر است',
+            'article_tags.*.distinct'=>'تگ ها مشابه انتخاب شده اند'
         ];
     }
 }

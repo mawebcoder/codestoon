@@ -9,6 +9,7 @@ use App\Http\Requests\courses\UpdateCourseValidation;
 use App\models\Course;
 use App\models\CourseCategory;
 use App\models\CourseTag;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class CourseController extends Controller
@@ -29,27 +30,84 @@ class CourseController extends Controller
 
     public function index()
     {
-        $course = Course::select('id', 'fa_title', 'course_image_cover', 'is_active', 'courseCategory_id', 'price', 'user_id')
-            ->with(['courseCategory:id,fa_title', 'teacher:id,name,family'])->get();
-
-        return $course->isNotEmpty() ?
-            response(['message' => 'success', 'data' => $course]) :
-            response(['message' => 'success', 'data' => null], 204);
-    }
-
-    public function getActiveCourses()
-    {
-        $courses = Course::where('is_active', 1)->select('courseCategory_id', 'user_id', 'id', 'course_image_cover', 'fa_title')
-            ->with(['courseCategory:id,fa_title', 'teacher:id,name,family'])->get();
+        if (request()->has('select_box')) {
+            $courses = Course::select('id', 'fa_title')->whereStatus('is_active', 1)->get();
+        } elseif (request()->has('search')) {
+            $courses = Course::query()
+                ->select('id', 'fa_title', 'is_active', 'courseCategory_id', 'price', 'teacher_id')
+                ->where(function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                    $q->OrWhere('en_title', 'like', '%' . request()->search . '%');
+                })->orWhereHas('courseCategory', function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                })->orWhereHas('teacher', function ($q) {
+                    $q->where('name', 'like', '%' . request()->search . '%');
+                })
+                ->with(['courseCategory:id,fa_title', 'teacher:id,name,family'])->get();
+        } else {
+            $courses = Course::query()->select('id', 'fa_title', 'is_active', 'courseCategory_id', 'price', 'teacher_id')
+                ->with(['courseCategory:id,fa_title', 'teacher:id,name,family'])->paginate(30);
+        }
         return $courses->isNotEmpty() ?
             response(['message' => 'success', 'data' => $courses]) :
             response(['message' => 'success', 'data' => null], 204);
     }
 
+    public function getActiveCourses()
+    {
+        if (!request()->has('search')) {
+            $courses = Course::query()->where('is_active', 1)->select('id', 'fa_title', 'is_active', 'courseCategory_id', 'price', 'teacher_id')
+                ->with(['courseCategory:id,fa_title', 'teacher:id,name,family'])->paginate(30);
+
+        } else {
+            $courses = Course::query()->where('is_active', 1)
+                ->select('id', 'fa_title', 'is_active', 'courseCategory_id', 'price', 'teacher_id')
+                ->where(function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                    $q->OrWhere('en_title', 'like', '%' . request()->search . '%');
+                    $q->orWhereHas('teacher', function ($row) {
+                        $row->where('name', 'like', '%' . request()->search . '%');
+                    });
+                })->orWhereHas('courseCategory', function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                })
+                ->with(['courseCategory:id,fa_title', 'teacher:id,name,family'])
+                ->get();
+        }
+
+        return $courses->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $courses]) :
+            response(['message' => 'success', 'data' => null], 204);
+    }
+
+    public function switchCondition(Course $course)
+    {
+        $course->update(['is_active' => request()->status]);
+        return response(['message' => 'success', 'data' => null]);
+    }
+
     public function getDeActiveCourses()
     {
-        $courses = Course::where('is_active', 0)->select('courseCategory_id', 'user_id', 'id', 'course_image_cover', 'fa_title')
-            ->with(['courseCategory:id,fa_title', 'teacher:id,name,family'])->get();
+        if (!request()->has('search')) {
+            $courses = Course::query()->where('is_active', 0)->select('id', 'fa_title', 'is_active', 'courseCategory_id', 'price', 'teacher_id')
+                ->with(['courseCategory:id,fa_title', 'teacher:id,name,family'])->paginate(30);
+
+        } else {
+            $courses = Course::query()->where('is_active', 0)
+                ->select('id', 'fa_title', 'is_active', 'courseCategory_id', 'price', 'teacher_id')
+                ->where(function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                    $q->OrWhere('en_title', 'like', '%' . request()->search . '%');
+                    $q->orWhereHas('teacher', function ($row) {
+                        $row->where('name', 'like', '%' . request()->search . '%');
+                    });
+                })->orWhereHas('courseCategory', function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                })
+                ->with(['courseCategory:id,fa_title', 'teacher:id,name,family'])
+                ->get();
+        }
+
         return $courses->isNotEmpty() ?
             response(['message' => 'success', 'data' => $courses]) :
             response(['message' => 'success', 'data' => null], 204);
@@ -70,11 +128,13 @@ class CourseController extends Controller
             'description',
             'price',
             'level',
-            'user_id',
             'short_description',
             'meta',
             'courseCategory_id'
         ]);
+        $data['admin_id'] = Auth::id();
+//        $data['admin_id'] = $request->teacher_id;
+        $data['teacher_id'] = $request->teacher_id;
         $data['has_discount'] = intval($request->discount_value) ? 1 : 0;
         $data['discount_value'] = intval($request->discount_value) ?? 0;
         $data['is_active'] = $request->is_active ? 1 : 0;
@@ -103,7 +163,7 @@ class CourseController extends Controller
     public function syncTags($course, $request)
     {
         if ($request->has('tag_ids')) {
-            $course->tags()->sync($request->tag_ids);
+            $course->tags()->sync(json_decode($request->tag_ids, true));
         }
     }
 
@@ -131,12 +191,9 @@ class CourseController extends Controller
      */
     public function edit(Course $course)
     {
-        $course_categories = CourseCategory::select('id', 'fa_title')->get();
-        $course_tags = CourseTag::select('id', 'fa_title')->get();
         return response(['message' => 'success', 'data' => [
             'course' => $course,
-            'categories' => $course_categories,
-            'course_tags' => $course_tags
+            'synced_tags' => $course->tags,
         ]]);
     }
 
@@ -158,7 +215,7 @@ class CourseController extends Controller
             'price',
             'has_discount',
             'level',
-            'user_id',
+            'teacher_id',
             'description',
             'short_description',
             'meta',
@@ -227,7 +284,14 @@ class CourseController extends Controller
 
     public function getTrashed()
     {
-        $courses = Course::onlyTrashed()->select('id', 'fa_title', 'en_title')->get();
+
+        if (!request()->has('search')){
+            $courses = Course::query()->onlyTrashed()->select('id', 'fa_title')->paginate(30);
+        }else{
+            $courses = Course::query()->onlyTrashed()->select('id', 'fa_title')
+            ->where('fa_title','like','%'.request()->search.'%')->get();
+        }
+
         return $courses->isNotEmpty() ?
             response(['message' => 'success', 'data' => $courses]) :
             response(['message' => 'success', 'data' => null], 204);

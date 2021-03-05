@@ -71,4 +71,6 @@ Route::get('/courses/de-actives', 'CourseController@getDeActiveCourses')->name('
 Route::post('/courses/restore', 'CourseController@restore')->name('courses.restore');
 Route::get('/courses/trashed', 'CourseController@getTrashed')->name('course.trashed');
 Route::post('/courses/delete-multiple', 'CourseController@deleteMultiple')->name('course.delete.multi');
-Route::resource('courses', 'CourseController')->except(['show']);
+Route::post('/courses/switch-status/{course}','CourseController@switchCondition')->name('course-switch-condition');
+Route::post('/courses/update/{course}','CourseController@update')->name('course-update');
+Route::resource('courses', 'CourseController')->except(['show','update']);
