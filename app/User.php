@@ -5,6 +5,7 @@ namespace App;
 use App\models\Article;
 use App\models\Course;
 use App\models\TeacherInformation;
+use App\models\UserLog;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -59,12 +60,25 @@ class User extends Authenticatable
     {
         return $this->hasMany(Course::class, 'teacher_id', 'id');
     }
-    public function confirmerCourses(){
-        return $this->hasMany(Course::class,'admin_id','id');
+
+    public function confirmerCourses()
+    {
+        return $this->hasMany(Course::class, 'admin_id', 'id');
     }
 
     public function TeacherInfo()
     {
         return $this->hasOne(TeacherInformation::class, 'teacher_id', 'id');
     }
+
+    public function userActivities()
+    {
+        return $this->hasMany(UserLog::class);
+    }
+
+    public function lastActivity()
+    {
+        return $this->hasMany(UserLog::class)->orderBy('created_at', 'desc')->select('created_at','user_id','route');
+    }
+
 }
