@@ -20,6 +20,7 @@ class CreateBasketsTable extends Migration
             $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
             $table->integer('number');
             $table->decimal('price', 20);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

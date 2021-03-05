@@ -5,8 +5,10 @@ namespace App\models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Basket extends Model
+class Order extends Model
 {
     use SoftDeletes;
-    protected $guarded=['id'];
+
+    protected $guarded = ['id'];
+
 }
