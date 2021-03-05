@@ -78,7 +78,10 @@ class User extends Authenticatable
 
     public function lastActivity()
     {
-        return $this->hasMany(UserLog::class)->orderBy('created_at', 'desc')->select('created_at','user_id','route');
+        return
+            $this->hasMany(UserLog::class)
+            ->orderBy('created_at', 'desc')
+            ->select('created_at', 'user_id', 'route');
     }
 
 }
