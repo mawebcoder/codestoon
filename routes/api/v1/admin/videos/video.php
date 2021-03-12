@@ -13,6 +13,7 @@ Route::get('/videos/tags/de-actives','VideoTagController@getDeActiveVideoTags')-
 
 
 //videos
+
 Route::get('/videos/trashed','VideoController@getTrashed')->name('video.trashes');
 Route::post('/videos/force-delete','VideoController@forceDelete')->name('video.force-delete');
 Route::post('/videos/delete/multi','VideoController@deleteMultiple')->name('videos.delete.multi');
@@ -20,4 +21,6 @@ Route::post('/videos/restore','VideoController@restore')->name('videos.restore')
 Route::get('/videos/actives','VideoController@getActiveVideos')->name('video.actives');
 Route::get('/videos/de-actives','VideoController@getDeActiveVideos')->name('video.actives');
 Route::post('/videos/upload/{video}','VideoController@upload')->name('videos.upload');
+Route::get('/videos/unuploaded','VideoController@getUnUploadedVideos')->name('videos-unuploaded');
+Route::post('/videos/switch/condition/{video}','VideoController@switchCondition')->name('videos-switch-condition');
 Route::resource('videos','VideoController');

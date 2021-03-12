@@ -19,6 +19,6 @@ class CourseSection extends Model
 
     public function videos()
     {
-        return $this->hasMany(Video::class);
+        return $this->hasMany(Video::class,'courseSection_id','id');
     }
 }

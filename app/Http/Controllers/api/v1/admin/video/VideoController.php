@@ -31,39 +31,138 @@ class VideoController extends Controller
     public function index()
     {
 
-        $videos = Course::where('is_active', 1)->select('id', 'fa_title', 'user_id')->with([
-            'videos:id,course_id,fa_title,status,time',
-            'teacher:id,name,family'
-        ])
-            ->get();
-        $single_videos = Video::where('is_single_video', 1)->select('id', 'fa_title,status,time')
-            ->get();
+        if (!request()->has('search')) {
+            $videos = Video::query()
+                ->select(
+                    'id',
+                    'course_id',
+                    'courseSection_id',
+                    'fa_title',
+                    'status',
+                    'video_url_name'
+                )
+                ->with(['course:id,fa_title', 'section:id,fa_title'])
+                ->paginate(30);
+        } else {
+            $videos = Video::query()
+                ->with(['course:id,fa_title', 'section:id,fa_title'])
+                ->select(
+                    'id',
+                    'course_id',
+                    'courseSection_id',
+                    'fa_title',
+                    'status',
+                    'video_url_name'
+                )
+                ->where('fa_title', 'like', '%' . request()->search . '%')
+                ->orWhereHas('course', function ($course) {
+                    $course->where('fa_title', 'like', '%' . request()->search . '%');
+                })->orWhereHas('section', function ($section) {
+                    $section->where('fa_title', 'like', '%' . request()->search . '%');
+                })->get();
+        }
+
+        return $videos->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $videos]) :
+            response(['message' => 'success', 'data' => null], 204);
+
+    }
+
+    public function switchCondition(Video $video)
+    {
+        $status = $video->status ? 0 : 1;
+        $video->update(['status' => $status]);
+        return response(['message' => 'success', 'data' => null]);
     }
 
     public function getActiveVideos()
     {
-        $active_videos = Course::where('is_active', 1)->select('id', 'fa_title', 'user_id')->with([
-            'videos:id,course_id,fa_title,status,time',
-            'teacher:id,name,family'
-        ])->whereHas('videos', function ($video) {
-            $video->whereStatus(1);
-        })->get();
-        return $active_videos->isNotEmpty() ?
-            response(['message' => 'success', 'data' => $active_videos]) :
-            response($this->empty_success_message);
+        if (!request()->has('search')) {
+            $videos = Video::query()
+                ->with(['course:id,fa_title', 'section:id,fa_title'])
+                ->whereStatus(1)
+                ->select(
+                    'id',
+                    'course_id',
+                    'courseSection_id',
+                    'fa_title',
+                    'status',
+                    'video_url_name'
+                )->paginate(30);
+        } else {
+            $videos = Video::query()
+                ->with(['course:id,fa_title', 'section:id,fa_title'])
+                ->whereStatus(1)
+                ->select(
+                    'id',
+                    'course_id',
+                    'courseSection_id',
+                    'fa_title',
+                    'status',
+                    'video_url_name'
+                )
+                ->where(function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+
+                    $q->orWhereHas('course', function ($course) {
+                        $course->where('fa_title', 'like', '%' . request()->search . '%');
+                    });
+
+                    $q->orWhereHas('section', function ($section) {
+                        $section->where('fa_title', 'like', '%' . request()->search . '%');
+                    });
+
+                })->get();
+        }
+
+        return $videos->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $videos]) :
+            response(['message' => 'success', 'data' => null], 204);
     }
 
     public function getDeActiveVideos()
     {
-        $active_videos = Course::where('is_active', 1)->select('id', 'fa_title', 'user_id')->with([
-            'videos:id,course_id,fa_title,status,time',
-            'teacher:id,name,family'
-        ])->whereHas('videos', function ($video) {
-            $video->whereStatus(0);
-        })->get();
-        return $active_videos->isNotEmpty() ?
-            response(['message' => 'success', 'data' => $active_videos]) :
-            response($this->empty_success_message);
+        if (!request()->has('search')) {
+            $videos = Video::query()
+                ->with(['course:id,fa_title', 'section:id,fa_title'])
+                ->whereStatus(0)
+                ->select(
+                    'id',
+                    'course_id',
+                    'courseSection_id',
+                    'fa_title',
+                    'status',
+                    'video_url_name'
+                )->paginate(30);
+        } else {
+            $videos = Video::query()
+                ->with(['course:id,fa_title', 'section:id,fa_title'])
+                ->whereStatus(0)
+                ->select(
+                    'id',
+                    'course_id',
+                    'courseSection_id',
+                    'fa_title',
+                    'status',
+                    'video_url_name'
+                )
+                ->where(function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+
+                    $q->orWhereHas('course', function ($course) {
+                        $course->where('fa_title', 'like', '%' . request()->search . '%');
+                    });
+
+                    $q->orWhereHas('section', function ($section) {
+                        $section->where('fa_title', 'like', '%' . request()->search . '%');
+                    });
+
+                })->get();
+        }
+
+        return $videos->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $videos]) :
+            response(['message' => 'success', 'data' => null], 204);
     }
 
 
@@ -132,10 +231,7 @@ class VideoController extends Controller
 
     public function upload(UploadVideoValidation $request, Video $video)
     {
-        ini_set('memory_limit','10240M');
-        ini_set('post_max_size','1024M');
-        ini_set('max_execution_time',0);
-        ini_set('upload_max_filesize','1024M');
+
         if ($request->hasFile('file')) {
             $file = $request->file('file');
             $file_name = $file->getClientOriginalName();
@@ -144,21 +240,11 @@ class VideoController extends Controller
                 $path = 'courses/' . $video->course_id . '/' . $video->id;
 
             //has uploaded the video before?
-            if ($video->video_url_name) {
-                //is a single video?
-                if ($video->is_single_video) {
-                    if (Storage::disk('videos')->exists($path)) {
-
-                        Storage::deleteDirectory($path);
-                    }
-                    //is not a single video?
-                } else {
-                    if (Storage::disk('videos')->exists($path)) {
-                        Storage::deleteDirectory($path);
-                    }
-                }
+            if (Storage::disk('videos')->exists($path)) {
+                Storage::disk('videos')->deleteDirectory($path);
             }
             $file->storeAs($path, $file_name, 'videos');
+
             $video->update([
                 'video_url_name' => $file_name
             ]);
@@ -176,9 +262,41 @@ class VideoController extends Controller
      */
     public function edit(Video $video)
     {
-        $video = $video->with('course')->first();
-
         return response(['message' => 'success', 'data' => $video]);
+    }
+
+    public function getUnUploadedVideos()
+    {
+        if (!request()->has('search')) {
+            $un_uploaded_videos = Video::query()
+                ->with(['course:id,fa_title', 'section:id,fa_title'])
+                ->whereNull('video_url_name')
+                ->select('id', 'courseSection_id', 'course_id', 'fa_title')
+                ->paginate(30);
+        } else {
+            $un_uploaded_videos = Video::query()
+                ->with(['course:id,fa_title', 'section:id,fa_title'])
+                ->whereNull('video_url_name')
+                ->select('id', 'courseSection_id', 'course_id', 'fa_title')
+                ->where(function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+
+                    $q->orWhere('en_title', 'like', '%' . request()->search . '%');
+
+                    $q->orWhereHas('course', function ($course) {
+                        $course->where('fa_title', 'like', '%' . request()->search . '%');
+                    });
+
+                    $q->orWhereHas('section', function ($section) {
+                        $section->where('fa_title', 'like', '%' . request()->search . '%');
+                    });
+
+                })->get();
+        }
+
+        return $un_uploaded_videos->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $un_uploaded_videos]) :
+            response(['message' => 'success', 'data' => null], 204);
     }
 
     /**
