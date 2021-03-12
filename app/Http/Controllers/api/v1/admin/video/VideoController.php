@@ -435,13 +435,67 @@ class VideoController extends Controller
 
     public function getTrashed()
     {
-        $trashed_videos = Video::onlyTrashed()->select('id', 'fa_title', 'time', 'course_id', 'courseSection_id')
-            ->with(['course:id,fa_title', 'section:id,fa_title'])->get();
+        if (!request()->has('search')) {
+            $trashed_videos = Video::onlyTrashed()->select(
+                'id',
+                'course_id',
+                'courseSection_id',
+                'fa_title',
+                'video_url_name'
+            )->with(['course:id,fa_title', 'section:id,fa_title'])->paginate(30);
+        } else {
+            $trashed_videos = Video::onlyTrashed()->select(
+                'id',
+                'course_id',
+                'courseSection_id',
+                'fa_title',
+                'video_url_name'
+            )->where('fa_title', 'like', '%' . request()->search . '%')
+                ->with(['course:id,fa_title', 'section:id,fa_title'])
+                ->OrWhereHas('course', function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                })->orWhereHas('section', function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                })->get();
+        }
+
+
         return $trashed_videos->isNotEmpty() ?
             response(['message' => 'success', 'data' => $trashed_videos]) :
             response($this->empty_success_message);
     }
 
+
+    public function getSingleVideos()
+    {
+
+        if (!request()->has('search')){
+            $single_videos = Video::query()
+                ->where('is_single_video', 1)
+                ->select(
+                    'id',
+                    'fa_title',
+                    'status',
+                    'video_url_name'
+                )->paginate(30);
+        }else{
+            $single_videos = Video::query()
+                ->where('is_single_video', 1)
+                ->where(function ($q){
+                    $q->where('fa_title','like','%'.request()->search.'%');
+                })
+                ->select(
+                    'id',
+                    'fa_title',
+                    'status',
+                    'video_url_name'
+                )->get();
+        }
+
+        return $single_videos->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $single_videos]) :
+            response(['message' => 'success', 'data' => null], 204);
+    }
 
     public function deleteMultiple(DeleteVideoValidation $deleteVideoValidation)
     {

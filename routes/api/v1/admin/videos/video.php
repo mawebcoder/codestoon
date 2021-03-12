@@ -23,4 +23,5 @@ Route::get('/videos/de-actives','VideoController@getDeActiveVideos')->name('vide
 Route::post('/videos/upload/{video}','VideoController@upload')->name('videos.upload');
 Route::get('/videos/unuploaded','VideoController@getUnUploadedVideos')->name('videos-unuploaded');
 Route::post('/videos/switch/condition/{video}','VideoController@switchCondition')->name('videos-switch-condition');
+Route::get('/videos/single-videos','VideoController@getSingleVideos')->name('videos-single-video');
 Route::resource('videos','VideoController');

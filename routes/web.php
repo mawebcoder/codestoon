@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Facades\File;
+use  \App\Facades\VideoStream;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,7 +13,4 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/info',function (){
-    ini_set('post_max_size','45M');
-    dd(phpinfo());
-});
+

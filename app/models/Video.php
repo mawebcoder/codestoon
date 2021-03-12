@@ -28,7 +28,7 @@ class Video extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(VideoTag::class, 'tag_video', 'video_id', 'videoTag_id')->withTrashed();
+        return $this->belongsToMany(VideoTag::class, 'tag_video', 'video_id', 'videoTag_id');
     }
 
 }
