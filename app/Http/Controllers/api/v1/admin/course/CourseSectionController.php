@@ -27,32 +27,90 @@ class CourseSectionController extends Controller
      */
     public function index()
     {
-        $courses = Course::select('id', 'fa_title')->with('sections:id,course_id,fa_title,status')
-            ->get();
-        return $courses->isNotEmpty() ?
-            response(['message' => 'success', 'data' => $courses]) :
-            response($this->empty_success);
+        if (!request()->has('search')) {
+            if (!request()->has('select_box')) {
+                $course_sections = CourseSection::query()->select('id', 'status', 'fa_title', 'course_id', 'meta')
+                    ->with('course:id,fa_title')->paginate(30);
+            } else {
+                $course_sections = CourseSection::query()->select('id', 'fa_title')
+                    ->whereStatus(1)->get();
+            }
+
+        } else {
+            $course_sections = CourseSection::query()
+                ->select('id', 'status', 'fa_title', 'course_id', 'meta')
+                ->where(function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                })
+                ->orWhereHas('course', function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                })
+                ->with('course:id,fa_title')->get();
+        }
+
+
+        return $course_sections->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $course_sections]) :
+            response($this->empty_success, 204);
+    }
+
+
+    public function getCourseSections(Course $course)
+    {
+        $sections = $course->sections()->select('id', 'fa_title')->get();
+        return $sections->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $sections]) :
+            response(['message' => 'success', 'data' => null], 204);
     }
 
     public function getActiveCourseSection()
     {
-        $actives_course_sections = CourseSection::whereStatus(1)->select('id', 'fa_title', 'course_id')
-            ->with('course:id,fa_title')->get();
 
-        return $actives_course_sections->isNotEmpty() ?
-            response(['message' => 'success', 'data' => $actives_course_sections]) :
-            response($this->empty_success);
+
+        if (!request()->has('search')) {
+            $course_sections = CourseSection::query()->whereStatus(1)->select('id', 'status', 'fa_title', 'course_id', 'meta')
+                ->with('course:id,fa_title')->paginate(30);
+        } else {
+            $course_sections = CourseSection::query()
+                ->select('id', 'status', 'fa_title', 'course_id', 'meta')
+                ->where(function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                    $q->orWhereHas('course', function ($row) {
+                        $row->where('fa_title', 'like', '%' . request()->search . '%');
+
+                    });
+                })->Where('status', 1)
+                ->with('course:id,fa_title')->get();
+        }
+
+        return $course_sections->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $course_sections]) :
+            response($this->empty_success, 204);
 
     }
 
     public function getDeActiveCourseSection()
     {
-        $actives_course_sections = CourseSection::whereStatus(0)->select('id', 'fa_title', 'course_id')
-            ->with('course:id,fa_title')->get();
 
-        return $actives_course_sections->isNotEmpty() ?
-            response(['message' => 'success', 'data' => $actives_course_sections]) :
-            response($this->empty_success);
+        if (!request()->has('search')) {
+            $course_sections = CourseSection::query()->whereStatus(0)->select('id', 'status', 'fa_title', 'course_id', 'meta')
+                ->with('course:id,fa_title')->paginate(30);
+        } else {
+            $course_sections = CourseSection::query()
+                ->select('id', 'status', 'fa_title', 'course_id', 'meta')
+                ->where(function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                    $q->orWhereHas('course', function ($row) {
+                        $row->where('fa_title', 'like', '%' . request()->search . '%');
+
+                    });
+                })->Where('status', 0)
+                ->with('course:id,fa_title')->get();
+        }
+
+        return $course_sections->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $course_sections]) :
+            response($this->empty_success, 204);
     }
 
     /**
@@ -69,6 +127,8 @@ class CourseSectionController extends Controller
                 'fa_title',
                 'en_title',
                 'course_id',
+                'meta',
+                'description'
             ]
         );
         $data['status'] = $request->status ? 1 : 0;
@@ -105,6 +165,8 @@ class CourseSectionController extends Controller
             'fa_title',
             'en_title',
             'course_id',
+            'description',
+            'meta'
         ]);
         $data['status'] = $request->status ? 1 : 0;
         $result = $courseSection->update($data);
@@ -129,8 +191,22 @@ class CourseSectionController extends Controller
 
     public function getTrashed()
     {
-        $course_sections = CourseSection::onlyTrashed()->with('course:id,fa_title')->select('id', 'fa_title', 'en_title', 'course_id')
-            ->get();
+        if (!request()->has('search')) {
+            $course_sections = CourseSection::onlyTrashed()
+                ->with('course:id,fa_title')
+                ->select('id', 'fa_title', 'course_id')
+                ->paginate(30);
+        } else {
+            $course_sections = CourseSection::onlyTrashed()
+                ->with('course:id,fa_title')->select('id', 'fa_title', 'course_id')
+                ->where(function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                    $q->orWhereHas('course', function ($row) {
+                        $row->where('fa_title', 'like', '%' . request()->search . '%');
+                    });
+                })->get();
+
+        }
         return $course_sections->isNotEmpty() ?
             response(['message' => 'success', 'data' => $course_sections]) :
             response($this->empty_success);
@@ -156,7 +232,7 @@ class CourseSectionController extends Controller
     public function deleteMulti(DeleteCourseSectionValidation $deleteCourseSectionValidation)
     {
         $ids = $deleteCourseSectionValidation->ids;
-        $course_sections = CourseSection::whereIn('id',$ids)
+        $course_sections = CourseSection::whereIn('id', $ids)
             ->delete();
         return response($this->empty_success);
 

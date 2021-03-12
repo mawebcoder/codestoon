@@ -31,7 +31,7 @@ class CourseController extends Controller
     public function index()
     {
         if (request()->has('select_box')) {
-            $courses = Course::select('id', 'fa_title')->whereStatus('is_active', 1)->get();
+            $courses = Course::select('id', 'fa_title')->get();
         } elseif (request()->has('search')) {
             $courses = Course::query()
                 ->select('id', 'fa_title', 'is_active', 'courseCategory_id', 'price', 'teacher_id')

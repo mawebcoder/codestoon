@@ -54,7 +54,7 @@ Route::post('/courses/sections', 'CourseSectionController@store')->name('course.
 Route::put('/courses/sections/{courseSection}', 'CourseSectionController@update')->name('course.section.update');
 Route::delete('/courses/sections/{courseSection}', 'CourseSectionController@destroy')->name('course.section.destroy');
 Route::get('/courses/sections', 'CourseSectionController@index')->name('course.section.index');
-
+Route::get('/course/sections/{course}','CourseSectionController@getCourseSections')->name('course-sections');
 
 
 

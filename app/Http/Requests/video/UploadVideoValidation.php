@@ -24,14 +24,15 @@ class UploadVideoValidation extends FormRequest
     public function rules()
     {
         return [
-            'file'=>['required','mimes:mp4']
+            'file'=>['required','mimes:mp4,mkv']
         ];
     }
     public function messages()
     {
         return [
             'file.mimes'=>'فرمت ویدیو نامناسب است',
-            'file.required'=>'ویدیو مورد نظر را آپلود کنید'
+            'file.required'=>'ویدیو مورد نظر را آپلود کنید',
+            'file.max'=>'حداکثر سایز فایل ۴۰۰ مگابایت است'
         ];
     }
 }

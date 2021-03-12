@@ -31,7 +31,7 @@ class CourseTagController extends Controller
                 $courses = CourseTag::select('fa_title', 'en_title', 'id', 'status')
                     ->paginate(30);
             } else {
-                $courses = CourseTag::select('fa_title', 'en_title', 'id', 'status')
+                $courses = CourseTag::select('fa_title','id')
                    ->whereStatus(1)->get();
             }
 

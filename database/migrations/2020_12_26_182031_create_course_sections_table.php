@@ -18,6 +18,8 @@ class CreateCourseSectionsTable extends Migration
             $table->string('fa_title');
             $table->string('en_title')->nullable();
             $table->softDeletes();
+            $table->text('description')->nullable();
+            $table->string('meta')->nullable();
             $table->boolean('status')->default(0);
             $table->unsignedBigInteger('course_id')->nullable();
             $table->foreign('course_id')->references('id')->on('courses')->onDelete(null);

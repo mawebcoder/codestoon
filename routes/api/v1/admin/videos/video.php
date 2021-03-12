@@ -5,11 +5,12 @@ use Illuminate\Support\Facades\Route;
 //tags
 Route::get('/videos/tags','VideoTagController@index')->name('video.tag.index');
 Route::post('/videos/tags','VideoTagController@store')->name('video.tags.store');
-Route::delete('/videos/tags/{videoTag}','VideoTagController@destroy')->name('video.tags.delete');
 Route::put('/videos/tags/{videoTag}','VideoTagController@update')->name('video.tags.update');
-Route::get('/videos/tags','VideoTagController@index')->name('video.tags.index');
-Route::get('/videos/tags/{videoTag}/edit','VideoTagController@edit')->name('videos.tag.edit');
 Route::post('/videos/tags/delete-multi','VideoTagController@deleteMultiple')->name('video.tag.delete-multi');
+Route::get('/videos/tags/actives','VideoTagController@getActiveVideoTags')->name('video-tag-actives');
+Route::get('/videos/tags/de-actives','VideoTagController@getDeActiveVideoTags')->name('video-tag-actives');
+
+
 
 //videos
 Route::get('/videos/trashed','VideoController@getTrashed')->name('video.trashes');

@@ -19,6 +19,42 @@ class VideoTagController extends Controller
         //TODO SET THE PERMISSIONS
     }
 
+    public function getActiveVideoTags()
+    {
+        if (!request()->has('search')) {
+            $video_tags = VideoTag::query()->whereStatus(1)->paginate(30);
+
+        } else {
+            $video_tags = VideoTag::query()->whereStatus(1)
+                ->where(function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                    $q->orWhere('en_title', 'like', '%' . request()->search . '%');
+                })->get();
+        }
+        return $video_tags->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $video_tags]) :
+            response(['message' => 'success', 'data' => null], 204);
+    }
+
+    public function getDeActiveVideoTags()
+    {
+        if (!request()->has('search')) {
+            $video_tags = VideoTag::query()->whereStatus(0)->paginate(30);
+
+        } else {
+            $video_tags = VideoTag::query()->whereStatus(0)
+                ->where(function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
+                    $q->orWhere('en_title', 'like', '%' . request()->search . '%');
+                })->get();
+
+        }
+        return $video_tags->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $video_tags]) :
+            response(['message' => 'success', 'data' => null], 204);
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -26,12 +62,24 @@ class VideoTagController extends Controller
      */
     public function index()
     {
-        $video_tags = VideoTag::paginate(30);
+        if (!request()->has('search')) {
+            if (!request()->has('select_box')){
+                $video_tags = VideoTag::query()->paginate(30);
+
+            }else{
+                $video_tags = VideoTag::query()->get();
+            }
+
+
+        } else {
+            $video_tags = VideoTag::query()->where('fa_title', 'like', '%' . request()->search . '%')
+                ->orWhere('en_title', 'like', '%' . request()->search . '%')
+                ->get();
+        }
         return $video_tags->isNotEmpty() ?
             response(['message' => 'success', 'data' => $video_tags]) :
-            response(['message' => 'success', 'data' => null],204);
+            response(['message' => 'success', 'data' => null], 204);
     }
-
 
 
     /**
@@ -57,17 +105,6 @@ class VideoTagController extends Controller
     }
 
 
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param \App\models\VideoTag $videoTag
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(VideoTag $videoTag)
-    {
-        return  response(['message'=>'success','data'=>$videoTag]);
-    }
 
     /**
      * Update the specified resource in storage.
@@ -110,9 +147,9 @@ class VideoTagController extends Controller
 
     public function deleteMultiple(DeleteVideoTagValidation $deleteVideoTagValidation)
     {
-        $ids=request()->ids;
+        $ids = request()->ids;
 
-        $result=VideoTag::whereIn('id',$ids)->delete();
+        $result = VideoTag::whereIn('id', $ids)->delete();
 
         return response($this->empty_success_message);
     }

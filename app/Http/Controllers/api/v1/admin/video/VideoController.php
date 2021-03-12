@@ -67,7 +67,6 @@ class VideoController extends Controller
     }
 
 
-
     /**
      * Store a newly created resource in storage.
      *
@@ -90,18 +89,18 @@ class VideoController extends Controller
             'courseSection_id',
             'course_id',
             'meta',
-            'video_url_name'
+            'video_url_name',
+            'minute',
+            'second'
         ]);
-        $data['hour']=$data['hour'] ?? "00";
-        $data['min']=$data['min'] ?? "00";
-        $data['sec']=$data['sec'] ?? "00";
 
-        $data['time'] = $data['hour'] . ':' . $data['min'] . ':' . $data['sec'];
+        $data['is_special_subscription'] = $data['is_special_subscription'] ?? 0;
+        $data['time'] = $this->setVideoTime($data);
 
         $video = Video::create([
             'meta' => $data['meta'],
             'status' => $request->status ? 1 : 0,
-            'is_special_subscription' => $data['is_special_subscription'] ? 1: 0,
+            'is_special_subscription' => $data['is_special_subscription'] ? 1 : 0,
             'short_description' => $data['short_description'],
             'is_free' => $data['is_free'] ?? 0,
             'en_title' => $data['en_title'],
@@ -109,22 +108,34 @@ class VideoController extends Controller
             'courseSection_id' => $data['courseSection_id'] ?? null,
             'course_id' => $data['course_id'] ?? null,
             'description' => $data['description'],
-            'is_single_video' => $data['is_single_video'] ? 1: 0,
+            'is_single_video' => $data['is_single_video'] ? 1 : 0,
             'time' => $data['time']
         ]);
 
         $video->tags()->sync($request->video_tag_ids);
 
+
         return $video ?
-            response($this->empty_success_message, 201) :
+            response(['message' => 'success', 'data' => $video->id], 201) :
             response($this->failed_message);
 
+    }
+
+    public function setVideoTime($data)
+    {
+        if ($data['second']) {
+            return $data['minute'] . ':' . $data['second'];
+        }
+        return $data['minute'];
     }
 
 
     public function upload(UploadVideoValidation $request, Video $video)
     {
-        ini_set('max_execution_time', 0);
+        ini_set('memory_limit','10240M');
+        ini_set('post_max_size','1024M');
+        ini_set('max_execution_time',0);
+        ini_set('upload_max_filesize','1024M');
         if ($request->hasFile('file')) {
             $file = $request->file('file');
             $file_name = $file->getClientOriginalName();
@@ -257,7 +268,7 @@ class VideoController extends Controller
 
     public function deleteVideosFilesThatDontHaveCourse($ids)
     {
-        foreach ($ids as $id){
+        foreach ($ids as $id) {
 
             $path = 'unique_videos/' . $id;
 
@@ -321,7 +332,6 @@ class VideoController extends Controller
 
         return response($this->empty_success_message);
     }
-
 
 
 }
