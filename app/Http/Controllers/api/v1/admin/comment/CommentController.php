@@ -25,24 +25,38 @@ class CommentController extends Controller
         $comments = $comment->getActiveComments($request);
 
 
-      if (!$comments){
-          return  response(['message'=>'failed','data'=>null],404);
-      }
+        if (!$comments) {
+            return response(['message' => 'failed', 'data' => null], 404);
+        }
 
         return $comments->isNotEmpty() ?
             response(['message' => 'success', 'data' => $comments]) :
             response(['message' => 'success', 'data' => null], 204);
 
     }
-    public function getDeActiveComments(Request $request){
+
+    public function switchCommentStatus(Comment $comment)
+    {
+        $comment_status = intval($comment->active);
+        if ($comment_status) {
+            $comment->update(['active' => 0]);
+        } else {
+            $comment->update(['active' => 1]);
+        }
+        return response(['message' => 'success', 'data' => null]);
+
+    }
+
+    public function getDeActiveComments(Request $request)
+    {
 
         $comment = new Comment();
 
         $comments = $comment->getDeActiveComments($request);
 
 
-        if (!$comments){
-            return  response(['message'=>'failed','data'=>null],404);
+        if (!$comments) {
+            return response(['message' => 'failed', 'data' => null], 404);
         }
 
         return $comments->isNotEmpty() ?
@@ -116,11 +130,6 @@ class CommentController extends Controller
      * @param \App\models\Comment $comment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Comment $comment)
-    {
-        $comment->query()->delete();
-        return response($this->empty_success_message);
-    }
 
 
     public function deleteMulti(DeleteCommentValidation $deleteCommentValidation)
@@ -130,27 +139,10 @@ class CommentController extends Controller
     }
 
 
-    public function forceDelete(DeleteCommentValidation $deleteCommentValidation)
-    {
-        Comment::onlyTrashed()->whereIn('id', request()->ids)
-            ->forceDelete();
-        return response($this->empty_success_message);
-    }
 
 
-    public function restore(DeleteCommentValidation $deleteCommentValidation)
-    {
-        Comment::onlyTrashed()->whereIn('id', request()->ids)
-            ->restore();
-        return response($this->empty_success_message);
-    }
 
-    public function getTrashed()
-    {
-        $trashed_comments = Comment::onlyTrashed()->paginate(30);
 
-        return $trashed_comments->isNotEmpty() ?
-            response(['message' => 'success', $trashed_comments]) :
-            response($this->empty_success_message, 204);
-    }
+
+
 }

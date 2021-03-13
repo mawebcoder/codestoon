@@ -22,7 +22,6 @@ class CreateCommentsTable extends Migration
             $table->json('likes')->nullable();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('parent')->default(0);
-            $table->softDeletes();
             $table->timestamps();
         });
     }
