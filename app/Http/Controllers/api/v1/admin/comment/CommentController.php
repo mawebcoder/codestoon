@@ -8,7 +8,7 @@ use App\Http\Requests\comment\StoreCommentValidation;
 use App\models\Comment;
 use Illuminate\Http\Request;
 
-class commentController extends Controller
+class CommentController extends Controller
 {
     public $empty_success_message = ['message' => 'success', 'data' => null];
     public $empty_failed_message = ['message' => 'failed', 'data' => null];
@@ -18,14 +18,37 @@ class commentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function getActiveComments(Request $request)
     {
-       $comments=Comment::withTrashed()->paginate(30);
-       return  $comments->isNotEmpty()?
-           response(['message'=>'success','data'=>$comments]):
-           response($this->empty_success_message,204);
-    }
+        $comment = new Comment();
 
+        $comments = $comment->getActiveComments($request);
+
+
+      if (!$comments){
+          return  response(['message'=>'failed','data'=>null],404);
+      }
+
+        return $comments->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $comments]) :
+            response(['message' => 'success', 'data' => null], 204);
+
+    }
+    public function getDeActiveComments(Request $request){
+
+        $comment = new Comment();
+
+        $comments = $comment->getDeActiveComments($request);
+
+
+        if (!$comments){
+            return  response(['message'=>'failed','data'=>null],404);
+        }
+
+        return $comments->isNotEmpty() ?
+            response(['message' => 'success', 'data' => $comments]) :
+            response(['message' => 'success', 'data' => null], 204);
+    }
 
 
     /**
@@ -54,7 +77,7 @@ class commentController extends Controller
         ]);
 
         return $result ?
-            response($this->empty_success_message,201) :
+            response($this->empty_success_message, 201) :
             response($this->empty_failed_message, 500);
     }
 
@@ -67,7 +90,7 @@ class commentController extends Controller
      */
     public function edit(Comment $comment)
     {
-        return  response(['message'=>'success','data'=>$comment]);
+        return response(['message' => 'success', 'data' => $comment]);
     }
 
     /**
@@ -82,9 +105,9 @@ class commentController extends Controller
     public function update(Request $request, Comment $comment)
     {
         $comment->update([
-            'active'=>request()->active ?1:0
+            'active' => request()->active ? 1 : 0
         ]);
-        return  response($this->empty_success_message);
+        return response($this->empty_success_message);
     }
 
     /**
@@ -95,21 +118,21 @@ class commentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-       $comment->query()->delete();
-       return  response($this->empty_success_message);
+        $comment->query()->delete();
+        return response($this->empty_success_message);
     }
 
 
     public function deleteMulti(DeleteCommentValidation $deleteCommentValidation)
     {
-        Comment::query()->whereIn('id',request()->ids)->delete();
+        Comment::query()->whereIn('id', request()->ids)->delete();
         return response($this->empty_success_message);
     }
 
 
     public function forceDelete(DeleteCommentValidation $deleteCommentValidation)
     {
-        Comment::onlyTrashed()->whereIn('id',request()->ids)
+        Comment::onlyTrashed()->whereIn('id', request()->ids)
             ->forceDelete();
         return response($this->empty_success_message);
     }
@@ -117,17 +140,17 @@ class commentController extends Controller
 
     public function restore(DeleteCommentValidation $deleteCommentValidation)
     {
-        Comment::onlyTrashed()->whereIn('id',request()->ids)
+        Comment::onlyTrashed()->whereIn('id', request()->ids)
             ->restore();
         return response($this->empty_success_message);
     }
 
     public function getTrashed()
     {
-        $trashed_comments=Comment::onlyTrashed()->paginate(30);
+        $trashed_comments = Comment::onlyTrashed()->paginate(30);
 
         return $trashed_comments->isNotEmpty() ?
-            response(['message'=>'success',$trashed_comments]):
-            response($this->empty_success_message,204);
+            response(['message' => 'success', $trashed_comments]) :
+            response($this->empty_success_message, 204);
     }
 }

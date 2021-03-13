@@ -14,6 +14,8 @@ Route::get('/videos/tags/de-actives','VideoTagController@getDeActiveVideoTags')-
 
 //videos
 
+Route::get('/videos/video/info/{video}','VideoController@getVideoInformation')->name('video-information');
+Route::get('/video-stream/{video}','VideoController@streamVideo')->name('video-stream');
 Route::get('/videos/trashed','VideoController@getTrashed')->name('video.trashes');
 Route::post('/videos/force-delete','VideoController@forceDelete')->name('video.force-delete');
 Route::post('/videos/delete/multi','VideoController@deleteMultiple')->name('videos.delete.multi');

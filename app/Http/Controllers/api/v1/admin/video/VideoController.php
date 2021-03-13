@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\api\v1\admin\video;
 
+use App\Facades\VideoStream;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\video\DeleteVideoValidation;
 use App\Http\Requests\video\StoreVideoValidation;
 use App\Http\Requests\video\tag\StoreVideoTagValidation;
 use App\Http\Requests\video\UploadVideoValidation;
 use App\models\Course;
+use App\models\CourseSection;
 use App\models\Video;
+use App\models\VideoTag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
@@ -118,6 +121,18 @@ class VideoController extends Controller
         return $videos->isNotEmpty() ?
             response(['message' => 'success', 'data' => $videos]) :
             response(['message' => 'success', 'data' => null], 204);
+    }
+
+    public function streamVideo(Video $video)
+    {
+        if (!$video->is_single_video) {
+            $path = storage_path('app/videos/courses/' . $video->course_id . '/' . $video->id . '/' . $video->video_url_name);
+        } else {
+            $path = storage_path('app/videos/unique_videos/' . $video->id . '/' . $video->video_url_name);
+        }
+
+        VideoStream::start($path);
+
     }
 
     public function getDeActiveVideos()
@@ -265,6 +280,19 @@ class VideoController extends Controller
         return response(['message' => 'success', 'data' => $video]);
     }
 
+    public function getVideoInformation(Video $video)
+    {
+        $course=$video->course;
+        $tags=$video->tags;
+        $course_section=$video->section;
+        return response(['message'=>'success','data'=>[
+            'video_info'=>$video,
+            'tags'=>$tags,
+        ]]);
+
+
+    }
+
     public function getUnUploadedVideos()
     {
         if (!request()->has('search')) {
@@ -310,29 +338,34 @@ class VideoController extends Controller
     public function update(StoreVideoValidation $request, Video $video)
     {
 
+
         $data = $request->only([
             'fa_title',
             'en_title',
             'description',
             'short_description',
-            'video_tags',
-            'min',
-            'sec',
-            'hour',
             'is_free',
-            'description',
             'is_single_video',
             'is_special_subscription',
             'courseSection_id',
             'course_id',
-            'short_description',
             'meta',
-            'video_tags'
+            'video_url_name',
+            'minute',
+            'second',
+            'status'
         ]);
-        $data['time'] = $data['hour'] . ':' . $data['min'] . ':' . $data['sec'];
-        $video->update(Arr::except($data, ['hour', 'min', 'sec', 'video_tags']));
-        $video->tags()->sync($data['video_tags']);
-        return response()->json($this->empty_success_message);
+
+        $data['is_special_subscription'] = $data['is_special_subscription'] ?? 0;
+        $data['time'] = $this->setVideoTime($data);
+
+        $data=Arr::except($data,['minute','second']);
+        $video->update($data);
+
+        if ($request->has('video_tag_ids')) $video->tags()->sync(request()->video_tag_ids);
+
+
+        return response(['data'=>$video->id]);
     }
 
     /**
@@ -469,7 +502,7 @@ class VideoController extends Controller
     public function getSingleVideos()
     {
 
-        if (!request()->has('search')){
+        if (!request()->has('search')) {
             $single_videos = Video::query()
                 ->where('is_single_video', 1)
                 ->select(
@@ -478,11 +511,11 @@ class VideoController extends Controller
                     'status',
                     'video_url_name'
                 )->paginate(30);
-        }else{
+        } else {
             $single_videos = Video::query()
                 ->where('is_single_video', 1)
-                ->where(function ($q){
-                    $q->where('fa_title','like','%'.request()->search.'%');
+                ->where(function ($q) {
+                    $q->where('fa_title', 'like', '%' . request()->search . '%');
                 })
                 ->select(
                     'id',
