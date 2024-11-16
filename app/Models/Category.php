@@ -27,4 +27,9 @@ class Category extends Model
         return $this->morphedByMany(Blog::class, 'categoryable','categoryables');
     }
 
+    public function tutorials(): MorphToMany
+    {
+        return $this->morphedByMany(Tutorial::class, 'categoryable','categoryables');
+    }
+
 }
