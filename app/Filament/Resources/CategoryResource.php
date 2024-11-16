@@ -54,6 +54,7 @@ class CategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('id', 'desc')
             ->columns([
                 TextColumn::make('id')
                     ->sortable()
@@ -76,7 +77,7 @@ class CategoryResource extends Resource
                         return is_null($record->parent);
                     })
                     ->color(function ($record) {
-                        if (!$record->parent){
+                        if (!$record->parent) {
                             return Color::Red;
                         }
                     })
@@ -97,7 +98,7 @@ class CategoryResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
-                ->requiresConfirmation()
+                    ->requiresConfirmation()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

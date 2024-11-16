@@ -39,6 +39,7 @@ Homestead.json
 
 # AWS User-specific
 .idea/**/aws.xml
+.idea/**/*.xml
 
 # Generated files
 .idea/**/contentModel.xml
