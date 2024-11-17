@@ -97,6 +97,7 @@ class BlogResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('published_at')
+                    ->date('d M,Y')
                     ->getStateUsing(function ($record) {
                         if ($record->published_at) {
                             return $record->published_at;
