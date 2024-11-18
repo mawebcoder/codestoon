@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Enum\TutorialLevelEnum;
 use App\Filament\Resources\TutorialResource\Pages;
 use App\Filament\Resources\TutorialResource\RelationManagers;
+use App\Models\Instructor;
 use App\Models\Tutorial;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -16,9 +17,9 @@ use Filament\Support\Colors\Color;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
+
+use Illuminate\Validation\Rules\Password;
 
 use function PHPUnit\Framework\matches;
 
@@ -53,6 +54,24 @@ class TutorialResource extends Resource
                     ->preload()
                     ->multiple()
                     ->searchable()
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('title')
+                            ->required()
+                            ->columnSpanFull()
+                            ->minLength(3)
+                            ->maxLength(255)
+                            ->placeholder('Enter the Title')
+                            ->unique(table: 'categories', column: 'title', ignoreRecord: true),
+
+                        Forms\Components\Toggle::make('is_active')
+                            ->columnSpanFull()
+                            ->default(true),
+                        Forms\Components\Select::make('parent_id')
+                            ->relationship(
+                                'parent',
+                                'title',
+                            )
+                    ])
                     ->columnSpanFull()
                     ->relationship('categories', 'title'),
 
@@ -61,6 +80,38 @@ class TutorialResource extends Resource
 
                 Forms\Components\Select::make('instructor_id')
                     ->label("Instructor")
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('first_name')
+                            ->required()
+                            ->placeholder('First Name...')
+                            ->minLength(3)
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('last_name')
+                            ->required()
+                            ->placeholder('Last Name...')
+                            ->minLength(3)
+                            ->maxLength(255),
+                        TextInput::make('email')
+                            ->placeholder('Email...')
+                            ->email()
+                            ->required()
+                            ->unique(table: Instructor::class, column: 'email', ignoreRecord: true),
+                        Forms\Components\TextInput::make('password')
+                            ->placeholder('Password...')
+                            ->password()
+                            ->rule([Password::min(8)])
+                            ->required()
+                            ->confirmed(),
+                        TextInput::make('password_confirmation')
+                            ->placeholder('Confirm Password...')
+                            ->required()
+                            ->password(),
+                        TextInput::make('cellphone')
+                            ->placeholder('Cellphone...'),
+                        Forms\Components\SpatieMediaLibraryFileUpload::make('file')
+                            ->columnSpanFull()
+                            ->label('Profile Picture')
+                    ])
                     ->relationship('instructor', 'email'),
                 Forms\Components\RichEditor::make('description')->columnSpanFull()->placeholder('Enter description...'),
 
@@ -100,6 +151,7 @@ class TutorialResource extends Resource
                     }),
 
                 Tables\Columns\TextColumn::make('published_at')
+                  ->date('d M,Y')
                     ->badge()
                     ->color(function ($record) {
                         if ($record->published_at) {
@@ -132,7 +184,7 @@ class TutorialResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\CategoriesRelationManager::class
         ];
     }
 
