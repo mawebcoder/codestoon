@@ -76,6 +76,8 @@ class TutorialResource extends Resource
                     ->relationship('categories', 'title'),
 
                 Forms\Components\SpatieMediaLibraryFileUpload::make('file')
+                    ->image()
+                    ->maxSize(512)
                     ->columnSpanFull(),
 
                 Forms\Components\Select::make('instructor_id')
@@ -100,16 +102,14 @@ class TutorialResource extends Resource
                             ->placeholder('Password...')
                             ->password()
                             ->rule([Password::min(8)])
-                            ->required()
-                            ->confirmed(),
-                        TextInput::make('password_confirmation')
-                            ->placeholder('Confirm Password...')
-                            ->required()
-                            ->password(),
+                            ->required(),
+
                         TextInput::make('cellphone')
                             ->placeholder('Cellphone...'),
                         Forms\Components\SpatieMediaLibraryFileUpload::make('file')
                             ->columnSpanFull()
+                            ->image()
+                            ->maxSize(512)
                             ->label('Profile Picture')
                     ])
                     ->relationship('instructor', 'email'),
