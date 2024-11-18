@@ -12,11 +12,15 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Colors\Color;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
+
+use function PHPUnit\Framework\matches;
 
 class VideoResource extends Resource
 {
@@ -61,6 +65,9 @@ class VideoResource extends Resource
                     ->label('Video Duration in seconds')
                     ->integer()
                     ->maxValue(59),
+                Forms\Components\Toggle::make('published')
+                    ->label('publish')
+                    ->default(false),
                 Forms\Components\SpatieMediaLibraryFileUpload::make('video')
                     ->maxSize(512 * 1024)
                     ->columnSpanFull()
@@ -72,20 +79,37 @@ class VideoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('id','desc')
             ->columns([
-                //
+                TextColumn::make('id')->sortable()
+                    ->searchable(),
+                TextColumn::make('title')
+                    ->searchable(),
+                TextColumn::make('duration'),
+                TextColumn::make('tutorial.title')
+                    ->searchable()
+                    ->label('Tutorial'),
+                TextColumn::make('published')
+                    ->badge()
+                    ->color(function ($record) {
+                        return $record->published ? Color::Green : Color::Red;
+                    })
+                    ->getStateUsing(function ($record) {
+                        return (int)$record->published ? 'Published' : 'Unpublished';
+                    })
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()->requiresConfirmation()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])->groups(['tutorial.title']);
     }
 
     public static function getRelations(): array

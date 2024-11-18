@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('tutorial_id');
             $table->foreign('tutorial_id')->references('id')->on('tutorials')->onDelete('cascade');
             $table->string('slug')->nullable();
+            $table->boolean('published')->default(false);
             $table->string('duration')->nullable();
             $table->timestamps();
         });

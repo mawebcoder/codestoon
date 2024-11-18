@@ -22,18 +22,30 @@ class EditVideo extends EditRecord
         $data['duration'] = $data['minute'];
 
         if (isset($data['second'])) {
-            $data['duration'].=':'.$data['second'];
+            $data['duration'] .= ':' . $data['second'];
         }
 
         unset($data['minute'], $data['second']);
 
+        return $data;
+    }
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        if (!isset($data['duration'])) {
+            return $data;
+        }
+
+        $explodedDuration = explode(':', $data['duration']);
+
+        $data['minute'] = $explodedDuration[0];
+        $data['second'] = $explodedDuration[1] ?? null;
+
         return  $data;
     }
 
-
     protected function getRedirectUrl(): ?string
     {
-
-        return  self::$resource::getUrl();
+        return self::$resource::getUrl();
     }
 }
