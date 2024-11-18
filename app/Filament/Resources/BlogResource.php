@@ -75,6 +75,7 @@ class BlogResource extends Resource
                     ->default(true),
 
                 Forms\Components\DateTimePicker::make('published_at')
+                    ->hiddenOn('created')
                     ->disabled(),
 
                 TextInput::make('time_to_read')

@@ -4,6 +4,7 @@ namespace App\Filament\Resources\TutorialResource\Pages;
 
 use App\Filament\Resources\TutorialResource;
 use Filament\Actions;
+use Filament\Resources\Pages\CreateRecord\Concerns\HasWizard;
 use Filament\Resources\Pages\EditRecord;
 
 class EditTutorial extends EditRecord
@@ -13,9 +14,12 @@ class EditTutorial extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+
             Actions\DeleteAction::make(),
         ];
     }
+
+
 
     protected function mutateFormDataBeforeSave(array $data): array
     {

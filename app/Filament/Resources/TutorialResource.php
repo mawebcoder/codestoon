@@ -28,6 +28,7 @@ class TutorialResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+
     public static function form(Form $form): Form
     {
         return $form
@@ -143,4 +144,5 @@ class TutorialResource extends Resource
             'edit' => Pages\EditTutorial::route('/{record}/edit'),
         ];
     }
+
 }
