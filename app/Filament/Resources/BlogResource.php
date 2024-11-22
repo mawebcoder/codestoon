@@ -50,6 +50,8 @@ class BlogResource extends Resource
                     ->preload(true)
                     ->relationship('categories', 'title'),
 
+
+
                 SpatieMediaLibraryFileUpload::make('file')
                     ->required()
                     ->image()

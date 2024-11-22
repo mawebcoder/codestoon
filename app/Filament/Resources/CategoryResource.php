@@ -6,6 +6,7 @@ use App\Filament\Resources\CategoryResource\Pages;
 use App\Filament\Resources\CategoryResource\RelationManagers;
 use App\Models\Category;
 use Filament\Forms;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
@@ -26,28 +27,34 @@ class CategoryResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')
+//                Forms\Components\TextInput::make('title')
+//                    ->required()
+//                    ->columnSpanFull()
+//                    ->minLength(3)
+//                    ->maxLength(255)
+//                    ->placeholder('Enter the Title')
+//                    ->unique(table: 'categories', column: 'title', ignoreRecord: true),
+//
+//                Forms\Components\Toggle::make('is_active')
+//                    ->columnSpanFull()
+//                    ->default(true),
+//                Forms\Components\Select::make('parent_id')
+//                    ->relationship(
+//                        'parent',
+//                        'title',
+//                        modifyQueryUsing: function (Builder $query, $record) {
+//                            if (is_null($record)) {
+//                                return $query;
+//                            }
+//                            $query->whereNot('id', $record->id);
+//                        }
+//                    ),
+                SpatieMediaLibraryFileUpload::make('logo')
+                    ->label("Cover Image")
+                    ->columnSpanFull()
+                    ->image()
                     ->required()
-                    ->columnSpanFull()
-                    ->minLength(3)
-                    ->maxLength(255)
-                    ->placeholder('Enter the Title')
-                    ->unique(table: 'categories', column: 'title', ignoreRecord: true),
-
-                Forms\Components\Toggle::make('is_active')
-                    ->columnSpanFull()
-                    ->default(true),
-                Forms\Components\Select::make('parent_id')
-                    ->relationship(
-                        'parent',
-                        'title',
-                        modifyQueryUsing: function (Builder $query, $record) {
-                            if (is_null($record)) {
-                                return $query;
-                            }
-                            $query->whereNot('id', $record->id);
-                        }
-                    )
+                    ->maxSize(512),
             ]);
     }
 
