@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enum\PaymentStatus;
+use App\Enum\PaymentStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
@@ -15,7 +15,7 @@ class Payment extends Model
     protected function casts():array
     {
         return [
-            self::COLUMN_STATUS => PaymentStatus::class,
+            self::COLUMN_STATUS => PaymentStatusEnum::class,
             self::COLUMN_AMOUNT => 'integer'
         ];
     }

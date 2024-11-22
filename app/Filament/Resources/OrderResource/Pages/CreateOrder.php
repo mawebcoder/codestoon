@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\OrderResource\Pages;
 
 use App\Enum\OrderStatusEnum;
-use App\Enum\PaymentStatus;
+use App\Enum\PaymentStatusEnum;
 use App\Filament\Resources\OrderResource;
 use App\Models\Order;
 use Filament\Actions;
@@ -29,12 +29,12 @@ class CreateOrder extends CreateRecord
         ]);
     }
 
-    private function getPaymentStatus(): PaymentStatus
+    private function getPaymentStatus(): PaymentStatusEnum
     {
         return match ($this->record->{Order::COLUMN_STATUS}->value) {
-            OrderStatusEnum::PAID->value => PaymentStatus::APPROVED,
-            OrderStatusEnum::CANCELED->value => PaymentStatus::CANCELED,
-            OrderStatusEnum::PENDING->value => PaymentStatus::PENDING,
+            OrderStatusEnum::PAID->value => PaymentStatusEnum::APPROVED,
+            OrderStatusEnum::CANCELED->value => PaymentStatusEnum::CANCELED,
+            OrderStatusEnum::PENDING->value => PaymentStatusEnum::PENDING,
         };
     }
 }
