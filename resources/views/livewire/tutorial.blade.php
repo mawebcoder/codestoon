@@ -162,7 +162,7 @@
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
                             <div class="crs_grid shadow_none brd">
                                 <div class="crs_grid_thumb">
-                                    <a href="course-detail.html" class="crs_detail_link">
+                                    <a href="{{route("videos-details")}}" class="crs_detail_link">
                                         <img src="assets/img/cr-1.jpg" class="img-fluid rounded" alt="" />
                                     </a>
                                     <div class="crs_video_ico">
@@ -181,7 +181,7 @@
                                             <div class="crs_inrolled"><strong>8,350</strong>شرکت کننده</div>
                                         </div>
                                     </div>
-                                    <div class="crs_title"><h4><a href="course-detail.html" class="crs_title_link">آموزش برنامه نویسی‌اندروید</a></h4></div>
+                                    <div class="crs_title"><h4><a href="{{route("videos-details")}}" class="crs_title_link">آموزش برنامه نویسی‌اندروید</a></h4></div>
                                     <div class="crs_info_detail">
                                         <ul>
                                             <li><i class="fa fa-clock text-danger"></i><span>2ساعت 5دقیقه</span></li>
@@ -209,7 +209,7 @@
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
                             <div class="crs_grid shadow_none brd">
                                 <div class="crs_grid_thumb">
-                                    <a href="course-detail.html" class="crs_detail_link">
+                                    <a href="{{route("videos-details")}}" class="crs_detail_link">
                                         <img src="assets/img/cr-2.jpg" class="img-fluid rounded" alt="" />
                                     </a>
                                     <div class="crs_video_ico">
@@ -228,7 +228,7 @@
                                             <div class="crs_inrolled"><strong>7,150</strong>شرکت کننده</div>
                                         </div>
                                     </div>
-                                    <div class="crs_title"><h4><a href="course-detail.html" class="crs_title_link">دوره حضوری عالی پرورش مدیر مالی</a></h4></div>
+                                    <div class="crs_title"><h4><a href="{{route("videos-details")}}" class="crs_title_link">دوره حضوری عالی پرورش مدیر مالی</a></h4></div>
                                     <div class="crs_info_detail">
                                         <ul>
                                             <li><i class="fa fa-clock text-danger"></i><span>15 ساعت</span></li>
@@ -256,7 +256,7 @@
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
                             <div class="crs_grid shadow_none brd">
                                 <div class="crs_grid_thumb">
-                                    <a href="course-detail.html" class="crs_detail_link">
+                                    <a href="{{route("videos-details")}}" class="crs_detail_link">
                                         <img src="assets/img/cr-3.jpg" class="img-fluid rounded" alt="" />
                                     </a>
                                     <div class="crs_video_ico">
@@ -275,7 +275,7 @@
                                             <div class="crs_inrolled"><strong>1,250</strong>شرکت کننده</div>
                                         </div>
                                     </div>
-                                    <div class="crs_title"><h4><a href="course-detail.html" class="crs_title_link">آموزش ASP.Net - ساخت سایت شخصی</a></h4></div>
+                                    <div class="crs_title"><h4><a href="{{route("videos-details")}}" class="crs_title_link">آموزش ASP.Net - ساخت سایت شخصی</a></h4></div>
                                     <div class="crs_info_detail">
                                         <ul>
                                             <li><i class="fa fa-clock text-danger"></i><span>52 ساعت</span></li>
@@ -303,7 +303,7 @@
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
                             <div class="crs_grid shadow_none brd">
                                 <div class="crs_grid_thumb">
-                                    <a href="course-detail.html" class="crs_detail_link">
+                                    <a href="{{route("videos-details")}}" class="crs_detail_link">
                                         <img src="assets/img/cr-4.jpg" class="img-fluid rounded" alt="" />
                                     </a>
                                     <div class="crs_video_ico">
@@ -322,7 +322,7 @@
                                             <div class="crs_inrolled"><strong>8,350</strong>شرکت کننده</div>
                                         </div>
                                     </div>
-                                    <div class="crs_title"><h4><a href="course-detail.html" class="crs_title_link">معرفی و مقایسه زبان های برنامه نویسی</a></h4></div>
+                                    <div class="crs_title"><h4><a href="{{route("videos-details")}}" class="crs_title_link">معرفی و مقایسه زبان های برنامه نویسی</a></h4></div>
                                     <div class="crs_info_detail">
                                         <ul>
                                             <li><i class="fa fa-clock text-danger"></i><span>7ساعت 2دقیقه</span></li>
@@ -350,7 +350,7 @@
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
                             <div class="crs_grid shadow_none brd">
                                 <div class="crs_grid_thumb">
-                                    <a href="course-detail.html" class="crs_detail_link">
+                                    <a href="{{route("videos-details")}}" class="crs_detail_link">
                                         <img src="assets/img/cr-5.jpg" class="img-fluid rounded" alt="" />
                                     </a>
                                     <div class="crs_video_ico">
@@ -369,7 +369,7 @@
                                             <div class="crs_inrolled"><strong>3,340</strong>شرکت کننده</div>
                                         </div>
                                     </div>
-                                    <div class="crs_title"><h4><a href="course-detail.html" class="crs_title_link">آموزش ساخت فروشگاه دیجی استایل با لاراول</a></h4></div>
+                                    <div class="crs_title"><h4><a href="{{route("videos-details")}}" class="crs_title_link">آموزش ساخت فروشگاه دیجی استایل با لاراول</a></h4></div>
                                     <div class="crs_info_detail">
                                         <ul>
                                             <li><i class="fa fa-clock text-danger"></i><span>2ساعت 5دقیقه</span></li>
@@ -397,7 +397,7 @@
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
                             <div class="crs_grid shadow_none brd">
                                 <div class="crs_grid_thumb">
-                                    <a href="course-detail.html" class="crs_detail_link">
+                                    <a href="{{route("videos-details")}}" class="crs_detail_link">
                                         <img src="assets/img/cr-6.jpg" class="img-fluid rounded" alt="" />
                                     </a>
                                     <div class="crs_video_ico">
@@ -416,7 +416,7 @@
                                             <div class="crs_inrolled"><strong>6,450</strong>شرکت کننده</div>
                                         </div>
                                     </div>
-                                    <div class="crs_title"><h4><a href="course-detail.html" class="crs_title_link">تدریس ریاضی و آمار دهم انسانی</a></h4></div>
+                                    <div class="crs_title"><h4><a href="{{route('videos-details')}}" class="crs_title_link">تدریس ریاضی و آمار دهم انسانی</a></h4></div>
                                     <div class="crs_info_detail">
                                         <ul>
                                             <li><i class="fa fa-clock text-danger"></i><span>24 ساعت</span></li>

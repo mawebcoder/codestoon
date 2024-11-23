@@ -11,7 +11,7 @@
 <div id="main-wrapper">
 
 
-    <header class="header header-transparent dark-text">
+    <header class="header header-light head-shadow">
         <div class="container">
             <nav id="navigation" class="navigation navigation-landscape">
                 <div class="nav-header">
