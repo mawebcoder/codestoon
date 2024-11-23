@@ -15,8 +15,8 @@
         <div class="container">
             <nav id="navigation" class="navigation navigation-landscape">
                 <div class="nav-header">
-                    <a class="nav-brand" href="{{route('home')}}">
-                        <img src="assets/img/logo.png" class="logo" alt=""/>
+                    <a class="nav-brand py-0" href="{{route('home')}}">
+                        <img src="assets/img/codstoon.png" class="logo" style="scale:0.9" alt=""/>
                     </a>
                     <div class="nav-toggle"></div>
                     <div class="mobile_nav">

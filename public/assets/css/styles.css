@@ -3168,6 +3168,20 @@ span.esli_vd {
     left: 20px;
     top: 20px;
 }
+.crs_locked_open_ico {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #25ce25;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    position: absolute;
+    left: 20px;
+    top: 20px;
+}
 .crs_grid_caption {
     padding: 0rem 1rem 1rem;
     position: relative;
@@ -8199,3 +8213,89 @@ ul.cart_list li strong {
     font-size: 20px;
     color: #f10750;
 }
+
+/* General dropdown styling */
+#recommendation-box {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-top: none;
+    position: absolute;
+    z-index: 1000;
+    background-color: white;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+/* Default state: Show all items */
+#recommendation-box .dropdown-item {
+    display: block;
+}
+
+
+.word {
+    display: inline-block;
+    opacity: 0;  /* شروع با پنهان بودن */
+    transform: translateX(-50px); /* شروع از سمت چپ */
+    animation: slideIn 1s forwards;  /* انیمیشن */
+}
+
+.word:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.word:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.word:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.word:nth-child(4) {
+    animation-delay: 0.6s;
+}
+
+.word:nth-child(5) {
+    animation-delay: 0.8s;
+}
+
+.word:nth-child(6) {
+    animation-delay: 1s;
+}
+
+@keyframes slideIn {
+    to {
+        opacity: 1;
+        transform: translateX(0); /* کلمات به موقعیت اصلی می‌رسند */
+    }
+}
+
+.side_block {
+    position: relative;
+}
+
+.animated-image {
+    opacity: 0; /* Initially hidden */
+    transform: translateY(-150%); /* Start off the screen to the right */
+    animation: slideInFromRight 1s forwards; /* Apply the animation */
+}
+
+@keyframes slideInFromRight {
+    to {
+        opacity: 1; /* Fade in */
+        transform: translateY(0); /* Move to original position */
+    }
+}
+
+
