@@ -1,5 +1,8 @@
 <?php
 
+use App\Livewire\AboutUs;
+use App\Livewire\Blog;
+use App\Livewire\BlogDetail;
 use App\Livewire\Contact;
 use App\Livewire\HomePage;
 use App\Livewire\Login;
@@ -15,3 +18,6 @@ Route::get('/login', Login::class)->name('login');
 Route::get('/profile', Profile::class)->name('profile');
 Route::get('/tutorials', Tutorial::class)->name('tutorials');
 Route::get('/contact', Contact::class)->name('contact');
+Route::get('/about-us', AboutUs::class)->name('about-us');
+Route::get('/blogs', Blog::class)->name('blogs');
+Route::get('/blogs/details', BlogDetail::class)->name('blogs-details');

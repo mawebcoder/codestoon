@@ -5,11 +5,15 @@ namespace App\Livewire;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Title('لیست مقالان')]
-class Blog extends Component
+
+#[Title('Blog')]
+class BlogDetail extends Component
 {
+
+
     public function render()
     {
-        return view('livewire.blog');
+        return view('livewire.blog-detail');
     }
+
 }

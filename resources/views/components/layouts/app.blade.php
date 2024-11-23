@@ -37,10 +37,10 @@
                         </li>
 
                         <li>
-                            <a href="#">بلاگ<span class="submenu-indicator"></span></a>
+                            <a href="{{route('blogs')}}">مقالات<span class="submenu-indicator"></span></a>
                         </li>
                         <li>
-                            <a href="#">درباره ما<span class="submenu-indicator"></span></a>
+                            <a href="{{route('about-us')}}">درباره ما<span class="submenu-indicator"></span></a>
                         </li>
 
                         <li>
