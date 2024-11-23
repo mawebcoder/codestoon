@@ -618,7 +618,7 @@
             <div class="row align-items-center justify-content-between rounded m-0">
                 <div class="col-lg-7 col-md-7">
                     <div class="aps_crs_caption">
-                        <h3 class="min_large mb-4 font-2">دانلود اپلیکیشن</h3>
+                        <h3 class="min_large mb-4 font-2">شبکه های اجتماعی</h3>
                         <p>با نرم افزارها شناخت بیشتری را برای طراحان رایانه ای علی الخصوص طراحان خلاقی و فرهنگ پیشرو در زبان فارسی ایجاد کرد. در این صورت می توان امید داشت که تمام و دشواری موجود در ارائه راهکارها و شرایط سخت تایپ به پایان رسد وزمان مورد نیاز شامل حروفچینی دستاوردهای اصلی و جوابگوی سوالات پیوسته اهل دنیای موجود طراحی اساسا مورد استفاده قرار گیرد.</p>
                         <div class="aps_buttons mt-4">
                             <a href="#" class="btn_aps ml-4">
@@ -631,8 +631,8 @@
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-4">
-                    <div class="aps_crs_img mt-5">
-                        <img src="assets/img/app.png" class="img-fluid" alt="" />
+                    <div class="aps_crs_img">
+                        <img style="scale: 1.8"  src="assets/img/social.png" class="img-fluid mb-5" alt="" />
                     </div>
                 </div>
             </div>
@@ -640,26 +640,6 @@
         </div>
     </section>
     <div class="clearfix"></div>
-    <!-- ============================ Download App ================================== -->
 
-    <!-- ============================ Call To Action ================================== -->
-    <section class="theme-bg call_action_wrap-wrap">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-
-                    <div class="call_action_wrap">
-                        <div class="call_action_wrap-head">
-                            <h3 class="font-2">آیا سوالی دارید؟</h3>
-                            <span>ما به شما کمک خواهیم کرد تا شغل و رشد خود را افزایش دهید.</span>
-                        </div>
-                        <a href="#" class="btn btn-call_action_wrap">امروز با ما تماس بگیرید</a>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- ============================ Call To Action End ================================== -->
 
 </div>
