@@ -5,12 +5,11 @@ namespace App\Livewire;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Title("کدستون")]
-class HomePage extends Component
+#[Title('فرم ثبت نام')]
+class Signup extends Component
 {
-
     public function render()
     {
-        return view('livewire.home-page');
+        return view('livewire.signup');
     }
 }
