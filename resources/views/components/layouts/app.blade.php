@@ -115,7 +115,7 @@
                     <ul class="nav-menu nav-menu-social align-to-left">
 
                         <li>
-                            <a href="#" class="alio_green" data-toggle="modal" data-target="#login">
+                            <a href="{{route('login')}}" class="alio_green" >
                                 <i class="fas fa-sign-in-alt ml-1 rotate-img"></i><span class="dn-lg">ورود</span>
                             </a>
                         </li>
