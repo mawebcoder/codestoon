@@ -42,7 +42,7 @@ class CategoryForm
                             ->maxSize(1024)
                             ->image()
                             ->rule(Rule::dimensions()->maxWidth(500)->maxHeight(500))
-                            ->helperText('Max size:1024MB,max size:500*500')
+                            ->helperText('Max size:1MB,max size:500*500')
                             ->imageEditor(),
                     ]),
             ]);
