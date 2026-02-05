@@ -1,0 +1,76 @@
+services:
+
+  mysql:
+    image: mysql:8.4.0
+    command: [ 'mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' , '--default-authentication-plugin=mysql_native_password' ]
+    restart: unless-stopped
+    container_name: codestoon-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_USER_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DOCKER_DB_PORT}:3306"
+    volumes:
+      - ./docker/mysql/data/:/var/lib/mysql
+    networks:
+      - codestoon
+
+  app:
+    build:
+      context: docker/php
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    container_name: codestoon-app
+    working_dir: /var/www
+    volumes:
+      - "./:/var/www"
+      - "./docker/php/config/local.ini:/usr/local/etc/php/conf.d/local.ini"
+    depends_on:
+      - mysql
+    networks:
+      - codestoon
+
+  web-server:
+    image: nginx:alpine
+    restart: unless-stopped
+    container_name: codestoon-server
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www/
+      - ./docker/nginx/config/:/etc/nginx/conf.d/
+    ports:
+      - "9090:80"
+    networks:
+      - codestoon
+    depends_on:
+      - app
+
+  supervisor:
+    build:
+      context: docker//supervisor
+      dockerfile: Dockerfile
+    container_name: codestoon-supervisor
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www/
+      - ./docker/supervisor/config/:/etc/supervisor/custom
+    networks:
+      - codestoon
+
+  redis:
+    image: redis:8.4-alpine
+    container_name: codestoon-redis
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www/
+      - ./docker/redis/data/:/data
+    networks:
+      - codestoon
+
+networks:
+  codestoon:
+    driver: bridge
