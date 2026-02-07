@@ -21,35 +21,40 @@ class CategoryForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
-            ->components([
-                Section::make()
-                    ->columnSpanFull()
-                    ->columns(2)
-                    ->schema([
-                        TextInput::make(Category::COLUMN_NAME)
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(static::getSlug())
-                            ->required(),
-                        TextInput::make(Category::COLUMN_SLUG)
-                            ->required(),
-                        Textarea::make('description'),
-
-                        Toggle::make('enabled')
-                            ->onColor('success')
-                            ->offColor('danger'),
-
-                        SpatieMediaLibraryFileUpload::make('image')
-                            ->maxSize(1024)
-                            ->image()
-                            ->rule(Rule::dimensions()->maxWidth(500)->maxHeight(500))
-                            ->helperText('Max size:1MB,max size:500*500')
-                            ->imageEditor(),
-                    ]),
-            ]);
+            ->components(static::getSchema());
     }
 
     public static function getSlug(): Closure
     {
-        return static fn(?string $state, Set $set) => $set(Category::COLUMN_SLUG, Str::slug($state));
+        return static fn (?string $state, Set $set) => $set(Category::COLUMN_SLUG, Str::slug($state));
+    }
+
+    public static function getSchema(): array
+    {
+        return [
+            Section::make()
+                ->columnSpanFull()
+                ->columns(2)
+                ->schema([
+                    TextInput::make(Category::COLUMN_NAME)
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(static::getSlug())
+                        ->required(),
+                    TextInput::make(Category::COLUMN_SLUG)
+                        ->required(),
+                    Textarea::make('description'),
+
+                    Toggle::make('enabled')
+                        ->onColor('success')
+                        ->offColor('danger'),
+
+                    SpatieMediaLibraryFileUpload::make('image')
+                        ->maxSize(1024)
+                        ->image()
+                        ->rule(Rule::dimensions()->maxWidth(500)->maxHeight(500))
+                        ->helperText('Max size:1MB,max size:500*500')
+                        ->imageEditor(),
+                ]),
+        ];
     }
 }

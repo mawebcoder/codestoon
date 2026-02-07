@@ -26,7 +26,7 @@ class TutorialInfolist
                             ->columns()
                             ->columnSpan(4)
                             ->schema([
-                                Fieldset::make()
+                                Fieldset::make('Basic Information')
                                     ->columnSpanFull()
                                     ->schema([
                                         TextEntry::make('title'),
@@ -48,7 +48,7 @@ class TutorialInfolist
                         Section::make()
                             ->columnSpan(2)
                             ->schema([
-                                Fieldset::make()
+                                Fieldset::make('Associations')
                                     ->columnSpanFull()
                                     ->schema([
                                         TextEntry::make('category.name')->columnSpanFull()
@@ -70,6 +70,14 @@ class TutorialInfolist
                                             )
                                             ->openUrlInNewTab(),
                                     ]),
+                                Fieldset::make('Pricing')
+                                    ->columnSpanFull()
+                                    ->relationship('price')
+                                    ->schema([
+                                        TextEntry::make('price'),
+                                        TextEntry::make('compare_at_price'),
+                                    ]),
+
                             ]),
                     ]),
 

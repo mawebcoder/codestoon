@@ -26,6 +26,7 @@ class TutorialsTable
                     ->searchable(),
                 TextColumn::make('slug')
                     ->searchable(),
+                TextColumn::make('price.price'),
                 TextColumn::make('time')
                     ->placeholder('-')
                     ->searchable(),

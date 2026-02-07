@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Videos\Schemas;
 
 use App\Models\Video;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ViewEntry;

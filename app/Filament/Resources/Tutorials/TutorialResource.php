@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources\Tutorials;
 
 use App\Filament\Resources\Tutorials\Pages\CreateTutorial;

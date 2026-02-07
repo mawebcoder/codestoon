@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Tutorials\Pages;
 
-
+use App\Filament\Resources\Tutorials\RelationManagers\VideosRelationManager;
 use App\Filament\Resources\Tutorials\TutorialResource;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
-use App\Filament\Resources\Tutorials\RelationManagers\VideosRelationManager;
 
 class ViewTutorial extends ViewRecord
 {
@@ -24,9 +23,7 @@ class ViewTutorial extends ViewRecord
     public function getRelationManagers(): array
     {
         return [
-            VideosRelationManager::class
+            VideosRelationManager::class,
         ];
     }
-
-
 }

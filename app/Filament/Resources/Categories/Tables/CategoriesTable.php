@@ -11,11 +11,11 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class CategoriesTable
 {
@@ -30,14 +30,14 @@ class CategoriesTable
                     ->searchable(),
                 SpatieMediaLibraryImageColumn::make('image')->circular(),
                 TextColumn::make(Category::COLUMN_ENABLED)
-                    ->color(fn(int $state) => FilamentHelper::getEnabledColor($state))
-                    ->formatStateUsing(fn(int $state) => FilamentHelper::getEnabledLabel($state)),
+                    ->color(fn (int $state) => FilamentHelper::getEnabledColor($state))
+                    ->formatStateUsing(fn (int $state) => FilamentHelper::getEnabledLabel($state)),
                 TextColumn::make(Category::COLUMN_SLUG)->label('Slug'),
             ])
             ->filters([
                 Filter::make('is_enabled')
                     ->label('Is Enabled')
-                    ->query(fn(Builder $query): Builder => $query->where(Category::COLUMN_ENABLED,true)),
+                    ->query(fn (Builder $query): Builder => $query->where(Category::COLUMN_ENABLED, true)),
             ])
             ->recordActions([
                 ActionGroup::make([

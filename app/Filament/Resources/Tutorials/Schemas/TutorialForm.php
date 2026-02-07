@@ -17,6 +17,8 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Filament\Support\Colors\Color;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Str;
 
 class TutorialForm
@@ -33,6 +35,7 @@ class TutorialForm
                             ->columnSpan(4)
                             ->schema([
                                 static::getBasicInformation(),
+                                static::getPricing(),
                             ]),
                         static::getAssociations(),
                     ]),
@@ -115,6 +118,25 @@ class TutorialForm
                 Select::make('status')
                     ->options(TutorialStatusEnum::class)
                     ->required(),
+            ]);
+    }
+
+    private static function getPricing(): Fieldset
+    {
+        return Fieldset::make('Pricing')
+            ->columnSpanFull()
+            ->relationship('price')
+            ->schema([
+                TextInput::make('price')
+                    ->lt('compare_at_price')
+                    ->suffixIcon(Heroicon::CurrencyDollar)
+                    ->suffixIconColor(Color::Green)
+                    ->numeric()
+                    ->required(),
+                TextInput::make('compare_at_price')
+                    ->gt('price')
+                    ->suffixIconColor(Color::Green)
+                    ->suffixIcon(Heroicon::CurrencyDollar),
             ]);
     }
 }
